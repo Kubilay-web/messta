@@ -4501,9 +4501,9 @@ model Listing {
   propertyId String
   property   PropertyRealEstate @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
-  agentId   String
+  agentId   String?
   agentName String
-  agent     Agent  @relation(fields: [agentId], references: [id])
+  agent     Agent?  @relation(fields: [agentId], references: [id])
 
   agencyId String
   agency   Agency @relation(fields: [agencyId], references: [id])

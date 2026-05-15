@@ -49,7 +49,9 @@ export default function SidebarHeader({
       <Button asChild variant="outline">
         <Link href={"/management/dashboard/students/new "}>
           <Plus className="h-5 w-5" />
-          <span className="">Add new Student</span>
+          <span className="">Add new PropertyClient
+            
+          </span>
         </Link>
       </Button>
       <NotificationButton notifications={notifications} />

@@ -42,6 +42,7 @@ interface AgentFormProps {
   initialData?: Partial<AgentFormData>;
   editingId?: string;
   departments: { id: string; name: string }[];
+  onSuccess?: () => void;
 }
 
 const titles        = [{ label: "Bay", value: "Bay" }, { label: "Bayan", value: "Bayan" }, { label: "Dr.", value: "Dr." }];
@@ -54,7 +55,7 @@ const SectionTitle = ({ title }: { title: string }) => (
   </h3>
 );
 
-export default function AgentForm({ onSubmit: submitAction, initialData, editingId, departments }: AgentFormProps) {
+export default function AgentForm({ onSubmit: submitAction, initialData, editingId, departments, onSuccess }: AgentFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl ?? "/management/images/student.png");

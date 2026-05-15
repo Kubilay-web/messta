@@ -237,14 +237,14 @@ export const getMenuItems = (user, school) => [
     active: false,
     children: [
       {
-        title: "Real Estate",
+        title: "Gayrimenkul ERP",
         icon: Dashboardicon,
         type: "sub",
         active: false,
         children: [
-          // Front Pages
+          // Ön Sayfalar
           {
-            title: "Front Pages",
+            title: "Ön Sayfalar",
             icon: Dashboardicon,
             type: "sub",
             active: false,
@@ -254,28 +254,28 @@ export const getMenuItems = (user, school) => [
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Landing Page",
+                title: "Anasayfa",
               },
               {
                 path: "/management/contact-us",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Contact Us",
+                title: "İletişim",
               },
               {
                 path: "/management/school-onboarding",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "School Create Onboarding",
+                title: "Ofis Kurulumu",
               },
             ],
           },
 
-          // Dashboard
+          // Yönetim Paneli
           {
-            title: "Dashboard",
+            title: "Yönetim Paneli",
             icon: Dashboardicon,
             type: "sub",
             active: false,
@@ -285,14 +285,14 @@ export const getMenuItems = (user, school) => [
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Dashboard Admin Contacts",
+                title: "İletişim Mesajları",
               },
               {
                 path: "/management/dashboard/academics/classes",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Dashboard Academics Classes",
+                title: "Mülkler & İlanlar",
               },
 
               {
@@ -300,7 +300,7 @@ export const getMenuItems = (user, school) => [
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Dashboard Students New",
+                title: "Yeni Müşteri",
               },
 
               {
@@ -308,24 +308,43 @@ export const getMenuItems = (user, school) => [
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Dashboard Students",
+                title: "Müşteriler",
               },
 
               {
-                path: "/management/dashboard/users/parents/new",
+                path: "/management/dashboard/users/teachers/new",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Dashboard Parents New",
+                title: "Yeni Danışman",
               },
 
               {
-                path: "/management/dashboard/users/parents",
+                path: "/management/dashboard/users/teachers",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Dashboard Parents",
+                title: "Danışmanlar",
               },
+
+                   {
+                path: "/management/dashboard/academics/departments",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Departmanlar",
+              },
+
+
+                    {
+                path: "/management/dashboard/academics/subjects",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Listing(İlanlar)",
+              },
+
+              
             ],
           },
         ],

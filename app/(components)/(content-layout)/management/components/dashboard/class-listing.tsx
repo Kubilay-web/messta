@@ -31,7 +31,16 @@ import {
 } from "../../components/ui/select";
 import { Label } from "../../components/ui/label";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ── Server Actions (direct DB) ────────────────────────────────────────────────
+import {
+  createProperty,
+  updateProperty,
+  deleteProperty,
+  createListing,
+  deleteListing,
+} from "../../actions/realestate";
+
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 type ListingItem = {
   id: string; title: string; listingNo: string;
@@ -52,18 +61,13 @@ type Agent = {
   id: string; firstName: string; lastName: string; designation: string;
 };
 
-interface PropertyListingProps {
+interface Props {
   agencyId: string;
   properties: PropertyItem[];
   agents: Agent[];
-  onCreateProperty: (d: any) => Promise<{ ok: boolean }>;
-  onUpdateProperty: (id: string, d: any) => Promise<{ ok: boolean }>;
-  onDeleteProperty: (id: string) => Promise<{ ok: boolean }>;
-  onCreateListing: (d: any) => Promise<{ ok: boolean }>;
-  onDeleteListing: (id: string) => Promise<{ ok: boolean }>;
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 const PROPERTY_TYPES = ["APARTMENT","HOUSE","VILLA","OFFICE","SHOP","LAND","WAREHOUSE","BUILDING"];
 const LISTING_TYPES  = ["SALE","RENT","SHORT_RENT"];
@@ -78,143 +82,150 @@ const statusColor: Record<string, string> = {
 };
 
 const fmt = (n: number | null, cur = "TRY") =>
-  n != null ? new Intl.NumberFormat("tr-TR", { style: "currency", currency: cur, maximumFractionDigits: 0 }).format(n) : "—";
+  n != null
+    ? new Intl.NumberFormat("tr-TR", { style: "currency", currency: cur, maximumFractionDigits: 0 }).format(n)
+    : "—";
 
-// ─── Component ───────────────────────────────────────────────────────────────
+const EMPTY_PROP = { title: "", address: "", city: "", district: "", propertyType: "APARTMENT", price: "" };
+const EMPTY_LIST = { title: "", listingType: "SALE", askingPrice: "", agentId: "", agentName: "" };
 
-export default function PropertyListing({
-  agencyId, properties, agents,
-  onCreateProperty, onUpdateProperty,
-  onDeleteProperty, onCreateListing, onDeleteListing,
-}: PropertyListingProps) {
+// ── Component ─────────────────────────────────────────────────────────────────
+
+export default function PropertyListing({ agencyId, properties, agents }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [selectedId, setSelectedId] = useState("");
   const [deletingId, setDeletingId] = useState("");
-  const [search, setSearch] = useState("");
+  const [search, setSearch]         = useState("");
+
+  // Create property
+  const [propOpen, setPropOpen]     = useState(false);
+  const [propForm, setPropForm]     = useState(EMPTY_PROP);
+
+  // Edit property
+  const [editOpen, setEditOpen]     = useState(false);
+  const [editForm, setEditForm]     = useState(EMPTY_PROP);
+  const [editId, setEditId]         = useState("");
+
+  // Create listing
+  const [listOpen, setListOpen]     = useState(false);
+  const [listForm, setListForm]     = useState(EMPTY_LIST);
 
   const selected = properties.find((p) => p.id === selectedId);
-
-  // ── Create Property form state ──
-  const [propOpen, setPropOpen] = useState(false);
-  const [propForm, setPropForm] = useState({
-    title: "", address: "", city: "", district: "",
-    propertyType: "APARTMENT", price: "",
-  });
-
-  // ── Create Listing form state ──
-  const [listOpen, setListOpen] = useState(false);
-  const [listForm, setListForm] = useState({
-    title: "", listingType: "SALE", askingPrice: "",
-    agentId: "", agentName: "",
-  });
 
   const filtered = properties.filter((p) =>
     p.title.toLowerCase().includes(search.toLowerCase()) ||
     p.city.toLowerCase().includes(search.toLowerCase())
   );
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
+  // ── Handlers ─────────────────────────────────────────────────────────────
 
+  // POST — create property
   function handleCreateProperty() {
     if (!propForm.title || !propForm.city || !propForm.address || !propForm.district) {
       toast.error("Please fill required fields."); return;
     }
     startTransition(async () => {
-      const res = await onCreateProperty(propForm);
-      if (res.ok) { toast.success("Property created"); setPropOpen(false); router.refresh(); }
+      const res = await createProperty(propForm);
+      if (res.ok) { toast.success("Property created"); setPropOpen(false); setPropForm(EMPTY_PROP); router.refresh(); }
       else toast.error("Could not create property");
     });
   }
 
-  function handleDeleteProperty(id: string) {
-    setDeletingId(id);
-    startTransition(async () => {
-      const res = await onDeleteProperty(id);
-      setDeletingId("");
-      if (res.ok) { toast.success("Property deleted"); if (selectedId === id) setSelectedId(""); router.refresh(); }
-      else toast.error("Could not delete property");
-    });
-  }
-
-  function handleCreateListing() {
-    if (!listForm.title || !listForm.askingPrice || !listForm.agentId) {
+  // PUT — update property
+  function handleUpdateProperty() {
+    if (!editForm.title || !editForm.city || !editForm.address || !editForm.district) {
       toast.error("Please fill required fields."); return;
     }
     startTransition(async () => {
-      const res = await onCreateListing({ ...listForm, propertyId: selectedId });
-      if (res.ok) { toast.success("Listing created"); setListOpen(false); router.refresh(); }
-      else toast.error("Could not create listing");
+      const res = await updateProperty(editId, editForm);
+      if (res.ok) { toast.success("Property updated"); setEditOpen(false); router.refresh(); }
+      else toast.error("Could not update property");
     });
   }
 
+  // DELETE — delete property
+  function handleDeleteProperty(id: string) {
+    setDeletingId(id);
+    startTransition(async () => {
+      const res = await deleteProperty(id);
+      setDeletingId("");
+      if (res.ok) {
+        toast.success("Property deleted");
+        if (selectedId === id) setSelectedId("");
+        router.refresh();
+      } else toast.error("Could not delete property");
+    });
+  }
+
+  // POST — create listing
+  function handleCreateListing() {
+    if (!listForm.title || !listForm.askingPrice || !listForm.agentName) {
+      toast.error("Please fill required fields."); return;
+    }
+    startTransition(async () => {
+      const res = await createListing({ ...listForm, propertyId: selectedId });
+      if (res.ok) {
+        toast.success("Listing created");
+        setListOpen(false);
+        setListForm(EMPTY_LIST);
+        router.refresh();
+      } else toast.error("Could not create listing");
+    });
+  }
+
+  // DELETE — delete listing
   function handleDeleteListing(id: string) {
     setDeletingId(id);
     startTransition(async () => {
-      const res = await onDeleteListing(id);
+      const res = await deleteListing(id);
       setDeletingId("");
       if (res.ok) { toast.success("Listing deleted"); router.refresh(); }
       else toast.error("Could not delete listing");
     });
   }
 
+  function openEdit(p: PropertyItem) {
+    setEditId(p.id);
+    setEditForm({ title: p.title, address: p.address, city: p.city, district: p.district, propertyType: p.propertyType, price: p.price?.toString() ?? "" });
+    setEditOpen(true);
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-0 p-2 sm:p-4 lg:h-[calc(100vh-2rem)]">
+    <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-0 h-full">
 
       {/* ── SIDEBAR ─────────────────────────────────────────────────────── */}
-      <div className="flex flex-col gap-2 lg:border-r lg:pr-2">
+      {/* Hide on mobile when a property is selected */}
+      <div className={cn(
+        "flex flex-col gap-2 lg:border-r lg:pr-2",
+        selectedId ? "hidden lg:flex" : "flex"
+      )}>
 
         {/* Header */}
         <div className="flex items-center justify-between gap-2 px-2 py-2">
           <div className="flex items-center gap-2">
             <Building2 className="h-5 w-5 text-blue-600" />
-            <h2 className="text-lg font-semibold">Properties</h2>
+            <h2 className="text-base sm:text-lg font-semibold">Properties</h2>
             <Badge variant="secondary" className="text-xs">{properties.length}</Badge>
           </div>
 
-          {/* Add Property Dialog */}
+          {/* Create Property Dialog */}
           <Dialog open={propOpen} onOpenChange={setPropOpen}>
             <DialogTrigger asChild>
               <Button size="sm" className="h-8 gap-1">
-                <Plus className="h-4 w-4" /> Add
+                <Plus className="h-4 w-4" /><span className="hidden sm:inline">Add</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-white text-black sm:max-w-md">
+            <DialogContent className="bg-white text-black w-[calc(100vw-2rem)] max-w-md mx-auto">
               <DialogHeader>
                 <DialogTitle>New Property</DialogTitle>
               </DialogHeader>
-              <div className="grid gap-3 py-2">
-                {[
-                  { key: "title", label: "Title *", placeholder: "e.g. Sunset Apartments" },
-                  { key: "address", label: "Address *", placeholder: "Street and number" },
-                  { key: "city", label: "City *", placeholder: "Istanbul" },
-                  { key: "district", label: "District *", placeholder: "Kadıköy" },
-                  { key: "price", label: "Price (TRY)", placeholder: "e.g. 2500000" },
-                ].map(({ key, label, placeholder }) => (
-                  <div key={key} className="grid gap-1">
-                    <Label className="text-xs">{label}</Label>
-                    <Input
-                      placeholder={placeholder}
-                      value={(propForm as any)[key]}
-                      onChange={(e) => setPropForm((f) => ({ ...f, [key]: e.target.value }))}
-                    />
-                  </div>
-                ))}
-                <div className="grid gap-1">
-                  <Label className="text-xs">Property Type *</Label>
-                  <Select value={propForm.propertyType} onValueChange={(v) => setPropForm((f) => ({ ...f, propertyType: v }))}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-white text-black">
-                      {PROPERTY_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setPropOpen(false)}>Cancel</Button>
-                <Button onClick={handleCreateProperty} disabled={isPending}>
+              <PropertyForm form={propForm} setForm={setPropForm} />
+              <DialogFooter className="flex-col sm:flex-row gap-2">
+                <Button variant="outline" className="w-full sm:w-auto" onClick={() => setPropOpen(false)}>Cancel</Button>
+                <Button className="w-full sm:w-auto" onClick={handleCreateProperty} disabled={isPending}>
                   {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create"}
                 </Button>
               </DialogFooter>
@@ -234,24 +245,21 @@ export default function PropertyListing({
 
         {/* Property list */}
         {filtered.length > 0 ? (
-          <ScrollArea className="flex-1 lg:max-h-[calc(100vh-180px)]">
-            <div className="px-1 space-y-1">
+          <ScrollArea className="flex-1 max-h-[calc(100dvh-200px)] lg:max-h-[calc(100vh-180px)]">
+            <div className="px-1 space-y-1 pb-4">
               {filtered.map((p) => (
                 <div
                   key={p.id}
                   className={cn(
                     "group flex items-start justify-between gap-2 rounded-lg px-3 py-2.5 text-sm transition-colors cursor-pointer",
-                    selectedId === p.id
-                      ? "bg-blue-50 text-blue-900"
-                      : "hover:bg-gray-50 text-muted-foreground"
+                    selectedId === p.id ? "bg-blue-50 text-blue-900" : "hover:bg-gray-50 text-muted-foreground"
                   )}
                   onClick={() => setSelectedId(p.id)}
                 >
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-foreground truncate">{p.title}</p>
                     <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
-                      <MapPin className="h-3 w-3 shrink-0" />
-                      {p.city}, {p.district}
+                      <MapPin className="h-3 w-3 shrink-0" />{p.city}, {p.district}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                       <span className={cn("text-xs px-1.5 py-0.5 rounded-full font-medium", statusColor[p.status] ?? "bg-gray-100")}>
@@ -262,6 +270,13 @@ export default function PropertyListing({
                   </div>
 
                   <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                    <Button
+                      variant="ghost" size="icon"
+                      className="h-7 w-7 text-blue-500 hover:text-blue-600"
+                      onClick={(e) => { e.stopPropagation(); openEdit(p); }}
+                    >
+                      <Pencil className="h-3 w-3" />
+                    </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button
@@ -275,12 +290,10 @@ export default function PropertyListing({
                             : <Trash2 className="h-3 w-3" />}
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent className="bg-white text-black">
+                      <AlertDialogContent className="bg-white text-black w-[calc(100vw-2rem)] max-w-md">
                         <AlertDialogHeader>
                           <AlertDialogTitle>Delete "{p.title}"?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            All listings under this property will also be deleted.
-                          </AlertDialogDescription>
+                          <AlertDialogDescription>All listings under this property will also be deleted.</AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -303,38 +316,56 @@ export default function PropertyListing({
         )}
       </div>
 
+      {/* ── Edit Property Dialog ─────────────────────────────────────────── */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="bg-white text-black w-[calc(100vw-2rem)] max-w-md mx-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Property</DialogTitle>
+          </DialogHeader>
+          <PropertyForm form={editForm} setForm={setEditForm} />
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" className="w-full sm:w-auto" onClick={() => setEditOpen(false)}>Cancel</Button>
+            <Button className="w-full sm:w-auto" onClick={handleUpdateProperty} disabled={isPending}>
+              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* ── MAIN PANEL ──────────────────────────────────────────────────── */}
       {selected ? (
         <div className="flex flex-col gap-3 rounded-lg border bg-card w-full overflow-auto">
 
           {/* Header */}
-          <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-3 border-b">
+            <div className="flex items-center gap-2 min-w-0">
+              {/* Back button — mobile: always visible, desktop: only when needed */}
               <Button
-                variant="ghost" size="icon" className="h-8 w-8 hidden lg:flex"
+                variant="ghost" size="icon" className="h-8 w-8 shrink-0"
                 onClick={() => setSelectedId("")}
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <div>
-                <h2 className="text-base font-semibold leading-tight">{selected.title}</h2>
+              <div className="min-w-0">
+                <h2 className="text-sm sm:text-base font-semibold leading-tight truncate">{selected.title}</h2>
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <MapPin className="h-3 w-3" />
-                  {selected.address}, {selected.city}
+                  <MapPin className="h-3 w-3 shrink-0" />
+                  <span className="truncate">{selected.address}, {selected.city}</span>
                 </p>
               </div>
             </div>
 
             {/* Add Listing Dialog */}
-            <Dialog open={listOpen} onOpenChange={(o) => { setListOpen(o); if (!o) setListForm({ title: "", listingType: "SALE", askingPrice: "", agentId: "", agentName: "" }); }}>
+            <Dialog open={listOpen} onOpenChange={(o) => { setListOpen(o); if (!o) setListForm(EMPTY_LIST); }}>
               <DialogTrigger asChild>
-                <Button size="sm" className="gap-1">
-                  <Plus className="h-4 w-4" /> Add Listing
+                <Button size="sm" className="gap-1 shrink-0">
+                  <Plus className="h-4 w-4" />
+                  <span className="hidden xs:inline sm:inline">Add Listing</span>
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-white text-black sm:max-w-md">
+              <DialogContent className="bg-white text-black w-[calc(100vw-2rem)] max-w-md mx-auto">
                 <DialogHeader>
-                  <DialogTitle>New Listing — {selected.title}</DialogTitle>
+                  <DialogTitle className="truncate">New Listing — {selected.title}</DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-3 py-2">
                   <div className="grid gap-1">
@@ -350,7 +381,7 @@ export default function PropertyListing({
                     <Select value={listForm.listingType} onValueChange={(v) => setListForm((f) => ({ ...f, listingType: v }))}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent className="bg-white text-black">
-                        {LISTING_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                        {LISTING_TYPES.map((t) => <SelectItem key={t} value={t}>{t.replace("_", " ")}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
@@ -358,31 +389,40 @@ export default function PropertyListing({
                     <Label className="text-xs">Asking Price (TRY) *</Label>
                     <Input
                       placeholder="e.g. 1500000"
+                      type="number"
                       value={listForm.askingPrice}
                       onChange={(e) => setListForm((f) => ({ ...f, askingPrice: e.target.value }))}
                     />
                   </div>
                   <div className="grid gap-1">
                     <Label className="text-xs">Responsible Agent *</Label>
-                    <Select
-                      value={listForm.agentId}
-                      onValueChange={(v) => {
-                        const agent = agents.find((a) => a.id === v);
-                        setListForm((f) => ({ ...f, agentId: v, agentName: agent ? `${agent.firstName} ${agent.lastName}` : "" }));
-                      }}
-                    >
-                      <SelectTrigger><SelectValue placeholder="Select agent" /></SelectTrigger>
-                      <SelectContent className="bg-white text-black">
-                        {agents.map((a) => (
-                          <SelectItem key={a.id} value={a.id}>{a.firstName} {a.lastName}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    {agents.length > 0 ? (
+                      <Select
+                        value={listForm.agentId}
+                        onValueChange={(v) => {
+                          const agent = agents.find((a) => a.id === v);
+                          setListForm((f) => ({ ...f, agentId: v, agentName: agent ? `${agent.firstName} ${agent.lastName}` : "" }));
+                        }}
+                      >
+                        <SelectTrigger><SelectValue placeholder="Select agent" /></SelectTrigger>
+                        <SelectContent className="bg-white text-black">
+                          {agents.map((a) => (
+                            <SelectItem key={a.id} value={a.id}>{a.firstName} {a.lastName}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input
+                        placeholder="Enter agent name"
+                        value={listForm.agentName}
+                        onChange={(e) => setListForm((f) => ({ ...f, agentName: e.target.value }))}
+                      />
+                    )}
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setListOpen(false)}>Cancel</Button>
-                  <Button onClick={handleCreateListing} disabled={isPending}>
+                <DialogFooter className="flex-col sm:flex-row gap-2">
+                  <Button variant="outline" className="w-full sm:w-auto" onClick={() => setListOpen(false)}>Cancel</Button>
+                  <Button className="w-full sm:w-auto" onClick={handleCreateListing} disabled={isPending}>
                     {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Listing"}
                   </Button>
                 </DialogFooter>
@@ -390,23 +430,23 @@ export default function PropertyListing({
             </Dialog>
           </div>
 
-          {/* Property Info Card */}
-          <div className="px-4">
+          {/* Property Info Cards */}
+          <div className="px-3 sm:px-4">
             <Card className="border-t-4 border-t-blue-600">
-              <CardContent className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <CardContent className="p-3 sm:p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                 {[
-                  { icon: Home,      label: "Type",   value: selected.propertyType },
-                  { icon: Tag,       label: "Status", value: selected.status },
-                  { icon: TrendingUp, label: "Price", value: fmt(selected.price, selected.currency) },
-                  { icon: Building2, label: "Listings", value: `${selected._count.listings} active` },
+                  { icon: Home,       label: "Type",     value: selected.propertyType },
+                  { icon: Tag,        label: "Status",   value: selected.status },
+                  { icon: TrendingUp, label: "Price",    value: fmt(selected.price, selected.currency) },
+                  { icon: Building2,  label: "Listings", value: `${selected._count.listings} active` },
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} className="flex items-start gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-50 shrink-0">
-                      <Icon className="h-4 w-4 text-blue-600" />
+                    <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md bg-blue-50 shrink-0">
+                      <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs text-muted-foreground">{label}</p>
-                      <p className="text-sm font-medium">{value}</p>
+                      <p className="text-xs sm:text-sm font-medium truncate">{value}</p>
                     </div>
                   </div>
                 ))}
@@ -415,16 +455,16 @@ export default function PropertyListing({
           </div>
 
           {/* Listings Grid */}
-          <div className="px-4 pb-4">
-            <h3 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wider">
+          <div className="px-3 sm:px-4 pb-4">
+            <h3 className="text-xs sm:text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wider">
               Listings ({selected.listings.length})
             </h3>
 
             {selected.listings.length > 0 ? (
-              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
                 {selected.listings.map((l) => (
                   <Card key={l.id} className="overflow-hidden">
-                    <CardHeader className="pb-2 pt-3 px-4">
+                    <CardHeader className="pb-2 pt-3 px-3 sm:px-4">
                       <div className="flex items-start justify-between gap-2">
                         <CardTitle className="text-sm font-semibold leading-tight">{l.title}</CardTitle>
                         <AlertDialog>
@@ -439,7 +479,7 @@ export default function PropertyListing({
                                 : <Trash2 className="h-3 w-3" />}
                             </Button>
                           </AlertDialogTrigger>
-                          <AlertDialogContent className="bg-white text-black">
+                          <AlertDialogContent className="bg-white text-black w-[calc(100vw-2rem)] max-w-md">
                             <AlertDialogHeader>
                               <AlertDialogTitle>Delete listing "{l.title}"?</AlertDialogTitle>
                               <AlertDialogDescription>This action is permanent.</AlertDialogDescription>
@@ -456,25 +496,25 @@ export default function PropertyListing({
                       </div>
                       <p className="text-xs text-muted-foreground"># {l.listingNo}</p>
                     </CardHeader>
-                    <CardContent className="px-4 pb-3 space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className={cn("text-xs px-2 py-0.5 rounded-full font-medium", statusColor[l.status] ?? "bg-gray-100")}>
+                    <CardContent className="px-3 sm:px-4 pb-3 space-y-1.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className={cn("text-xs px-2 py-0.5 rounded-full font-medium shrink-0", statusColor[l.status] ?? "bg-gray-100")}>
                           {l.status}
                         </span>
-                        <span className="text-xs font-semibold text-blue-700">
+                        <span className="text-xs font-semibold text-blue-700 truncate">
                           {fmt(l.askingPrice, l.currency)}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span className="uppercase font-medium">{l.listingType.replace("_", " ")}</span>
-                        <span>{l.agentName}</span>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground gap-2">
+                        <span className="uppercase font-medium shrink-0">{l.listingType.replace("_", " ")}</span>
+                        <span className="truncate text-right">{l.agentName}</span>
                       </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center min-h-[200px] text-center text-sm text-muted-foreground">
+              <div className="flex flex-col items-center justify-center min-h-[160px] sm:min-h-[200px] text-center text-sm text-muted-foreground">
                 <Building2 className="h-10 w-10 mb-2 text-gray-300" />
                 <p>No listings yet.</p>
                 <p className="text-xs mt-1">Click "Add Listing" to create the first one.</p>
@@ -490,6 +530,46 @@ export default function PropertyListing({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ── Shared Property Form ──────────────────────────────────────────────────────
+
+function PropertyForm({
+  form, setForm,
+}: {
+  form: { title: string; address: string; city: string; district: string; propertyType: string; price: string };
+  setForm: React.Dispatch<React.SetStateAction<any>>;
+}) {
+  return (
+    <div className="grid gap-3 py-2">
+      {([
+        { key: "title",    label: "Title *",        placeholder: "e.g. Sunset Apartments" },
+        { key: "address",  label: "Address *",      placeholder: "Street and number" },
+        { key: "city",     label: "City *",         placeholder: "Istanbul" },
+        { key: "district", label: "District *",     placeholder: "Kadıköy" },
+        { key: "price",    label: "Price (TRY)",    placeholder: "e.g. 2500000", type: "number" },
+      ] as const).map(({ key, label, placeholder, type }) => (
+        <div key={key} className="grid gap-1">
+          <Label className="text-xs">{label}</Label>
+          <Input
+            placeholder={placeholder}
+            type={type ?? "text"}
+            value={(form as any)[key]}
+            onChange={(e) => setForm((f: any) => ({ ...f, [key]: e.target.value }))}
+          />
+        </div>
+      ))}
+      <div className="grid gap-1">
+        <Label className="text-xs">Property Type *</Label>
+        <Select value={form.propertyType} onValueChange={(v) => setForm((f: any) => ({ ...f, propertyType: v }))}>
+          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectContent className="bg-white text-black">
+            {PROPERTY_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 }

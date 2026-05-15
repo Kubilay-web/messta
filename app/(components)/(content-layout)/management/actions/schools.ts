@@ -56,32 +56,32 @@ export async function createSchool(data: SchoolProps) {
 //   }
 // }
 
-export async function getSchoolById(slug: string) {
-  if (!slug) return null;
+// export async function getSchoolById(slug: string) {
+//   if (!slug) return null;
 
-  try {
-    const encodedSlug = encodeURIComponent(slug);
-    const url = `http://localhost:3000/api/schoolmanage/schools?slug=${encodedSlug}`;
+//   try {
+//     const encodedSlug = encodeURIComponent(slug);
+//     const url = `http://localhost:3000/api/schoolmanage/schools?slug=${encodedSlug}`;
 
-    const res = await fetch(url, { cache: "no-store" });
-    const result = await res.json();
+//     const res = await fetch(url, { cache: "no-store" });
+//     const result = await res.json();
 
-    if (!res.ok) {
-      console.error("getSchoolById API error:", result.error || result);
-      return null;
-    }
+//     if (!res.ok) {
+//       console.error("getSchoolById API error:", result.error || result);
+//       return null;
+//     }
 
-    // Eğer result bir array ise ilk öğeyi al
-    if (Array.isArray(result)) {
-      return result[0] || null;
-    }
+//     // Eğer result bir array ise ilk öğeyi al
+//     if (Array.isArray(result)) {
+//       return result[0] || null;
+//     }
 
-    return result || null;
-  } catch (error) {
-    console.error("getSchoolById fetch error:", error);
-    return null;
-  }
-}
+//     return result || null;
+//   } catch (error) {
+//     console.error("getSchoolById fetch error:", error);
+//     return null;
+//   }
+// }
 
 // ==================== GET SCHOOL NAMES ====================
 export interface BriefSchool {
