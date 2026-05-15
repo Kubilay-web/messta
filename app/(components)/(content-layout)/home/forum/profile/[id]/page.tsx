@@ -43,10 +43,10 @@ const getUserAnswers = async (
   return res.json();
 };
 
-type RouteParams = { params: { id: string } };
+type RouteParams = { params: Promise<{ id: string }> };
 
 const Profile = async ({ params }: RouteParams) => {
-  const { id } = params;
+  const { id } = await params;
   if (!id) notFound();
 
   const userRes = await fetch(

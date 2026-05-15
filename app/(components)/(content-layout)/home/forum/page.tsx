@@ -11,6 +11,8 @@ import { EMPTY_QUESTION } from "@/app/constants/states";
 import Link from "next/link";
 import React from "react";
 
+export const dynamic = "force-dynamic";
+
 interface Question {
   id: string;
   title: string;
@@ -24,14 +26,15 @@ interface Question {
 }
 
 interface HomeProps {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }
 
 const Home = async ({ searchParams }: HomeProps) => {
-  const page = Number(searchParams.page) || 1;
-  const pageSize = Number(searchParams.pageSize) || 10;
-  const query = searchParams.query || "";
-  const filter = searchParams.filter || "";
+  const resolvedSearch = await searchParams;
+  const page = Number(resolvedSearch.page) || 1;
+  const pageSize = Number(resolvedSearch.pageSize) || 10;
+  const query = resolvedSearch.query || "";
+  const filter = resolvedSearch.filter || "";
 
   const queryParams = new URLSearchParams();
 

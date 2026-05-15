@@ -7,8 +7,14 @@ import ROUTES from "@/app/constants/routes";
 import { EMPTY_TAGS } from "@/app/constants/states";
 import Pagination from "@/app/projects/components/stackoverflow/Pagination";
 
+export const dynamic = "force-dynamic";
+
+interface RouteParams {
+  searchParams: Promise<{ page?: string; pageSize?: string; query?: string; filter?: string }>;
+}
+
 const Tags = async ({ searchParams }: RouteParams) => {
-  const { page, pageSize, query, filter } = searchParams;
+  const { page, pageSize, query, filter } = await searchParams;
 
   const search = new URLSearchParams({
     page: String(page || 1),

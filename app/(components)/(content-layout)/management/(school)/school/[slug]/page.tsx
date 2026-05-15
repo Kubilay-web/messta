@@ -17,8 +17,8 @@ import SchoolEvents from "../../../components/school/SchoolEvents";
 import SchoolContactForm from "../../../components/school/SchoolContactForm";
 import SchoolFooter from "../../../components/school/SchoolFooter";
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
   if (!slug) return <div>School not found.</div>;
 

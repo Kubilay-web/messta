@@ -5,13 +5,13 @@ import { notFound, redirect } from "next/navigation";
 import React from "react";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 const EditQuestion = async ({ params }: RouteParams) => {
-  const { id } = params;
+  const { id } = await params;
   if (!id) return notFound();
 
   const { user } = await validateRequest();

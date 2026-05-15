@@ -10,14 +10,16 @@ import { notFound } from "next/navigation";
 export default async function EditStudentPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { user } = await validateRequest();
   if (!user) return null;
 
+  const { id } = await params;
+
   const [school, student] = await Promise.all([
     SchoolUser(user.id),
-    getStudentById(params.id),
+    getStudentById(id),
   ]);
 
   if (!student) notFound();
@@ -33,7 +35,7 @@ export default async function EditStudentPage({
       <Card className="border-t-4 border-blue-600 shadow">
         <CardContent className="p-6">
           <SingleStudentForm
-            editingId={params.id}
+            editingId={id}
             initialData={student}
             classes={classes || []}
             parents={parents || []}

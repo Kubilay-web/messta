@@ -5,6 +5,8 @@ import CreatePostCard from '../../../../components/cards/CreatePostCard'
 import Link from 'next/link'
 import LoadContentButton from '../../../../components/LoadContentButton'
 
+export const dynamic = "force-dynamic";
+
 // Blog'ları çeken asenkron fonksiyon
 async function getLatestBlogs() {
   try {

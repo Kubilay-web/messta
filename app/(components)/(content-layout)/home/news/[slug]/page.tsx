@@ -7,8 +7,8 @@ import HtmlParser from "react-html-parser";
 import React from "react";
 import RelatedNews from "@/app/projects/components/newsportal/news/RelatedNews";
 
-const Details = async ({ params }) => {
-  const { slug } = params;
+const Details = async ({ params }: { params: Promise<{ slug: string }> }) => {
+  const { slug } = await params;
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/details/${slug}`,

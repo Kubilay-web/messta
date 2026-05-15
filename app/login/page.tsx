@@ -155,8 +155,9 @@
 import Cover from "../(components)/(authentication-layout)/authentication/sign-in/cover/page";
 import { headers } from "next/headers";
 
-export default function Login() {
-  const host = headers().get("x-host") || headers().get("host") || "";
+export default async function Login() {
+  const headersList = await headers();
+  const host = headersList.get("x-host") || headersList.get("host") || "";
 
   return <Cover host={host} />;
 }

@@ -8,14 +8,16 @@ import db from "@/app/lib/db";
 export default async function EditParentPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { user } = await validateRequest();
   if (!user) return null;
 
+  const { id } = await params;
+
   const [school, parent] = await Promise.all([
     SchoolUser(user.id),
-    db.parent.findUnique({ where: { id: params.id } }),
+    db.parent.findUnique({ where: { id } }),
   ]);
 
   if (!parent) notFound();
@@ -25,7 +27,7 @@ export default async function EditParentPage({
       <Card className="border-t-4 border-blue-600 shadow">
         <CardContent className="p-6">
           <ParentForm
-            editingId={params.id}
+            editingId={id}
             initialData={parent}
             schoolId={school?.id ?? ""}
             schoolName={school?.name ?? ""}

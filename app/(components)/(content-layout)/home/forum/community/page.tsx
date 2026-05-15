@@ -8,6 +8,12 @@ import ROUTES from "@/app/constants/routes";
 import { EMPTY_USERS } from "@/app/constants/states";
 import Pagination from "@/app/projects/components/stackoverflow/Pagination";
 
+export const dynamic = "force-dynamic";
+
+interface RouteParams {
+  searchParams: Promise<{ page?: string; pageSize?: string; query?: string; filter?: string }>;
+}
+
 const Community = async ({ searchParams }: RouteParams) => {
   const { page, pageSize, query, filter } = await searchParams;
 

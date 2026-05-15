@@ -6,8 +6,8 @@ import RecentNews from "@/app/projects/components/newsportal/news/RecentNews";
 import Search from "@/app/projects/components/newsportal/news/Search";
 import React from "react";
 
-const CategoryNews = async ({ params }) => {
-  const { category } = params;
+const CategoryNews = async ({ params }: { params: Promise<{ category: string }> }) => {
+  const { category } = await params;
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/category/${category}`,
     {

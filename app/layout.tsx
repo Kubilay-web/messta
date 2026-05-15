@@ -51,7 +51,7 @@ import { ChatProvider } from "./(components)/(content-layout)/home/onesocial/con
 import { headers } from "next/headers";
 
 export async function generateMetadata() {
-  const headersList = headers();
+  const headersList = await headers();
   const host = headersList.get("x-hostname");
 
   if (host?.includes("cleververwaltet.de")) {
@@ -80,7 +80,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await validateRequest();
-  const headersList = headers();
+  const headersList = await headers();
   const host = headersList.get("x-hostname");
 
   const lang =

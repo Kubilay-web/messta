@@ -10,9 +10,9 @@ import Votes from "@/app/projects/components/stackoverflow/votes/Votes";
 import SaveQuestion from "@/app/projects/components/stackoverflow/questions/SaveQuestion";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 interface Question {
@@ -134,7 +134,7 @@ const fetchAnswers = async (id: string) => {
 };
 
 const QuestionDetails = async ({ params }: RouteParams) => {
-  const { id } = params;
+  const { id } = await params;
 
   // Verileri sunucudan al
   const [hasVoted, question, answersResult, hasSaved] = await Promise.all([

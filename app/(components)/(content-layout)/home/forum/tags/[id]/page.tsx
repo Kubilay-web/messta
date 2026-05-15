@@ -6,14 +6,14 @@ import { EMPTY_QUESTION } from "@/app/constants/states";
 import React from "react";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
-  searchParams: {
+  }>;
+  searchParams: Promise<{
     page?: string;
     pageSize?: string;
     query?: string;
-  };
+  }>;
 }
 
 interface ApiResponse<T> {
@@ -41,10 +41,11 @@ interface Data {
 }
 
 const page = async ({ params, searchParams }: RouteParams) => {
-  const { id: tagId } = params;
-  const pageNum = Number(searchParams.page) || 1;
-  const pageSizeNum = Number(searchParams.pageSize) || 10;
-  const query = searchParams.query || "";
+  const { id: tagId } = await params;
+  const resolvedSearch = await searchParams;
+  const pageNum = Number(resolvedSearch.page) || 1;
+  const pageSizeNum = Number(resolvedSearch.pageSize) || 10;
+  const query = resolvedSearch.query || "";
 
   try {
     const url = new URL(
