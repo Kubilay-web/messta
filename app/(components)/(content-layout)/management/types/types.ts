@@ -443,6 +443,14 @@ export type UserRole =
   | "PARENT"
   | "SECRETARY"
   | "LIBRARIAN";
+
+export type UserRoleGayrimenkul =
+  | "SUPER_ADMIN"
+  | "ADMIN"
+  | "AGENT"
+  | "CLIENT"
+  | "SECRETARY"
+  | "ACCOUNTANT";
 export type PeriodCreateProps = {
   year: number;
   term: number;

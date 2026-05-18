@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 import prisma from "./lib/prisma";
 
+
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
 export const lucia = new Lucia(adapter, {
@@ -30,7 +31,10 @@ export const lucia = new Lucia(adapter, {
       roleproject:databaseUserAttributes.roleproject,
       roleinvoice:databaseUserAttributes.roleinvoice,
       roleschool:databaseUserAttributes.roleschool,
-      schoolId:databaseUserAttributes.schoolId
+      schoolId:databaseUserAttributes.schoolId,
+      roleGayrimenkul:databaseUserAttributes.roleGayrimenkul,
+      agencyId:databaseUserAttributes.agencyId,
+      agencyName:databaseUserAttributes.agencyName,
     };
   },
 });
@@ -58,6 +62,9 @@ interface DatabaseUserAttributes {
   roleinvoice:string;
   schoolId:string;
   roleschool:string;
+  roleGayrimenkul: string | null;
+  agencyId: string | null;
+  agencyName: string | null;
 }
 
 export const google = new Google(

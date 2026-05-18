@@ -34,10 +34,14 @@ async function createAgencyAction(
       },
     });
 
-    // Kullanıcıyı ajansa bağla
+    // Kullanıcıyı ajansa bağla ve ADMIN rolü ata
     await prisma.user.update({
       where: { id: user.id },
-      data: { agencyId: agency.id },
+      data: {
+        agencyId: agency.id,
+        agencyName: agency.name,
+        roleGayrimenkul: "SUPER_ADMIN",
+      },
     });
 
     revalidatePath("/management/school-onboarding");

@@ -1,41 +1,37 @@
 import { validateRequest } from "@/app/auth";
-import { getServerUser, SchoolUser } from "../../actions/auth";
-import { getSchoolNotifications } from "../../actions/site";
-import AppSidebar from "../../components/dashboard/sidebar/app-sidebar";
+import { redirect } from "next/navigation";
+import prisma from "@/app/lib/db";
+import AgencyAppSidebar from "../../components/dashboard/sidebar/agency-app-sidebar";
 import SidebarHeader from "../../components/dashboard/sidebar/sidebar-header";
 import { SidebarInset, SidebarProvider } from "../../components/ui/sidebar";
-import { redirect } from "next/navigation";
 import React, { ReactNode } from "react";
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const { user } = await validateRequest();
+  if (!user) redirect("/login");
+  if (!user.agencyId) redirect("/management/school-onboarding");
 
-  if (!user) return null;
+  const reminders = await prisma.agencyReminder.findMany({
+    where: { agencyId: user.agencyId },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+    select: { id: true, name: true, subject: true, message: true, createdAt: true },
+  });
 
-  const school = await SchoolUser(user.id);
-
-  // if (!user) {
-  //   redirect("/login");
-  // }
-
-  // if (user.role !== "ADMIN") {
-  //   redirect("/login");
-  // }
-
-  const notifications =
-    (await getSchoolNotifications(school.id ?? "")) || [];
+  // SidebarHeader expects RecentActivity shape: map reminders to it
+  const notifications = reminders.map((r) => ({
+    id: r.id,
+    title: r.subject,
+    description: r.message,
+    createdAt: r.createdAt?.toISOString() ?? "",
+  }));
 
   return (
     <div>
       <SidebarProvider>
-        {/* <AppSidebar /> */}
+        {/* <AgencyAppSidebar /> */}
         <SidebarInset>
-          {/* Sidebar header */}
-          <SidebarHeader notifications={notifications} />
+          <SidebarHeader notifications={notifications as any} />
           {children}
         </SidebarInset>
       </SidebarProvider>

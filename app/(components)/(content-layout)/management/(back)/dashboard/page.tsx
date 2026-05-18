@@ -1,39 +1,32 @@
-import { WelcomeBanner } from "../../components/dashboard/welcome-message";
-import { getServerSchool, getServerUser, SchoolUser } from "../../actions/auth";
-import { redirect } from "next/navigation";
-import DashboardDetails from "../../components/dashboard/dashboard-details";
-import { getAllAnalytics } from "../../actions/analytics";
 import { validateRequest } from "@/app/auth";
+import { redirect } from "next/navigation";
+import { getAgencyAnalytics } from "../../actions/analytics";
+import AgencyDashboardDetails from "../../components/dashboard/agency-dashboard-details";
+import { WelcomeBanner } from "../../components/dashboard/welcome-message";
+import prisma from "@/app/lib/db";
 
 export default async function Dashboard() {
-
   const { user } = await validateRequest();
+  if (!user) redirect("/login");
+  if (!user.agencyId) redirect("/management/school-onboarding");
 
-  if (!user) return null;
+  const agency = await prisma.agency.findUnique({
+    where: { id: user.agencyId },
+    select: { name: true, slug: true },
+  });
 
-  const school = await SchoolUser(user.id);
+  if (!agency) redirect("/management/school-onboarding");
 
-
-
-  const analytics = await getAllAnalytics(school?.id ?? "");
-
-
-
-  // if (!user) {
-  //   redirect("/login");
-  // }
-
-  console.log(analytics);
-
+  const analytics = await getAgencyAnalytics(user.agencyId);
 
   return (
     <div className="flex-1 space-y-4 p-8">
       <WelcomeBanner
-        userName={user?.username}
-        userRole={user.roleschool}
-        userSchool={school?.name ?? ""}
+        userName={user.username ?? user.name ?? ""}
+        userRole={user.roleGayrimenkul ?? ""}
+        userSchool={agency.name}
       />
-      <DashboardDetails analytics={analytics} schoolslug={school.slug} />
+      <AgencyDashboardDetails analytics={analytics} agencySlug={agency.slug} />
     </div>
   );
 }

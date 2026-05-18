@@ -39,173 +39,67 @@ import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 
-
 import { cn } from "../../lib/utils";
 
-
-import { UserRole } from "../../types/types";
-
+import { UserRole, UserRoleGayrimenkul } from "../../types/types";
 
 import { useUserSession } from "../../store/auth";
 import Logo from "../logo";
 
 
 
-// Interface for individual link items
 interface NavLink {
   title: string;
   href: string;
   icon: LucideIcon;
   count?: number;
 }
-// Type for available roles
 
-// Type for the links object structure
-type RoleLinks = {
-  [K in UserRole]: NavLink[];
+type RealEstateRoleLinks = {
+  [K in UserRoleGayrimenkul]: NavLink[];
 };
 
-export function renderLoggedInUserLinks(role: UserRole): NavLink[] {
-  const commonLinks = [
-    {
-      title: "Dashboard",
-      href: "/management/portal",
-      icon: Home,
-    },
-  ];
-  const links: RoleLinks = {
-    SUPER_ADMIN: [
-      {
-        title: "Dashboard",
-        href: "/management/dashboard",
-        icon: Home,
-      },
-    ],
-    ADMIN: [
-      {
-        title: "Orders",
-        href: "/management/dashboard/orders",
-        icon: ShoppingCart,
-        count: 6,
-      },
-      {
-        title: "Products",
-        href: "/management/dashboard/products",
-        icon: Package,
-      },
-      {
-        title: "Customers",
-        href: "/management/dashboard/customers",
-        icon: Users,
-      },
-      {
-        title: "Categories",
-        href: "/management/dashboard/categories",
-        icon: LayoutGrid,
-      },
-      {
-        title: "Analytics",
-        href: "/management/dashboard/analytics",
-        icon: LineChart,
-      },
-    ],
-    TEACHER: [
-      {
-        title: "Students",
-        href: "/management/portal/teacher/students",
-        icon: GraduationCap,
-      },
-      {
-        title: "Mark Attendance",
-        href: "/management/portal/teacher/attendance",
-        icon: Pencil,
-      },
-      {
-        title: "View Class Attendance",
-        href: "/management/portal/teacher/attendance/by-class",
-        icon: BookOpen,
-      },
-      {
-        title: "View Student Attendance",
-        href: "/management/portal/teacher/attendance/student",
-        icon: Eye,
-      },
-      {
-        title: "Exams",
-        href: "/management/portal/teacher/exams",
-        icon: SquareLibrary,
-      },
-      {
-        title: "Inbox ",
-        href: "/management/portal/teacher/inbox",
-        icon: MessagesSquare,
-      },
+const REAL_ESTATE_LINKS: RealEstateRoleLinks = {
+  SUPER_ADMIN: [
+    { title: "Yönetim Paneli", href: "/management/dashboard", icon: Home },
+  ],
+  ADMIN: [
+    { title: "Yönetim Paneli", href: "/management/dashboard", icon: Home },
+  ],
+  AGENT: [
+    { title: "Genel Bakış", href: "/management/portal", icon: LayoutGrid },
+    { title: "İlanlarım", href: "/management/portal/teacher/students", icon: ScrollText },
+    { title: "Müşterilerim", href: "/management/portal/teacher/students", icon: Users },
+    { title: "Randevular", href: "/management/portal/teacher/attendance", icon: CalendarCheck },
+    { title: "Sözleşmeler", href: "/management/portal/teacher/exams", icon: Package2 },
+    { title: "Gelen Kutusu", href: "/management/portal/teacher/inbox", icon: MessagesSquare },
+    { title: "Raporlar", href: "/management/portal/teacher/reports", icon: Banknote },
+  ],
+  CLIENT: [
+    { title: "Genel Bakış", href: "/management/portal", icon: LayoutGrid },
+    { title: "İlgilendiğim İlanlar", href: "/management/portal/parent", icon: ScrollText },
+    { title: "Randevularım", href: "/management/portal/parent/payments", icon: CalendarCheck },
+    { title: "Sözleşmelerim", href: "/management/portal/parent/payments", icon: Package2 },
+    { title: "Mesajlar", href: "/management/portal/parent/messages", icon: Mail },
+  ],
+  SECRETARY: [
+    { title: "Genel Bakış", href: "/management/portal", icon: LayoutGrid },
+    { title: "Danışmanlar", href: "/management/portal/secretary/teachers", icon: UsersRound },
+    { title: "Müşteriler", href: "/management/portal/secretary/students", icon: Users },
+    { title: "İlanlar", href: "/management/portal/secretary/parents", icon: ScrollText },
+  ],
+  ACCOUNTANT: [
+    { title: "Genel Bakış", href: "/management/portal", icon: LayoutGrid },
+    { title: "Ödemeler", href: "/management/portal/parent/payments", icon: DollarSign },
+  ],
+};
 
-      {
-        title: "Reports",
-        href: "/management/portal/teacher/reports",
-        icon: Banknote,
-      },
-    ],
-    PARENT: [
-      {
-        title: "My Children",
-        href: "/management/portal/parent",
-        icon: Users,
-      },
-      {
-        title: "Messages",
-        href: "/management/portal/parent/messages",
-        icon: Mail,
-      },
-      {
-        title: "Payments",
-        href: "/management/portal/parent/payments",
-        icon: DollarSign,
-      },
-    ],
-    SECRETARY: [
-      {
-        title: "Students",
-        href: "/management/portal/secretary/students",
-        icon: Users,
-      },
-      {
-        title: "Teachers",
-        href: "/management/portal/secretary/teachers",
-        icon: UsersRound,
-      },
-      {
-        title: "Parents",
-        href: "/management/portal/secretary/parents",
-        icon: UserPlus,
-      },
-    ],
-    LIBRARIAN: [
-      {
-        title: "Users",
-        href: "/management/dashboard/orders",
-        icon: ShoppingCart,
-        count: 6,
-      },
-    ],
-    STUDENT: [
-      {
-        title: "My Profile",
-        href: "/management/portal/student/profile",
-        icon: User,
-      },
-      {
-        title: "Timetable",
-        href: "/management/portal/student",
-        icon: Calendar,
-      },
-    ],
-  };
-  return [...commonLinks, ...links[role]];
+export function renderRealEstateLinks(role: UserRoleGayrimenkul): NavLink[] {
+  return REAL_ESTATE_LINKS[role] ?? [{ title: "Genel Bakış", href: "/management/portal", icon: Home }];
 }
-export default function PortalSidebar({ userRole }: { userRole: UserRole }) {
-  const sidebarLinks = renderLoggedInUserLinks(userRole);
+
+export default function PortalSidebar({ userRole }: { userRole: UserRoleGayrimenkul }) {
+  const sidebarLinks = renderRealEstateLinks(userRole);
   const { clearSession } = useUserSession();
   const router = useRouter();
   async function handleLogout() {

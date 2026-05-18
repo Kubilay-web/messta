@@ -1,42 +1,62 @@
 import React from "react";
-import PortalAnalytics from "../../components/portal/PortalAnalytics";
-import { getServerUser, SchoolUser } from "../../actions/auth";
-import { WelcomeBanner } from "../../components/dashboard/welcome-message";
 import { redirect } from "next/navigation";
-import TeacherAnalytics from "../../components/portal/TeacherAnalytics";
-import { getTeacherAnalytics } from "../../actions/analytics";
 import { validateRequest } from "@/app/auth";
+import { WelcomeBanner } from "../../components/dashboard/welcome-message";
+import { getAgentPortalData, getClientPortalData } from "../../actions/analytics";
+import AgentPortalDashboard from "../../components/portal/AgentPortalDashboard";
+import ClientPortalDashboard from "../../components/portal/ClientPortalDashboard";
+import prisma from "@/app/lib/db";
 
 export default async function Portal() {
+  const { user } = await validateRequest();
+  if (!user) redirect("/login");
 
+  const role = user.roleGayrimenkul;
 
   
 
-  const { user } = await validateRequest();
+  const agencyName = user.agencyName ?? "";
+  const displayName = user.username ?? user.name ?? "";
 
-  if (!user) return null;
+  if (role === "AGENT") {
+    const data = await getAgentPortalData(user.id);
+    return (
+      <div className="px-8 py-4 space-y-6">
+        <WelcomeBanner
+          userName={displayName}
+          userRole="Emlak Danışmanı"
+          userSchool={agencyName}
+        />
+        <AgentPortalDashboard data={data} />
+      </div>
+    );
+  }
 
-  const school = await SchoolUser(user.id);
+  if (role === "CLIENT") {
+    const data = await getClientPortalData(user.id);
+    const client = await prisma.propertyClient.findUnique({
+      where: { userId: user.id },
+      select: { firstName: true, lastName: true },
+    });
+    return (
+      <div className="px-8 py-4 space-y-6">
+        <WelcomeBanner
+          userName={client ? `${client.firstName} ${client.lastName}` : displayName}
+          userRole="Müşteri"
+          userSchool={agencyName}
+        />
+        <ClientPortalDashboard data={data} />
+      </div>
+    );
+  }
 
-  // if (!user) {
-  //   redirect("/login");
-  // }
-
-
-
-  const schoolId = school?.id ?? "";
-  const data = await getTeacherAnalytics(schoolId);
-
-
+  if (role === "SECRETARY" || role === "ACCOUNTANT") {
+    redirect("/management/portal/secretary/students");
+  }
 
   return (
-    <div className="px-8 py-4">
-      <WelcomeBanner
-        userName={user?.username}
-        userRole={user.roleschool}
-        userSchool={school?.name ?? ""}
-      />
-      <TeacherAnalytics data={data} />
+    <div className="px-8 py-8 text-muted-foreground">
+      Welcome To Portal.
     </div>
   );
 }
