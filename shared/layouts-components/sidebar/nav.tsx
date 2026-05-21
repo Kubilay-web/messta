@@ -250,21 +250,21 @@ export const getMenuItems = (user, school) => [
             active: false,
             children: [
               {
-                path: "/management",
+                path: "/realestate",
                 type: "link",
                 active: false,
                 selected: false,
                 title: "Anasayfa",
               },
               {
-                path: "/management/contact-us",
+                path: "/realestate/contact-us",
                 type: "link",
                 active: false,
                 selected: false,
                 title: "İletişim",
               },
               {
-                path: "/management/school-onboarding",
+                path: "/realestate/estate-onboarding",
                 type: "link",
                 active: false,
                 selected: false,
@@ -281,74 +281,178 @@ export const getMenuItems = (user, school) => [
             active: false,
             children: [
               {
-                path: "/management/dashboard/admin/contacts",
+                path: "/realestate/dashboard/estates/properties",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "İletişim Mesajları",
-              },
-              {
-                path: "/management/dashboard/academics/classes",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Mülkler & İlanlar",
+                title: "Mülkler ve İlanlar",
               },
 
               {
-                path: "/management/dashboard/students/new",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Yeni Müşteri",
-              },
-
-              {
-                path: "/management/dashboard/students",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Müşteriler",
-              },
-
-              {
-                path: "/management/dashboard/users/teachers/new",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Yeni Danışman",
-              },
-
-              {
-                path: "/management/dashboard/users/teachers",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Danışmanlar",
-              },
-
-                   {
-                path: "/management/dashboard/academics/departments",
+                path: "/realestate/dashboard/estates/departments",
                 type: "link",
                 active: false,
                 selected: false,
                 title: "Departmanlar",
               },
 
-
-                    {
-                path: "/management/dashboard/academics/subjects",
+              {
+                path: "/realestate/dashboard/estates/visits",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Listing(İlanlar)",
+                title: "Ziyaretler",
+              },
+
+              {
+                path: "/realestate/dashboard/estates/payments",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Finansal Kayıtlar",
               },
 
               
+              {
+                path: "/realestate/dashboard/estates/listings",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "İlan Kayıtları",
+              },
+
+              {
+                path: "/realestate/dashboard/estates/terms",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Kontratlar",
+              },
+
+              {
+                path: "/realestate/dashboard/admin/contacts",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "İletişim Mesajları",
+              },
+
+              {
+                path: "/realestate/dashboard/attendance/by-department",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Danışmanların Devam Görünümü",
+              },
+
+              {
+                path: "/realestate/dashboard/attendance/client",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Müşteri Randevu Kontrol",
+              },
+
+              {
+                path: "/realestate/dashboard/attendance",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Katılımlar",
+              },
+
+                {
+                path: "/realestate/dashboard/communication/reminders",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Hatırlatıcılar",
+              },
+
+             {
+                path: "/realestate/dashboard/communication/website-messages",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Website Mesajları",
+              },
+
+
+              {
+                path: "/realestate/dashboard/finance/fees",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Ödeme Planı",
+              },
+              {
+                path: "/realestate/dashboard/finance/payments",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Tahsilat",
+              },
+
+               {
+                path: "/realestate/dashboard/logs",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Logs",
+              },
+
+
+
+              {
+                path: "/realestate/dashboard/propertyclient",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "PropertyClient",
+              },
+
+
+              {
+                path: "/realestate/dashboard/users/new",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Yeni Danışman",
+              },
+
+
+              {
+                path: "/realestate/dashboard/users/agents",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Danışmanlar",
+              },
+
+                 {
+                path: "/realestate/dashboard/users",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Kullanıcılar",
+              },
+
+              {
+                path: "/realestate/dashboard",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Dashboard",
+              },
+
+
+
+
             ],
           },
         ],
       },
+
       // {
       //   title: "Management",
       //   icon: Dashboardicon,
@@ -1129,10 +1233,6 @@ export const getMenuItems = (user, school) => [
       // },
 
       //Jobs
-   
-
-  
-
 
       // {
       //   title: "Real Estate",
@@ -1190,9 +1290,6 @@ export const getMenuItems = (user, school) => [
       //     },
       //   ],
       // },
-
-
-
 
       // {
       //   title: "Finance",
@@ -1286,9 +1383,6 @@ export const getMenuItems = (user, school) => [
       //     },
       //   ],
       // },
-
-
-   
 
       // {
       //   path: "/dashboards/sales",

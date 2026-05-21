@@ -12,7 +12,7 @@ import Image from "next/image";
 import nextConfig from "@/next.config";
 import { useSession } from "@/app/SessionProvider";
 import SidebarNew from "@/shared/layouts-components/sidebarnew/layouts/sidebar/page";
-import { SchoolUser } from "@/app/(components)/(content-layout)/management/actions/auth";
+import { SchoolUser } from "@/app/(components)/(content-layout)/realestate/actions/auth";
 
 const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
   let { basePath } = nextConfig;
