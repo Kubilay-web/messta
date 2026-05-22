@@ -141,7 +141,7 @@ export default async function DashboardPage({
       <div className="mb-2">
         <h1 className="text-2xl sm:text-3xl font-bold">Hoş geldiniz</h1>
         <p className="text-gray-500 text-sm mt-1">
-          {agency.name} · {user.name ?? user.email}
+          {agency.name} · {user.username ?? user.email}
         </p>
       </div>
       <AgencyDashboardDetails analytics={analytics} agencySlug={agency.slug} />

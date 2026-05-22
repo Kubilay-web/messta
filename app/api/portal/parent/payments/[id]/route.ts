@@ -28,6 +28,11 @@ export async function PUT(req: Request, context: any) {
   const { user } = await validateRequest();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const allowed = ["AGENT", "ADMIN", "SUPER_ADMIN"];
+  if (!user.roleGayrimenkul || !allowed.includes(user.roleGayrimenkul)) {
+    return NextResponse.json({ error: "Yetkisiz" }, { status: 403 });
+  }
+
   const existing = await verifyOwner(user.id, context.params.id);
   if (!existing) return NextResponse.json({ error: "Bulunamadı" }, { status: 404 });
 
@@ -50,6 +55,11 @@ export async function PUT(req: Request, context: any) {
 export async function DELETE(_req: Request, context: any) {
   const { user } = await validateRequest();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const allowed = ["AGENT", "ADMIN", "SUPER_ADMIN"];
+  if (!user.roleGayrimenkul || !allowed.includes(user.roleGayrimenkul)) {
+    return NextResponse.json({ error: "Yetkisiz" }, { status: 403 });
+  }
 
   const existing = await verifyOwner(user.id, context.params.id);
   if (!existing) return NextResponse.json({ error: "Bulunamadı" }, { status: 404 });

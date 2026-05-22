@@ -31,8 +31,8 @@ export async function POST(req: Request) {
   });
 
   if (!payment) return NextResponse.json({ error: "Ödeme bulunamadı" }, { status: 404 });
-  if (payment.status === "PAID") {
-    return NextResponse.json({ error: "Bu ödeme zaten tamamlanmış" }, { status: 400 });
+  if (payment.status === "PAID" || payment.status === "REFUNDED") {
+    return NextResponse.json({ error: "Bu ödeme zaten tamamlanmış veya iade edilmiş" }, { status: 400 });
   }
 
   const base = process.env.NEXT_PUBLIC_BASE_URL;
@@ -54,8 +54,8 @@ export async function POST(req: Request) {
     ],
     mode: "payment",
     customer_email: user.email ?? undefined,
-    success_url: `${base}/management/portal/parent/payments?success=1&session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${base}/management/portal/parent/payments?cancelled=1`,
+    success_url: `${base}/realestate/portal/client/payments?success=1&session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${base}/realestate/portal/client/payments?cancelled=1`,
     metadata: {
       paymentId: payment.id,
       contractId: payment.contractId,

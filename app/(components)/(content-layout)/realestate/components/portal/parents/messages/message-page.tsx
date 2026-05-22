@@ -29,7 +29,7 @@ interface MsgUser {
   displayName: string | null;
   email: string | null;
   avatarUrl: string | null;
-  roleestate?: string | null;
+  roleGayrimenkul?: string | null;
 }
 
 interface Message {
@@ -156,9 +156,9 @@ function RecipientPicker({
                     <p className="truncate text-sm font-medium">{u.displayName ?? u.email}</p>
                     <p className="truncate text-xs text-gray-400">{u.email}</p>
                   </div>
-                  {u.roleestate && (
+                  {u.roleGayrimenkul && (
                     <Badge variant="secondary" className="ml-auto text-[10px] shrink-0">
-                      {u.roleestate}
+                      {u.roleGayrimenkul}
                     </Badge>
                   )}
                 </div>
@@ -202,10 +202,10 @@ export default function MessagesPage() {
 
   useEffect(() => { fetchMessages(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // PUT — mesajı okundu yap
+  // PUT — mesajı okundu yap (sadece alıcı işaretleyebilir)
   const markRead = async (id: string) => {
     const msg = messages.find((m) => m.id === id);
-    if (!msg || msg.messageStatus === "read") return;
+    if (!msg || msg.messageStatus === "read" || msg.senderId === currentUserId) return;
     await fetch(`${API}/${id}`, { method: "PUT" });
     setMessages((prev) =>
       prev.map((m) => (m.id === id ? { ...m, messageStatus: "read" } : m))
@@ -260,6 +260,7 @@ export default function MessagesPage() {
     if (res.ok) {
       const created: Message = await res.json();
       setMessages((prev) => [created, ...prev]);
+      setSelectedId(created.id);
       setReplyText("");
     }
     setSending(false);
@@ -275,6 +276,11 @@ export default function MessagesPage() {
   });
 
   const selectedMsg = messages.find((m) => m.id === selectedId) ?? null;
+  const selectedOther = selectedMsg
+    ? selectedMsg.senderId === currentUserId
+      ? selectedMsg.receiver
+      : selectedMsg.sender
+    : null;
 
   const selectMessage = (id: string) => {
     setSelectedId(id);
@@ -333,8 +339,8 @@ export default function MessagesPage() {
           ) : (
             <div className="flex flex-col gap-0.5 p-2">
               {filtered.map((msg) => {
-                const isUnread = msg.messageStatus !== "read";
-                const other = msg.sender;
+                const isUnread = msg.messageStatus !== "read" && msg.senderId !== currentUserId;
+                const other = msg.senderId === currentUserId ? msg.receiver : msg.sender;
                 return (
                   <div
                     key={msg.id}
@@ -383,8 +389,8 @@ export default function MessagesPage() {
             <Menu className="h-5 w-5" />
           </button>
           <span className="font-semibold text-sm truncate">
-            {selectedMsg
-              ? selectedMsg.sender.displayName ?? selectedMsg.sender.email
+            {selectedOther
+              ? selectedOther.displayName ?? selectedOther.email
               : "Mesajlar"}
           </span>
         </div>
@@ -395,14 +401,14 @@ export default function MessagesPage() {
             <div className="flex items-start justify-between border-b p-4">
               <div className="flex items-start gap-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={selectedMsg.sender.avatarUrl ?? ""} />
-                  <AvatarFallback>{initials(selectedMsg.sender.displayName)}</AvatarFallback>
+                  <AvatarImage src={selectedOther?.avatarUrl ?? ""} />
+                  <AvatarFallback>{initials(selectedOther?.displayName)}</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-semibold">
-                    {selectedMsg.sender.displayName ?? selectedMsg.sender.email}
+                    {selectedOther?.displayName ?? selectedOther?.email}
                   </p>
-                  <p className="text-xs text-gray-500">{selectedMsg.sender.email}</p>
+                  <p className="text-xs text-gray-500">{selectedOther?.email}</p>
                   <p className="text-xs text-gray-400">
                     {format(new Date(selectedMsg.createdAt), "d MMM yyyy  HH:mm")}
                   </p>

@@ -20,6 +20,10 @@ function fmtDate(d: Date) {
   return new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "short", year: "numeric" });
 }
 
+function stripHtml(html: string) {
+  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
 export default function MessagesTable({ messages, deleteMessage }: Props) {
   const [search, setSearch]           = useState("");
   const [selected, setSelected]       = useState<Message | null>(null);
@@ -28,7 +32,7 @@ export default function MessagesTable({ messages, deleteMessage }: Props) {
   const PER_PAGE = 10;
 
   const filtered = messages.filter((m) =>
-    [m.fullName, m.email, m.subject, m.message]
+    [m.fullName, m.email, m.subject, stripHtml(m.message)]
       .some((f) => f.toLowerCase().includes(search.toLowerCase()))
   );
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
@@ -206,7 +210,7 @@ export default function MessagesTable({ messages, deleteMessage }: Props) {
               <div>
                 <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">Mesaj</p>
                 <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-md text-sm whitespace-pre-wrap leading-relaxed">
-                  {selected.message}
+                  {stripHtml(selected.message)}
                 </div>
               </div>
 

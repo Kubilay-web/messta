@@ -52,21 +52,29 @@ export async function GET() {
 
   if (!client) return NextResponse.json({ error: "Client not found" }, { status: 404 });
 
-  // Toplam bekleyen ödeme tutarı
-  const pendingTotal = await db.contractPayment.aggregate({
-    where: { status: "PENDING", contract: { clientId: client.id } },
-    _sum: { amount: true },
-    _count: true,
-  });
+  const [pendingTotal, totalContracts, upcomingVisitsCount, favoriteCount] = await Promise.all([
+    db.contractPayment.aggregate({
+      where: { status: "PENDING", contract: { clientId: client.id } },
+      _sum: { amount: true },
+      _count: true,
+    }),
+    db.propertyContract.count({
+      where: { clientId: client.id, status: { in: ["ACTIVE", "DRAFT"] } },
+    }),
+    db.propertyVisit.count({
+      where: { clientId: client.id, status: "SCHEDULED", scheduledAt: { gte: new Date() } },
+    }),
+    db.clientInterest.count({ where: { clientId: client.id } }),
+  ]);
 
   return NextResponse.json({
     client,
     stats: {
-      totalContracts: client.contracts.length,
-      upcomingVisits: client.visits.length,
+      totalContracts,
+      upcomingVisits: upcomingVisitsCount,
       pendingPaymentCount: pendingTotal._count,
       pendingPaymentTotal: pendingTotal._sum.amount ?? 0,
-      favoriteCount: client.interests.length,
+      favoriteCount,
     },
     contracts: client.contracts,
     upcomingVisits: client.visits,

@@ -47,6 +47,13 @@ export async function getAgentsByAgency(agencyId: string) {
   });
 }
 
+export async function getClientsByAgency(agencyId: string) {
+  return prisma.propertyClient.findMany({
+    where: { agencyId },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
 // ── POST — Property ───────────────────────────────────────────────────────────
 
 export async function createProperty(data: {
@@ -134,4 +141,181 @@ export async function deleteListing(id: string): Promise<{ ok: boolean }> {
     revalidatePath(PATH);
     return { ok: true };
   } catch (e) { console.error("deleteListing:", e); return { ok: false }; }
+}
+
+// ── POST — PropertyClient ─────────────────────────────────────────────────────
+
+export async function createPropertyClient(data: {
+  userId: string;
+  title: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  whatsappNo?: string;
+  gender: string;
+  dob: string;
+  nationality: string;
+  NIN: string;
+  contactMethod: string;
+  occupation?: string;
+  address: string;
+  password: string;
+  isBuyer: boolean;
+  isSeller: boolean;
+  isTenant: boolean;
+  isLandlord: boolean;
+  minBudget?: string;
+  maxBudget?: string;
+  currency: string;
+  preferredPropertyTypes: string[];
+  preferredCities: string;
+  notes?: string;
+  imageUrl?: string;
+}): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const { agencyId, agencyName } = await getCtx();
+    await prisma.propertyClient.create({
+      data: {
+        user:        { connect: { id: data.userId } },
+        agency:      { connect: { id: agencyId } },
+        agencyName,
+        title:       data.title,
+        firstName:   data.firstName,
+        lastName:    data.lastName,
+        email:       data.email,
+        phone:       data.phone,
+        whatsappNo:  data.whatsappNo ?? null,
+        gender:      data.gender,
+        dob:         new Date(data.dob),
+        nationality: data.nationality,
+        NIN:         data.NIN,
+        contactMethod: data.contactMethod,
+        occupation:  data.occupation ?? null,
+        address:     data.address,
+        password:    data.password,
+        isBuyer:     data.isBuyer,
+        isSeller:    data.isSeller,
+        isTenant:    data.isTenant,
+        isLandlord:  data.isLandlord,
+        minBudget:   data.minBudget ? parseFloat(data.minBudget) : null,
+        maxBudget:   data.maxBudget ? parseFloat(data.maxBudget) : null,
+        currency:    data.currency,
+        preferredPropertyTypes: data.preferredPropertyTypes as any[],
+        preferredCities: data.preferredCities
+          ? data.preferredCities.split(",").map((s) => s.trim()).filter(Boolean)
+          : [],
+        notes:    data.notes ?? null,
+        imageUrl: data.imageUrl ?? null,
+      },
+    });
+    revalidatePath(PATH);
+    return { ok: true };
+  } catch (e: any) {
+    console.error("createPropertyClient:", e);
+    if (e?.code === "P2002") {
+      const field = e?.meta?.target?.[0];
+      if (field === "email")  return { ok: false, error: "Bu e-posta zaten kayıtlı." };
+      if (field === "phone")  return { ok: false, error: "Bu telefon numarası zaten kayıtlı." };
+      if (field === "NIN")    return { ok: false, error: "Bu TC Kimlik No zaten kayıtlı." };
+      if (field === "userId") return { ok: false, error: "Bu kullanıcı zaten bir müşteri olarak kayıtlı." };
+    }
+    return { ok: false, error: "Bir hata oluştu." };
+  }
+}
+
+// ── GET — Departments ─────────────────────────────────────────────────────────
+
+export async function getDepartmentsByAgency(agencyId: string) {
+  return prisma.agencyDepartment.findMany({
+    where: { agencyId },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
+}
+
+// ── POST — Agent ──────────────────────────────────────────────────────────────
+
+export async function createAgent(data: {
+  userId: string;
+  title: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  whatsappNo?: string;
+  gender: string;
+  dateOfBirth?: string;
+  NIN: string;
+  contactMethod: string;
+  designation: string;
+  departmentId: string;
+  dateOfJoining: string;
+  licenseNo?: string;
+  qualification: string;
+  experience?: string;
+  commissionRate?: string;
+  specializationTypes: string[];
+  specializationCities?: string;
+  bio?: string;
+  skills?: string;
+  imageUrl?: string;
+}): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const { agencyId, agencyName } = await getCtx();
+
+    const department = await prisma.agencyDepartment.findUnique({
+      where: { id: data.departmentId },
+      select: { name: true },
+    });
+
+    const employeeId = `AGT-${Date.now()}`;
+
+    await prisma.agent.create({
+      data: {
+        user:          { connect: { id: data.userId } },
+        agency:        { connect: { id: agencyId } },
+        agencyName,
+        department:    { connect: { id: data.departmentId } },
+        departmentName: department?.name ?? "",
+        employeeId,
+        title:         data.title,
+        firstName:     data.firstName,
+        lastName:      data.lastName,
+        email:         data.email,
+        phone:         data.phone,
+        whatsappNo:    data.whatsappNo ?? null,
+        gender:        data.gender as any,
+        dateOfBirth:   data.dateOfBirth ? new Date(data.dateOfBirth) : null,
+        NIN:           data.NIN,
+        contactMethod: data.contactMethod,
+        designation:   data.designation,
+        dateOfJoining: new Date(data.dateOfJoining),
+        licenseNo:     data.licenseNo ?? null,
+        qualification: data.qualification,
+        experience:    data.experience ? parseInt(data.experience) : null,
+        commissionRate: data.commissionRate ? parseFloat(data.commissionRate) : 2.5,
+        specializationTypes: data.specializationTypes as any[],
+        specializationCities: data.specializationCities
+          ? data.specializationCities.split(",").map((s) => s.trim()).filter(Boolean)
+          : [],
+        bio:    data.bio ?? null,
+        skills: data.skills ?? null,
+        imageUrl: data.imageUrl ?? null,
+      },
+    });
+    revalidatePath(PATH);
+    return { ok: true };
+  } catch (e: any) {
+    console.error("createAgent:", e);
+    if (e?.code === "P2002") {
+      const field = e?.meta?.target?.[0];
+      if (field === "email")      return { ok: false, error: "Bu e-posta zaten kayıtlı." };
+      if (field === "phone")      return { ok: false, error: "Bu telefon numarası zaten kayıtlı." };
+      if (field === "NIN")        return { ok: false, error: "Bu TC Kimlik No zaten kayıtlı." };
+      if (field === "userId")     return { ok: false, error: "Bu kullanıcı zaten bir danışman olarak kayıtlı." };
+      if (field === "employeeId") return { ok: false, error: "Çakışan çalışan ID, tekrar deneyin." };
+    }
+    return { ok: false, error: "Bir hata oluştu." };
+  }
 }

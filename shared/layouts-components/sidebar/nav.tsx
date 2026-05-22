@@ -450,6 +450,142 @@ export const getMenuItems = (user, school) => [
 
             ],
           },
+
+
+          //Portals
+
+            {
+            title: "Portals",
+            icon: Dashboardicon,
+            type: "sub",
+            active: false,
+            children: [
+              
+
+                  {
+            title: "Clients",
+            icon: Dashboardicon,
+            type: "sub",
+            active: false,
+            children: [
+                      {
+                path: "/realestate/portal/client/messages",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Client Messages",
+              },
+
+              {
+                path: "/realestate/portal/client/payments",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Client Payments",
+              },
+
+                      {
+                path: "/realestate/portal/client/visits",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Client Visits",
+              },
+
+              
+                      {
+                path: "/realestate/portal/client",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Client Page",
+              },
+
+
+
+            ],
+          },
+
+
+
+                     {
+            title: "Secretary",
+            icon: Dashboardicon,
+            type: "sub",
+            active: false,
+            children: [
+                      {
+                path: "/realestate/portal/secretary/clients",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Clients",
+              },
+
+
+               {
+                path: "/realestate/portal/secretary/agents",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Agents",
+              },
+
+      
+
+            ],
+                },
+
+
+
+
+                               {
+            title: "Agents",
+            icon: Dashboardicon,
+            type: "sub",
+            active: false,
+            children: [
+                      {
+                path: "/realestate/portal/agent/clients",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Agent Clients",
+              },
+
+
+               {
+                path: "/realestate/portal/agent/visits",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Agent Visits",
+              },
+
+                    {
+                path: "/realestate/portal/agent/",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Agent Page",
+              },
+
+      
+
+            ],
+                },
+
+       {
+                path: "/realestate/portal",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Portal Page",
+              },
+
+
+            ],
+          },
         ],
       },
 

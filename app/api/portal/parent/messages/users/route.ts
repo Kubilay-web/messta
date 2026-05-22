@@ -16,8 +16,9 @@ export async function GET(req: Request) {
   const agencyId = user.agencyId;
 
   const where: any = {
-    id: { not: user.id }, // kendisini hariç tut
+    id: { not: user.id },
     ...(agencyId ? { agencyId } : {}),
+    roleGayrimenkul: "AGENT",
     ...(q
       ? {
           OR: [
@@ -30,7 +31,7 @@ export async function GET(req: Request) {
 
   const users = await db.user.findMany({
     where,
-    select: { id: true, displayName: true, email: true, avatarUrl: true, roleestate: true },
+    select: { id: true, displayName: true, email: true, avatarUrl: true, roleGayrimenkul: true },
     take: 20,
     orderBy: { displayName: "asc" },
   });

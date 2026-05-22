@@ -51,12 +51,16 @@ export default async function Portal() {
   }
 
   if (role === "SECRETARY" || role === "ACCOUNTANT") {
-    redirect("/management/portal/secretary/students");
+    redirect("/realestate/portal/secretary/clients");
+  }
+
+  if (role === "ADMIN" || role === "SUPER_ADMIN") {
+    redirect("/realestate/dashboard");
   }
 
   return (
     <div className="px-8 py-8 text-muted-foreground">
-      Welcome To Portal.
+      Portala hoş geldiniz.
     </div>
   );
 }

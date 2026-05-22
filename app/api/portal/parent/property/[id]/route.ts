@@ -12,8 +12,8 @@ export async function GET(_req: Request, context: any) {
   const client = await db.propertyClient.findFirst({ where: { userId: user.id } });
   if (!client) return NextResponse.json({ error: "Client not found" }, { status: 404 });
 
-  const listing = await db.listing.findUnique({
-    where: { id: context.params.id },
+  const listing = await db.listing.findFirst({
+    where: { id: context.params.id, agencyId: client.agencyId },
     include: {
       property: {
         include: {

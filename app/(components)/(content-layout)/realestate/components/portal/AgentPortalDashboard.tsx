@@ -47,10 +47,10 @@ const LISTING_TYPE_LABEL: Record<string, string> = {
 
 export default function AgentPortalDashboard({ data }: { data: AgentPortalStats }) {
   const stats = [
-    { title: "Aktif İlanlar", count: data.activeListings, icon: ListOrdered, color: "#f59e0b", href: "/management/portal/teacher/students" },
-    { title: "Müşteriler", count: data.uniqueClients, icon: Users, color: "#3b82f6", href: "/management/portal/teacher/students" },
-    { title: "Yaklaşan Randevu", count: data.upcomingVisits, icon: CalendarCheck, color: "#10b981", href: "/management/portal/teacher/attendance" },
-    { title: "Sözleşmeler", count: data.contracts, icon: FileText, color: "#8b5cf6", href: "/management/portal/teacher/exams" },
+    { title: "Aktif İlanlar", count: data.activeListings, icon: ListOrdered, color: "#f59e0b", href: "/realestate/portal/agent" },
+    { title: "Müşteriler", count: data.uniqueClients, icon: Users, color: "#3b82f6", href: "/realestate/portal/agent/clients" },
+    { title: "Yaklaşan Randevu", count: data.upcomingVisits, icon: CalendarCheck, color: "#10b981", href: "/realestate/portal/agent/visits" },
+    { title: "Sözleşmeler", count: data.contracts, icon: FileText, color: "#8b5cf6", href: "/realestate/portal/agent" },
   ];
 
   return (
@@ -94,7 +94,7 @@ export default function AgentPortalDashboard({ data }: { data: AgentPortalStats 
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium flex items-center justify-between">
               <span>Son İlanlarım</span>
-              <Link href="/management/portal/teacher/students" className="text-sm text-blue-500 hover:text-blue-600">
+              <Link href="/realestate/portal/agent/clients" className="text-sm text-blue-500 hover:text-blue-600">
                 Tümü →
               </Link>
             </CardTitle>
@@ -145,7 +145,7 @@ export default function AgentPortalDashboard({ data }: { data: AgentPortalStats 
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium flex items-center justify-between">
               <span>Yaklaşan Randevular</span>
-              <Link href="/management/portal/teacher/attendance" className="text-sm text-blue-500 hover:text-blue-600">
+              <Link href="/realestate/portal/agent/visits" className="text-sm text-blue-500 hover:text-blue-600">
                 Tümü →
               </Link>
             </CardTitle>

@@ -36,9 +36,9 @@ const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive" | "
 
 export default function ClientPortalDashboard({ data }: { data: ClientPortalStats }) {
   const stats = [
-    { title: "İlgilendiğim İlanlar", count: data.interestedListings, icon: Heart, color: "#ef4444", href: "/management/portal/parent" },
-    { title: "Yaklaşan Randevu", count: data.upcomingVisits, icon: CalendarCheck, color: "#10b981", href: "/management/portal/parent/payments" },
-    { title: "Sözleşmeler", count: data.contracts, icon: FileText, color: "#8b5cf6", href: "/management/portal/parent/payments" },
+    { title: "İlgilendiğim İlanlar", count: data.interestedListings, icon: Heart, color: "#ef4444", href: "/realestate/portal/client" },
+    { title: "Yaklaşan Randevu", count: data.upcomingVisits, icon: CalendarCheck, color: "#10b981", href: "/realestate/portal/client/visits" },
+    { title: "Sözleşmeler", count: data.contracts, icon: FileText, color: "#8b5cf6", href: "/realestate/portal/client/payments" },
   ];
 
   return (
@@ -82,7 +82,7 @@ export default function ClientPortalDashboard({ data }: { data: ClientPortalStat
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium flex items-center justify-between">
               <span>İlgilendiğim İlanlar</span>
-              <Link href="/management/portal/parent" className="text-sm text-blue-500 hover:text-blue-600">
+              <Link href="/realestate/portal/client" className="text-sm text-blue-500 hover:text-blue-600">
                 Tümü →
               </Link>
             </CardTitle>
@@ -133,7 +133,7 @@ export default function ClientPortalDashboard({ data }: { data: ClientPortalStat
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium flex items-center justify-between">
               <span>Yaklaşan Randevular</span>
-              <Link href="/management/portal/parent/payments" className="text-sm text-blue-500 hover:text-blue-600">
+              <Link href="/realestate/portal/client/visits" className="text-sm text-blue-500 hover:text-blue-600">
                 Tümü →
               </Link>
             </CardTitle>

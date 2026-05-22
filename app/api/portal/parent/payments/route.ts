@@ -32,6 +32,11 @@ export async function POST(req: Request) {
   const { user } = await validateRequest();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const allowed = ["AGENT", "ADMIN", "SUPER_ADMIN"];
+  if (!user.roleGayrimenkul || !allowed.includes(user.roleGayrimenkul)) {
+    return NextResponse.json({ error: "Yetkisiz" }, { status: 403 });
+  }
+
   const { contractId, title, amount, dueDate, paymentMethod, notes } = await req.json();
   if (!contractId || !title || !amount || !dueDate) {
     return NextResponse.json({ error: "contractId, title, amount, dueDate zorunlu" }, { status: 400 });
