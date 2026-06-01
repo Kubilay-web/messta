@@ -1,11 +1,11 @@
 import { validateRequest } from "@/app/auth";
-import { getClientFromUserId } from "../../../../../actions/client-portal";
-import { getClientInterests } from "../../../../../actions/client-interests";
+import { getClientFromUserId } from "../../../../actions/client-portal";
+import { getClientInterests } from "../../../../actions/client-interests";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Badge } from "../../../../../components/ui/badge";
-import { Card, CardContent } from "../../../../../components/ui/card";
+import { Badge } from "../../../../components/ui/badge";
+import { Card, CardContent } from "../../../../components/ui/card";
 import { Heart, MapPin, Home, ArrowRight } from "lucide-react";
 import { Metadata } from "next";
 
