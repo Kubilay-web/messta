@@ -226,7 +226,7 @@ const badge3 = (
   <span className="badge bg-secondary ms-2 shadow-secondary">3</span>
 );
 
-export const getMenuItems = (user, school) => [
+export const getMenuItems = (user?: { agencyId?: string | null }) => [
   {
     menutitle: "MAIN",
   },
@@ -250,344 +250,768 @@ export const getMenuItems = (user, school) => [
             active: false,
             children: [
               {
-                path: "/realestate",
+                path: "/estate",
                 type: "link",
                 active: false,
                 selected: false,
                 title: "Anasayfa",
               },
+
               {
-                path: "/realestate/contact-us",
+                path: "/estate/contact-us",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "İletişim",
+                title: "İletişime Geçin",
               },
+
               {
-                path: "/realestate/estate-onboarding",
+                path: "/estate/help",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Ofis Kurulumu",
+                title: "Yardım",
+              },
+
+              {
+                path: "/estate/agency-onboarding",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Ofis Kaydı",
               },
             ],
           },
 
-          // Yönetim Paneli
+          //Dashboard
           {
-            title: "Yönetim Paneli",
+            title: "Dashboard",
             icon: Dashboardicon,
             type: "sub",
             active: false,
             children: [
               {
-                path: "/realestate/dashboard/estates/properties",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Mülkler ve İlanlar",
-              },
-
-              {
-                path: "/realestate/dashboard/estates/departments",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Departmanlar",
-              },
-
-              {
-                path: "/realestate/dashboard/estates/visits",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Ziyaretler",
-              },
-
-              {
-                path: "/realestate/dashboard/estates/payments",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Finansal Kayıtlar",
-              },
-
-              
-              {
-                path: "/realestate/dashboard/estates/listings",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "İlan Kayıtları",
-              },
-
-              {
-                path: "/realestate/dashboard/estates/terms",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Kontratlar",
-              },
-
-              {
-                path: "/realestate/dashboard/admin/contacts",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "İletişim Mesajları",
-              },
-
-              {
-                path: "/realestate/dashboard/attendance/by-department",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Danışmanların Devam Görünümü",
-              },
-
-              {
-                path: "/realestate/dashboard/attendance/client",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Müşteri Randevu Kontrol",
-              },
-
-              {
-                path: "/realestate/dashboard/attendance",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Katılımlar",
-              },
-
-                {
-                path: "/realestate/dashboard/communication/reminders",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Hatırlatıcılar",
-              },
-
-             {
-                path: "/realestate/dashboard/communication/website-messages",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Website Mesajları",
-              },
-
-
-              {
-                path: "/realestate/dashboard/finance/fees",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Ödeme Planı",
-              },
-              {
-                path: "/realestate/dashboard/finance/payments",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Tahsilat",
-              },
-
-               {
-                path: "/realestate/dashboard/logs",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Logs",
-              },
-
-
-
-              {
-                path: "/realestate/dashboard/propertyclient",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "PropertyClient",
-              },
-
-
-              {
-                path: "/realestate/dashboard/users/new",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Yeni Danışman",
-              },
-
-
-              {
-                path: "/realestate/dashboard/users/agents",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Danışmanlar",
-              },
-
-                 {
-                path: "/realestate/dashboard/users",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Kullanıcılar",
-              },
-
-              {
-                path: "/realestate/dashboard",
+                path: " /estate/dashboard",
                 type: "link",
                 active: false,
                 selected: false,
                 title: "Dashboard",
               },
-
-
-
-
-            ],
-          },
-
-
-          //Portals
-
-            {
-            title: "Portals",
-            icon: Dashboardicon,
-            type: "sub",
-            active: false,
-            children: [
-              
-
-                  {
-            title: "Clients",
-            icon: Dashboardicon,
-            type: "sub",
-            active: false,
-            children: [
-                      {
-                path: "/realestate/portal/client/messages",
+              {
+                path: "/estate/dashboard/admin/contacts",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Client Messages",
+                title: "Contacts",
               },
 
               {
-                path: "/realestate/portal/client/payments",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Client Payments",
-              },
-
-                      {
-                path: "/realestate/portal/client/visits",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Client Visits",
-              },
-
-              
-                      {
-                path: "/realestate/portal/client",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Client Page",
-              },
-
-
-
-            ],
-          },
-
-
-
-                     {
-            title: "Secretary",
-            icon: Dashboardicon,
-            type: "sub",
-            active: false,
-            children: [
-                      {
-                path: "/realestate/portal/secretary/clients",
+                path: "/estate/dashboard/users/clients",
                 type: "link",
                 active: false,
                 selected: false,
                 title: "Clients",
               },
 
-
-               {
-                path: "/realestate/portal/secretary/agents",
+              {
+                path: "/estate/dashboard/agents",
                 type: "link",
                 active: false,
                 selected: false,
                 title: "Agents",
               },
 
-      
+              {
+                path: " /estate/dashboard/users",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Agency Users",
+              },
 
+              {
+                path: " /estate/dashboard/users/new",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "New User",
+              },
+
+              {
+                path: "/estate/dashboard/users/departments",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Departments",
+              },
+
+              {
+                path: "/estate/dashboard/academics/listings",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Listings",
+              },
+
+              {
+                path: "/estate/dashboard/academics/properties",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Properties",
+              },
+
+              {
+                path: "/estate/dashboard/academics/contracts",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Contracts",
+              },
+
+              {
+                path: "/estate/dashboard/academics/analytics",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Analytics",
+              },
+
+              {
+                path: "/estate/dashboard/academics/visits",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Visits",
+              },
+
+              {
+                path: "/estate/dashboard/academics/payments",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Payments",
+              },
+
+              {
+                path: " /estate/dashboard/attendance/by-department",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Attendance By Department",
+              },
+
+              {
+                path: " /estate/dashboard/attendance/agent",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Attendance Agents",
+              },
+
+              {
+                path: "/estate/dashboard/attendance",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Attendance",
+              },
+
+              {
+                path: "/estate/dashboard/communication/reminders",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Reminders",
+              },
+
+              {
+                path: "/estate/dashboard/communication/website-messages",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Website Messages",
+              },
+
+              {
+                path: "/estate/dashboard/finance/commissions",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Commissions",
+              },
+
+              {
+                path: " /estate/dashboard/finance/revenue",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Revenue",
+              },
+
+              {
+                path: " /estate/dashboard/logs",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Logs",
+              },
             ],
-                },
+          },
 
-
-
-
-                               {
-            title: "Agents",
+          //Dashboard
+          {
+            title: "Portals",
             icon: Dashboardicon,
             type: "sub",
             active: false,
             children: [
-                      {
-                path: "/realestate/portal/agent/clients",
+              {
+                path: "/estate/portal",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Agent Clients",
+                title: "Portal Dashboard",
               },
 
-
-               {
-                path: "/realestate/portal/agent/visits",
-                type: "link",
+              {
+                title: "Clients",
+                icon: Dashboardicon,
+                type: "sub",
                 active: false,
-                selected: false,
-                title: "Agent Visits",
+                children: [
+                  {
+                    path: "/estate/portal/client",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Client Portal",
+                  },
+
+                  {
+                    path: "/estate/portal/client/listing",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Client Listing",
+                  },
+
+                  {
+                    path: "/estate/portal/client/messages",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Client Messages",
+                  },
+
+                  {
+                    path: "/estate/portal/client/payments",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Client Payments",
+                  },
+
+                  {
+                    path: "/estate/portal/client/profile",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Client Profile",
+                  },
+
+                  {
+                    path: "/estate/portal/client/visits",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Client Visits",
+                  },
+                ],
               },
 
-                    {
-                path: "/realestate/portal/agent/",
-                type: "link",
+              {
+                title: "Secretary",
+                icon: Dashboardicon,
+                type: "sub",
                 active: false,
-                selected: false,
-                title: "Agent Page",
+                children: [
+                  {
+                    path: "/estate/portal/secretary/agents",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Secretary Agents",
+                  },
+
+                  {
+                    path: "/estate/portal/secretary/clients",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Secretary Clients",
+                  },
+
+                  {
+                    path: "/estate/portal/secretary/properties",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Secretary Properties",
+                  },
+                ],
               },
 
-      
+              {
+                title: "Agent",
+                icon: Dashboardicon,
+                type: "sub",
+                active: false,
+                children: [
+                  {
+                    path: "/estate/portal/agent",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agents",
+                  },
+                  {
+                    path: "/estate/portal/agent/contracts",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agent Contracts",
+                  },
+                  {
+                    path: "/estate/portal/agent/listings",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agent Listings",
+                  },
+                  {
+                    path: "/estate/portal/agent/messages",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agent Messages",
+                  },
+                  {
+                    path: "/estate/portal/agent/profile",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agent Profile",
+                  },
+                  {
+                    path: "/estate/portal/agent/visits",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agent Visits",
+                  },
+                ],
+              },
 
             ],
-                },
+          },
 
-       {
-                path: "/realestate/portal",
+
+          {
+            path: `/estate/agency-admin/${user?.agencyId ?? ""}`,
+            type: "link",
+            active: false,
+            selected: false,
+            title: "Ofis Yöneticisi Ekle",
+          },
+          {
+            title: "Süper Panel",
+            icon: Dashboardicon,
+            type: "sub",
+            active: false,
+            children: [
+              {
+                path: "/estate/super-dashboard",
                 type: "link",
                 active: false,
                 selected: false,
-                title: "Portal Page",
+                title: "Genel Bakış",
               },
+              {
+                path: "/estate/super-dashboard/contacts",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "İletişim Talepleri",
+              },
+              {
+                path: "/estate/super-dashboard/agencies-page",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Ofisler",
+              },
+              {
+                path: "/estate/agency-onboarding",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Yeni Ofis Ekle",
+              },
+            ],
+          },
 
-
+             {
+            title: "Ofis Web Sitesi",
+            icon: Dashboardicon,
+            type: "sub",
+            active: false,
+            children: [
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize`,                    type: "link", active: false, selected: false, title: "Site Yönetimi"      },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/logo`,               type: "link", active: false, selected: false, title: "Logo & Navigasyon" },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/hero-section`,       type: "link", active: false, selected: false, title: "Hero Bölümü"       },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/about-section`,      type: "link", active: false, selected: false, title: "Hakkımızda"        },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/featured-properties`,type: "link", active: false, selected: false, title: "Öne Çıkan Mülkler" },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/services`,           type: "link", active: false, selected: false, title: "Hizmetler"         },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/testimonials`,       type: "link", active: false, selected: false, title: "Referanslar"       },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/team`,               type: "link", active: false, selected: false, title: "Ekip"              },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/contact-section`,    type: "link", active: false, selected: false, title: "İletişim"          },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/footer`,             type: "link", active: false, selected: false, title: "Alt Bilgi"         },
             ],
           },
         ],
       },
+
+
+
+    
+
+      // {
+      //   title: "Gayrimenkul ERP",
+      //   icon: Dashboardicon,
+      //   type: "sub",
+      //   active: false,
+      //   children: [
+      //     // Ön Sayfalar
+      //     {
+      //       title: "Ön Sayfalar",
+      //       icon: Dashboardicon,
+      //       type: "sub",
+      //       active: false,
+      //       children: [
+      //         {
+      //           path: "/realestate",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Anasayfa",
+      //         },
+      //         {
+      //           path: "/realestate/contact-us",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "İletişim",
+      //         },
+      //         {
+      //           path: "/realestate/agency-onboarding",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Ofis Kurulumu",
+      //         },
+      //       ],
+      //     },
+
+      //     // Yönetim Paneli
+      //     {
+      //       title: "Yönetim Paneli",
+      //       icon: Dashboardicon,
+      //       type: "sub",
+      //       active: false,
+      //       children: [
+      //         {
+      //           path: "/realestate/dashboard/estates/properties",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Mülkler ve İlanlar",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/estates/departments",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Departmanlar",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/estates/visits",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Ziyaretler",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/estates/payments",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Finansal Kayıtlar",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/estates/listings",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "İlan Kayıtları",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/estates/terms",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Kontratlar",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/admin/contacts",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "İletişim Mesajları",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/attendance/by-department",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Danışmanların Devam Görünümü",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/attendance/client",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Müşteri Randevu Kontrol",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/attendance",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Katılımlar",
+      //         },
+
+      //           {
+      //           path: "/realestate/dashboard/communication/reminders",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Hatırlatıcılar",
+      //         },
+
+      //        {
+      //           path: "/realestate/dashboard/communication/website-messages",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Website Mesajları",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/finance/fees",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Ödeme Planı",
+      //         },
+      //         {
+      //           path: "/realestate/dashboard/finance/payments",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Tahsilat",
+      //         },
+
+      //          {
+      //           path: "/realestate/dashboard/logs",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Logs",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/propertyclient",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "PropertyClient",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/users/new",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Yeni Danışman",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard/users/agents",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Danışmanlar",
+      //         },
+
+      //            {
+      //           path: "/realestate/dashboard/users",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Kullanıcılar",
+      //         },
+
+      //         {
+      //           path: "/realestate/dashboard",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Dashboard",
+      //         },
+
+      //       ],
+      //     },
+
+      //     //Portals
+
+      //       {
+      //       title: "Portals",
+      //       icon: Dashboardicon,
+      //       type: "sub",
+      //       active: false,
+      //       children: [
+
+      //             {
+      //       title: "Clients",
+      //       icon: Dashboardicon,
+      //       type: "sub",
+      //       active: false,
+      //       children: [
+      //                 {
+      //           path: "/realestate/portal/client/messages",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Client Messages",
+      //         },
+
+      //         {
+      //           path: "/realestate/portal/client/payments",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Client Payments",
+      //         },
+
+      //                 {
+      //           path: "/realestate/portal/client/visits",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Client Visits",
+      //         },
+
+      //                 {
+      //           path: "/realestate/portal/client",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Client Page",
+      //         },
+
+      //       ],
+      //     },
+
+      //                {
+      //       title: "Secretary",
+      //       icon: Dashboardicon,
+      //       type: "sub",
+      //       active: false,
+      //       children: [
+      //                 {
+      //           path: "/realestate/portal/secretary/clients",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Clients",
+      //         },
+
+      //          {
+      //           path: "/realestate/portal/secretary/agents",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Agents",
+      //         },
+
+      //       ],
+      //           },
+
+      //                          {
+      //       title: "Agents",
+      //       icon: Dashboardicon,
+      //       type: "sub",
+      //       active: false,
+      //       children: [
+      //                 {
+      //           path: "/realestate/portal/agent/clients",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Agent Clients",
+      //         },
+
+      //          {
+      //           path: "/realestate/portal/agent/visits",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Agent Visits",
+      //         },
+
+      //               {
+      //           path: "/realestate/portal/agent/",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Agent Page",
+      //         },
+
+      //       ],
+      //           },
+
+      //  {
+      //           path: "/realestate/portal",
+      //           type: "link",
+      //           active: false,
+      //           selected: false,
+      //           title: "Portal Page",
+      //         },
+
+      //       ],
+      //     },
+      //   ],
+      // },
 
       // {
       //   title: "Management",

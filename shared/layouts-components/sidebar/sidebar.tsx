@@ -12,27 +12,27 @@ import Image from "next/image";
 import nextConfig from "@/next.config";
 import { useSession } from "@/app/SessionProvider";
 import SidebarNew from "@/shared/layouts-components/sidebarnew/layouts/sidebar/page";
-import { SchoolUser } from "@/app/(components)/(content-layout)/realestate/actions/auth";
+// import { SchoolUser } from "@/app/(components)/(content-layout)/realestate/actions/auth";
 
 const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
   let { basePath } = nextConfig;
   const { user } = useSession();
 
-  // const [menuitems, setMenuitems] = useState(getMenuItems(user));
+  const [menuitems, setMenuitems] = useState(getMenuItems(user));
 
-  const [menuitems, setMenuitems] = useState([]);
+  // const [menuitems, setMenuitems] = useState([]);
 
-  useEffect(() => {
-    if (!user) return;
+  // useEffect(() => {
+  //   if (!user) return;
 
-    const fetchData = async () => {
-      const school = await SchoolUser(user.id);
-      const items = getMenuItems(user, school);
-      setMenuitems(items);
-    };
+  //   const fetchData = async () => {
+  //     const school = await SchoolUser(user.id);
+  //     const items = getMenuItems(user, school);
+  //     setMenuitems(items);
+  //   };
 
-    fetchData();
-  }, [user]);
+  //   fetchData();
+  // }, [user]);
 
   function closeMenuFn() {
     const closeMenuRecursively = (items: any) => {

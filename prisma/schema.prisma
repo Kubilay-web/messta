@@ -4520,6 +4520,7 @@ model Listing {
 }
 
 // PropertyContract → Marksheet + SchoolFeePayment karşılığı (Sözleşme)
+
 model PropertyContract {
   id         String @id @default(cuid()) @map("_id")
   contractNo String @unique
@@ -4896,15 +4897,17 @@ model AgencySection {
 
 // AgencyContactMessage → SchoolContactMessage karşılığı
 model AgencyContactMessage {
-  id       String @id @default(cuid()) @map("_id")
-  fullName String
-  email    String
-  phone    String
-  message  String
-  subject  String
+  id          String  @id @default(cuid()) @map("_id")
+  fullName    String
+  email       String
+  phone       String
+  message     String
+  subject     String
+  companyName String?
+  interest    String?
 
-  agencyId String
-  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  agencyId String?
+  agency   Agency? @relation(fields: [agencyId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
