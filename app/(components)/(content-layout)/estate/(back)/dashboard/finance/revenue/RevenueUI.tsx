@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { TrendingUp, DollarSign, Clock, AlertTriangle, CheckCircle, Search, Link } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { TrendingUp, DollarSign, Clock, AlertTriangle, CheckCircle, Search, Link, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "../../../../components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card";
 import { Label } from "../../../../components/ui/label";
@@ -28,7 +29,7 @@ type Kpi = {
   countAll: number; countPaid: number; countPending: number; countOverdue: number;
   countPartial: number; currency: string;
 };
-type Props = { data: { payments: Payment[]; kpi: Kpi; monthly: Monthly[] }; year: number };
+type Props = { data: { payments: Payment[]; kpi: Kpi; monthly: Monthly[] }; year: number; minYear: number; maxYear: number };
 
 function fmt(v: number, cur = "TRY") {
   return `${v.toLocaleString("tr-TR")} ${cur}`;
@@ -69,12 +70,17 @@ function MonthlyChart({ monthly, currency }: { monthly: Monthly[]; currency: str
   );
 }
 
-export default function RevenueUI({ data, year }: Props) {
+export default function RevenueUI({ data, year, minYear, maxYear }: Props) {
   const { payments, kpi, monthly } = data;
+  const router = useRouter();
   const [search,     setSearch]     = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [page, setPage] = useState(1);
   const PER = 15;
+
+  function goYear(y: number) {
+    router.push(`?year=${y}`);
+  }
 
   const filtered = useMemo(() => {
     return payments.filter((p) => {
@@ -97,6 +103,40 @@ export default function RevenueUI({ data, year }: Props) {
 
   return (
     <div className="space-y-6">
+
+      {/* ── Yıl Seçici ── */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => goYear(year - 1)}
+          disabled={year <= minYear}
+          className="p-1.5 rounded border border-gray-300 text-black disabled:opacity-30 hover:bg-gray-100 transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        <span className="text-sm font-semibold text-black min-w-[3.5rem] text-center">{year}</span>
+        <button
+          onClick={() => goYear(year + 1)}
+          disabled={year >= maxYear}
+          className="p-1.5 rounded border border-gray-300 text-black disabled:opacity-30 hover:bg-gray-100 transition-colors"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+        <div className="flex gap-1 ml-2">
+          {Array.from({ length: maxYear - minYear + 1 }, (_, i) => minYear + i).map((y) => (
+            <button
+              key={y}
+              onClick={() => goYear(y)}
+              className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                y === year
+                  ? "bg-blue-600 text-white"
+                  : "border border-gray-300 text-black hover:bg-gray-100"
+              }`}
+            >
+              {y}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* ── KPI Kartları ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">

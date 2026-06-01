@@ -12,6 +12,7 @@ import {
   CalendarDays, DollarSign, FileSignature, ClipboardList,
 } from "lucide-react";
 import { Metadata } from "next";
+import ContractDocsManager from "../../../../../../components/dashboard/ContractDocsManager";
 
 export const metadata: Metadata = { title: "Sözleşme Detayı - EstatePro" };
 
@@ -169,7 +170,7 @@ export default async function ContractViewPage({ params }: { params: { id: strin
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  {["Başlık", "Tutar", "Vade", "Ödeme Tarihi", "Durum"].map((h) => (
+                  {["Başlık", "Tutar", "Ödeme Yöntemi", "Makbuz No", "Vade", "Ödeme Tarihi", "Durum", "Not"].map((h) => (
                     <th key={h} className="px-3 py-2 text-left text-xs font-semibold text-black uppercase">{h}</th>
                   ))}
                 </tr>
@@ -181,6 +182,8 @@ export default async function ContractViewPage({ params }: { params: { id: strin
                     <td className="px-3 py-2 font-semibold text-black">
                       {p.amount.toLocaleString("tr-TR")} {contract.currency}
                     </td>
+                    <td className="px-3 py-2 text-black">{p.paymentMethod ?? "—"}</td>
+                    <td className="px-3 py-2 text-black">{p.receiptNo ?? "—"}</td>
                     <td className="px-3 py-2 text-black">{fmtDate(p.dueDate)}</td>
                     <td className="px-3 py-2 text-black">{fmtDate(p.paidDate)}</td>
                     <td className="px-3 py-2">
@@ -191,6 +194,7 @@ export default async function ContractViewPage({ params }: { params: { id: strin
                         {paymentStatusLabel[p.status] ?? p.status}
                       </Badge>
                     </td>
+                    <td className="px-3 py-2 text-xs text-black max-w-[120px] truncate">{p.notes ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -200,28 +204,16 @@ export default async function ContractViewPage({ params }: { params: { id: strin
       )}
 
       {/* Belgeler */}
-      {documents.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-black flex items-center gap-2">
-              <ClipboardList className="w-4 h-4" /> Belgeler ({documents.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {documents.map((doc: any) => (
-              <div key={doc.id} className="flex items-center justify-between rounded-lg border px-3 py-2">
-                <div>
-                  <p className="text-sm font-medium text-black">{doc.title}</p>
-                  <p className="text-xs text-black">{doc.type}</p>
-                </div>
-                <Button asChild size="sm" variant="outline">
-                  <a href={doc.url} target="_blank" rel="noopener noreferrer">Görüntüle</a>
-                </Button>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm text-black flex items-center gap-2">
+            <ClipboardList className="w-4 h-4" /> Belgeler ({documents.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ContractDocsManager contractId={contract.id} initialDocs={documents} />
+        </CardContent>
+      </Card>
 
       {/* Notlar */}
       {contract.notes && (

@@ -6,7 +6,7 @@ import { Button } from "../../../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card";
 import {
   Users, CheckCircle, XCircle, Clock,
-  Wifi, CalendarDays, Building2, ArrowRight,
+  Wifi, CalendarDays, Building2, ArrowRight, FileText, AlertCircle,
 } from "lucide-react";
 
 const statusLabel: Record<string, string> = {
@@ -43,7 +43,7 @@ function pct(part: number, total: number) {
   return Math.round((part / total) * 100);
 }
 
-export default function AttendanceDashboard({ data }: { data: Overview }) {
+export default function AttendanceDashboard({ data, pendingLeaves = 0 }: { data: Overview; pendingLeaves?: number }) {
   const { agentCount, marked, unmarked, counts, deptSummary, recent } = data;
   const presentTotal = (counts.PRESENT ?? 0) + (counts.LATE ?? 0) + (counts.REMOTE ?? 0);
 
@@ -51,24 +51,40 @@ export default function AttendanceDashboard({ data }: { data: Overview }) {
     <div className="space-y-6">
 
       {/* ── KPI Kartları ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
         {[
-          { icon: Users,        label: "Toplam Danışman", value: agentCount,         bg: "bg-blue-50 text-blue-600"   },
-          { icon: CheckCircle,  label: "İşaretlendi",      value: marked,             bg: "bg-green-50 text-green-600" },
-          { icon: Clock,        label: "İşaretlenmedi",    value: unmarked,           bg: "bg-gray-50 text-gray-600"   },
-          { icon: CheckCircle,  label: "Var (+ Uzaktan)",  value: presentTotal,       bg: "bg-green-50 text-green-600" },
-          { icon: XCircle,      label: "Yok",              value: counts.ABSENT ?? 0, bg: "bg-red-50 text-red-600"     },
-          { icon: Wifi,         label: "Uzaktan",          value: counts.REMOTE ?? 0, bg: "bg-blue-50 text-blue-600"   },
-        ].map(({ icon: Icon, label, value, bg }) => (
-          <Card key={label} className="border border-gray-200">
-            <CardContent className="p-3 flex flex-col items-center text-center">
-              <div className={`p-2 rounded-lg mb-1.5 ${bg}`}>
-                <Icon className="w-4 h-4" />
-              </div>
-              <p className="text-xl font-extrabold text-black">{value}</p>
-              <p className="text-[10px] font-medium text-black mt-0.5 leading-tight">{label}</p>
-            </CardContent>
-          </Card>
+          { icon: Users,        label: "Toplam Danışman", value: agentCount,               bg: "bg-blue-50 text-blue-600"    },
+          { icon: CheckCircle,  label: "İşaretlendi",     value: marked,                   bg: "bg-green-50 text-green-600"  },
+          { icon: Clock,        label: "İşaretlenmedi",   value: unmarked,                 bg: "bg-gray-50 text-gray-600"    },
+          { icon: CheckCircle,  label: "Var",              value: counts.PRESENT ?? 0,     bg: "bg-green-50 text-green-600"  },
+          { icon: XCircle,      label: "Yok",              value: counts.ABSENT  ?? 0,     bg: "bg-red-50 text-red-600"      },
+          { icon: Clock,        label: "Geç",              value: counts.LATE    ?? 0,     bg: "bg-amber-50 text-amber-600"  },
+          { icon: Wifi,         label: "Uzaktan",          value: counts.REMOTE  ?? 0,     bg: "bg-blue-50 text-blue-600"    },
+          { icon: AlertCircle,  label: "Bekl. İzin",       value: pendingLeaves,           bg: "bg-purple-50 text-purple-600", href: "/estate/dashboard/attendance/leaves" },
+        ].map(({ icon: Icon, label, value, bg, href }) => (
+          href ? (
+            <Link key={label} href={href}>
+              <Card className={`border border-gray-200 hover:border-purple-300 transition-colors cursor-pointer ${pendingLeaves > 0 ? "border-amber-300" : ""}`}>
+                <CardContent className="p-3 flex flex-col items-center text-center">
+                  <div className={`p-2 rounded-lg mb-1.5 ${bg}`}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <p className="text-xl font-extrabold text-black">{value}</p>
+                  <p className="text-[10px] font-medium text-black mt-0.5 leading-tight">{label}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          ) : (
+            <Card key={label} className="border border-gray-200">
+              <CardContent className="p-3 flex flex-col items-center text-center">
+                <div className={`p-2 rounded-lg mb-1.5 ${bg}`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+                <p className="text-xl font-extrabold text-black">{value}</p>
+                <p className="text-[10px] font-medium text-black mt-0.5 leading-tight">{label}</p>
+              </CardContent>
+            </Card>
+          )
         ))}
       </div>
 
@@ -192,8 +208,9 @@ export default function AttendanceDashboard({ data }: { data: Overview }) {
       {/* ── Hızlı Erişim ── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
-          { href: "/estate/dashboard/attendance/by-department", icon: Building2,    label: "Departmana Göre İşaretle", desc: "Toplu devam işaretleme"  },
-          { href: "/estate/dashboard/attendance/agent",          icon: Users,        label: "Danışman Devam Görüntüsü", desc: "Aylık devam geçmişi"    },
+          { href: "/estate/dashboard/attendance/by-department", icon: Building2, label: "Departmana Göre İşaretle", desc: "Toplu devam işaretleme" },
+          { href: "/estate/dashboard/attendance/agent",         icon: Users,     label: "Danışman Devam Görüntüsü", desc: "Aylık devam geçmişi"    },
+          { href: "/estate/dashboard/attendance/leaves",        icon: FileText,  label: "İzin Yönetimi",             desc: "Talep onaylama ve takip"  },
         ].map(({ href, icon: Icon, label, desc }) => (
           <Link key={href} href={href}
             className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 hover:border-blue-300 hover:bg-blue-50 transition-colors group">

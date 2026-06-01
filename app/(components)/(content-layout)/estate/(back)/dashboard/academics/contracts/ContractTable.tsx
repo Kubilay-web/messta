@@ -191,7 +191,8 @@ export default function ContractTable({ contracts }: { contracts: Contract[] }) 
                   {fmtDate(c.startDate)}
                 </td>
                 <td className="px-4 py-3 text-xs text-black">
-                  {c._count?.payments ?? 0} ödeme
+                  <p>{c._count?.payments  ?? 0} ödeme</p>
+                  <p>{c._count?.documents ?? 0} belge</p>
                 </td>
                 <td className="px-4 py-3">
                   <ContractActions contract={c} />
@@ -237,7 +238,7 @@ export default function ContractTable({ contracts }: { contracts: Contract[] }) 
                 { label: "Danışman", value: c.agentName },
                 { label: "Müşteri",  value: c.clientName },
                 { label: "Başlangıç", value: fmtDate(c.startDate) },
-                { label: "Ödemeler", value: `${c._count?.payments ?? 0} ödeme` },
+                { label: "Ödemeler", value: `${c._count?.payments ?? 0} ödeme · ${c._count?.documents ?? 0} belge` },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between gap-2 text-xs">
                   <span className="text-black font-medium shrink-0">{label}</span>

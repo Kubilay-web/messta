@@ -5,7 +5,10 @@ import type { ReactNode } from "react";
 
 export default async function SuperAdminDashboardLayout({ children }: { children: ReactNode }) {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
+
+  const userRole = (user as any).roleGayrimenkul as string;
+  if (!["SUPER_ADMIN", "ADMIN"].includes(userRole)) redirect("/estate/portal");
 
   return (
     <div className="flex h-screen">

@@ -35,7 +35,25 @@ type User = {
   roleGayrimenkul?: string | null; createdAt: Date | string;
 };
 
-function UserActions({ user, onDelete }: { user: User; onDelete: (id: string) => void }) {
+const assignableRoles = [
+  { value: "ADMIN",      label: "Yönetici"   },
+  { value: "SECRETARY",  label: "Sekreter"   },
+  { value: "ACCOUNTANT", label: "Muhasebeci" },
+  { value: "AGENT",      label: "Danışman"   },
+  { value: "CLIENT",     label: "Müşteri"    },
+] as const;
+
+function UserActions({
+  user, onDelete, onRoleChange,
+}: {
+  user: User;
+  onDelete: (id: string) => void;
+  onRoleChange: (id: string, role: string) => void;
+}) {
+  const [roleOpen,   setRoleOpen]   = useState(false);
+  const [newRole,    setNewRole]    = useState(user.roleGayrimenkul ?? "ADMIN");
+  const [roleSaving, setRoleSaving] = useState(false);
+
   async function handleDelete() {
     try {
       await deleteAgencyUser(user.id);
@@ -46,8 +64,61 @@ function UserActions({ user, onDelete }: { user: User; onDelete: (id: string) =>
     }
   }
 
+  async function handleRoleSave() {
+    setRoleSaving(true);
+    try {
+      await updateAgencyUserRole(user.id, newRole as any);
+      onRoleChange(user.id, newRole);
+      toast.success("Rol güncellendi.");
+      setRoleOpen(false);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Güncellenemedi.");
+    } finally {
+      setRoleSaving(false);
+    }
+  }
+
   return (
     <div className="flex items-center gap-1.5">
+      {/* Rol Değiştir */}
+      <AlertDialog open={roleOpen} onOpenChange={setRoleOpen}>
+        <AlertDialogTrigger asChild>
+          <Button size="icon" variant="outline" className="h-8 w-8" title="Rol Değiştir">
+            <UserCog className="w-3.5 h-3.5" />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="w-[92vw] max-w-sm bg-white text-black">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Rol Değiştir</AlertDialogTitle>
+            <AlertDialogDescription>
+              <strong>{user.name ?? user.email}</strong> için yeni rol seçin.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-2">
+            <select
+              value={newRole}
+              onChange={(e) => setNewRole(e.target.value)}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              {assignableRoles.map((r) => (
+                <option key={r.value} value={r.value}>{r.label}</option>
+              ))}
+            </select>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>İptal</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={handleRoleSave}
+              disabled={roleSaving}
+            >
+              {roleSaving ? "Kaydediliyor…" : "Kaydet"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Sil */}
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button size="icon" variant="destructive" className="h-8 w-8">
@@ -78,6 +149,10 @@ export default function UsersTable({ users: initial }: { users: User[] }) {
 
   function handleDelete(id: string) {
     setUsers((prev) => prev.filter((u) => u.id !== id));
+  }
+
+  function handleRoleChange(id: string, role: string) {
+    setUsers((prev) => prev.map((u) => u.id === id ? { ...u, roleGayrimenkul: role } : u));
   }
 
   if (!users.length) {
@@ -134,7 +209,7 @@ export default function UsersTable({ users: initial }: { users: User[] }) {
                 </td>
                 <td className="px-4 py-3 text-xs text-black whitespace-nowrap">{fmtDate(u.createdAt)}</td>
                 <td className="px-4 py-3">
-                  <UserActions user={u} onDelete={handleDelete} />
+                  <UserActions user={u} onDelete={handleDelete} onRoleChange={handleRoleChange} />
                 </td>
               </tr>
             ))}
@@ -177,7 +252,7 @@ export default function UsersTable({ users: initial }: { users: User[] }) {
               ))}
             </div>
             <div className="flex justify-end px-4 py-2.5 bg-gray-50 border-t border-gray-100">
-              <UserActions user={u} onDelete={handleDelete} />
+              <UserActions user={u} onDelete={handleDelete} onRoleChange={handleRoleChange} />
             </div>
           </div>
         ))}

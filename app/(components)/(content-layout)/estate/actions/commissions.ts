@@ -21,6 +21,8 @@ export async function getCommissionsByYear(agencyId: string, year: number) {
       contractType: true,
       status:       true,
       commission:   true,
+      salePrice:    true,
+      rentalPrice:  true,
       currency:     true,
       agentId:      true,
       agentName:    true,

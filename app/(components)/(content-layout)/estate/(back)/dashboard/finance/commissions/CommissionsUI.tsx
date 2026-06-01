@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TrendingUp, DollarSign, Clock, CheckCircle, FileText, ChevronDown, ChevronUp } from "lucide-react";
+import { TrendingUp, DollarSign, Clock, CheckCircle, FileText, ChevronDown, ChevronUp, ChevronLeft, ChevronRight as ChevronRightIcon } from "lucide-react";
 import { Badge } from "../../../../components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card";
 import { updateCommission } from "../../../../actions/commissions";
@@ -36,6 +36,8 @@ type Totals = {
 type Props = {
   data:        { contracts: Contract[]; agentSummary: AgentSummary[]; totals: Totals };
   currentYear: number;
+  minYear:     number;
+  maxYear:     number;
 };
 
 function fmt(v: number, cur = "TRY") {
@@ -90,16 +92,54 @@ function CommissionCell({ contractId, initial, currency }: { contractId: string;
   );
 }
 
-export default function CommissionsUI({ data, currentYear }: Props) {
+export default function CommissionsUI({ data, currentYear, minYear, maxYear }: Props) {
   const { contracts, agentSummary, totals } = data;
   const router = useRouter();
   const [expandedAgent, setExpandedAgent] = useState<string | null>(null);
+
+  function goYear(y: number) {
+    router.push(`?year=${y}`);
+  }
 
   const agentContracts = (agentId: string) =>
     contracts.filter((c) => c.agentId === agentId);
 
   return (
     <div className="space-y-6">
+
+      {/* ── Yıl Seçici ── */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => goYear(currentYear - 1)}
+          disabled={currentYear <= minYear}
+          className="p-1.5 rounded border border-gray-300 text-black disabled:opacity-30 hover:bg-gray-100 transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        <span className="text-sm font-semibold text-black min-w-[3.5rem] text-center">{currentYear}</span>
+        <button
+          onClick={() => goYear(currentYear + 1)}
+          disabled={currentYear >= maxYear}
+          className="p-1.5 rounded border border-gray-300 text-black disabled:opacity-30 hover:bg-gray-100 transition-colors"
+        >
+          <ChevronRightIcon className="w-4 h-4" />
+        </button>
+        <div className="flex gap-1 ml-2">
+          {Array.from({ length: maxYear - minYear + 1 }, (_, i) => minYear + i).map((y) => (
+            <button
+              key={y}
+              onClick={() => goYear(y)}
+              className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                y === currentYear
+                  ? "bg-blue-600 text-white"
+                  : "border border-gray-300 text-black hover:bg-gray-100"
+              }`}
+            >
+              {y}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* ── KPI Kartları ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

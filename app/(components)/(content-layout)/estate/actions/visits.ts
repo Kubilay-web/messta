@@ -76,7 +76,7 @@ export async function getAllVisits(agencyId: string) {
     orderBy: { scheduledAt: "desc" },
     select: {
       id: true, scheduledAt: true, completedAt: true,
-      status: true, notes: true, rating: true,
+      status: true, notes: true, feedback: true, rating: true,
       agentId: true, clientId: true, propertyId: true, listingId: true,
       createdAt: true, updatedAt: true,
     },

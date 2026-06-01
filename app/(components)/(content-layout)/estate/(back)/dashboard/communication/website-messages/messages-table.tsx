@@ -22,7 +22,9 @@ import toast from "react-hot-toast";
 
 type Message = {
   id: string; fullName: string; email: string; phone: string;
-  message: string; subject: string; createdAt: Date | string; updatedAt: Date | string;
+  message: string; subject: string;
+  companyName?: string | null; interest?: string | null;
+  createdAt: Date | string; updatedAt: Date | string;
 };
 
 const PER_PAGE = 10;
@@ -43,11 +45,13 @@ function MessageDetail({ msg }: { msg: Message }) {
     <div className="space-y-4">
       <div className="grid grid-cols-[90px_1fr] gap-x-3 gap-y-2 text-sm">
         {[
-          { label: "Ad Soyad", value: msg.fullName },
-          { label: "E-posta",  value: msg.email    },
-          { label: "Telefon",  value: msg.phone    },
-          { label: "Konu",     value: msg.subject  },
-          { label: "Tarih",    value: fmtFull(msg.createdAt) },
+          { label: "Ad Soyad",   value: msg.fullName },
+          { label: "E-posta",    value: msg.email    },
+          { label: "Telefon",    value: msg.phone    },
+          ...(msg.companyName ? [{ label: "Şirket",    value: msg.companyName }] : []),
+          ...(msg.interest    ? [{ label: "İlgi Alanı",value: msg.interest    }] : []),
+          { label: "Konu",       value: msg.subject  },
+          { label: "Tarih",      value: fmtFull(msg.createdAt) },
         ].map(({ label, value }) => (
           <>
             <span key={label + "l"} className="font-semibold text-black">{label}:</span>
@@ -89,10 +93,12 @@ export default function AgencyMessagesTable({ messages: initial }: { messages: M
     const q = search.toLowerCase();
     if (!q) return messages;
     return messages.filter((m) =>
-      m.fullName.toLowerCase().includes(q) ||
-      m.email.toLowerCase().includes(q)    ||
-      m.subject.toLowerCase().includes(q)  ||
-      m.message.toLowerCase().includes(q)
+      m.fullName.toLowerCase().includes(q)                  ||
+      m.email.toLowerCase().includes(q)                     ||
+      m.subject.toLowerCase().includes(q)                   ||
+      m.message.toLowerCase().includes(q)                   ||
+      (m.companyName ?? "").toLowerCase().includes(q)       ||
+      (m.interest    ?? "").toLowerCase().includes(q)
     );
   }, [messages, search]);
 
@@ -178,7 +184,10 @@ export default function AgencyMessagesTable({ messages: initial }: { messages: M
                       <td className="px-4 py-3 font-semibold text-black">{msg.fullName}</td>
                       <td className="px-4 py-3 text-black">{msg.email}</td>
                       <td className="px-4 py-3 text-black">{msg.phone || "—"}</td>
-                      <td className="px-4 py-3 text-black truncate max-w-[180px]">{msg.subject}</td>
+                      <td className="px-4 py-3 max-w-[180px]">
+                        <p className="text-black truncate">{msg.subject}</p>
+                        {msg.companyName && <p className="text-xs text-black truncate">{msg.companyName}</p>}
+                      </td>
                       <td className="px-4 py-3 text-black whitespace-nowrap">{fmtDate(msg.createdAt)}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1.5">

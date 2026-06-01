@@ -16,10 +16,12 @@ export default async function AgentMessagesPage() {
   const { user } = await validateRequest();
   if (!user) redirect("/estate/login");
 
-  const agent = await getAgentFromUserId(user.id);
-  if (!agent) redirect("/estate/login");
+  const agent   = await getAgentFromUserId(user.id);
+  const role    = (user as any).roleGayrimenkul as string;
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+  if (!agent && !isAdmin) redirect("/estate/login");
 
-  const messages = await getAgentMessages(agent.agencyId);
+  const messages = agent ? await getAgentMessages(agent.agencyId) : [];
 
   const fmtDate = (d: Date | string) =>
     new Date(d).toLocaleDateString("tr-TR", {

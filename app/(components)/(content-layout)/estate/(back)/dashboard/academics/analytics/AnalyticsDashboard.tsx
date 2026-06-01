@@ -111,28 +111,34 @@ function MiniBar({
 
 /* ── Ana Bileşen ─────────────────────────────────────────────────────────── */
 export default function AnalyticsDashboard({ data }: { data: AgencyAnalytics }) {
-  const { counts, revenue, listingsByStatus, contractsByType, propertiesByType,
-          recentContracts, recentListings, recentVisits } = data;
+  const {
+    counts, revenue,
+    listingsByStatus, listingsByType,
+    contractsByType, contractsByStatus,
+    propertiesByType, visitsByStatus,
+    recentContracts, recentListings, recentVisits,
+  } = data;
 
   return (
     <div className="space-y-6">
 
       {/* ── KPI Kartları ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-        <StatCard icon={Building2}    label="Mülk"             value={counts.properties}     color="blue"   />
-        <StatCard icon={FileText}     label="Aktif İlan"       value={counts.activeListings}  sub={`Toplam: ${counts.totalListings}`} color="green" />
-        <StatCard icon={CheckCircle}  label="Aktif Sözleşme"  value={counts.activeContracts} sub={`Toplam: ${counts.totalContracts}`} color="purple" />
-        <StatCard icon={User}         label="Danışman"         value={counts.agents}          color="teal"   />
-        <StatCard icon={Users}        label="Müşteri"          value={counts.clients}         color="amber"  />
-        <StatCard icon={CalendarCheck}label="Planl. Ziyaret"  value={counts.scheduledVisits} sub={`Toplam: ${counts.totalVisits}`} color="rose" />
-        <StatCard icon={DollarSign}   label="Satış Cirosu"     value={fmt(revenue.totalSaleValue)} color="green" />
-        <StatCard icon={TrendingUp}   label="Toplam Komisyon" value={fmt(revenue.totalCommission)} color="purple" />
-        <StatCard icon={Clock}        label="Bekl. Ödeme"     value={fmt(revenue.pendingPayments)} color="amber"  />
-        <StatCard icon={BarChart3}    label="Tahsil Edilen"   value={fmt(revenue.paidPayments)}    color="teal"   />
+        <StatCard icon={Building2}    label="Mülk"              value={counts.properties}      color="blue"   />
+        <StatCard icon={FileText}     label="Aktif İlan"        value={counts.activeListings}  sub={`Toplam: ${counts.totalListings}`}   color="green"  />
+        <StatCard icon={CheckCircle}  label="Aktif Sözleşme"   value={counts.activeContracts} sub={`Toplam: ${counts.totalContracts}`}  color="purple" />
+        <StatCard icon={User}         label="Danışman"          value={counts.agents}          sub={`Departman: ${counts.departments}`} color="teal"   />
+        <StatCard icon={Users}        label="Müşteri"           value={counts.clients}         color="amber"  />
+        <StatCard icon={CalendarCheck}label="Planl. Ziyaret"   value={counts.scheduledVisits} sub={`Toplam: ${counts.totalVisits}`}     color="rose"   />
+        <StatCard icon={DollarSign}   label="Satış Cirosu"      value={fmt(revenue.totalSaleValue)}   color="green"  />
+        <StatCard icon={TrendingUp}   label="Kira Cirosu"       value={fmt(revenue.totalRentalValue)} color="blue"   />
+        <StatCard icon={TrendingUp}   label="Toplam Komisyon"  value={fmt(revenue.totalCommission)}  color="purple" />
+        <StatCard icon={Clock}        label="Bekl. Ödeme"      value={fmt(revenue.pendingPayments)}  color="amber"  />
+        <StatCard icon={BarChart3}    label="Tahsil Edilen"    value={fmt(revenue.paidPayments)}     color="teal"   />
       </div>
 
       {/* ── Dağılım Grafikleri ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-black">İlan Durumları</CardTitle>
@@ -142,6 +148,19 @@ export default function AnalyticsDashboard({ data }: { data: AgencyAnalytics }) 
               items={listingsByStatus.map((s) => ({ key: s.status, count: s.count }))}
               labelMap={listingStatusLabel}
               colorClass="bg-blue-500"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-black">İlan Tipleri</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MiniBar
+              items={listingsByType.map((t) => ({ key: t.type, count: t.count }))}
+              labelMap={listingTypeLabel}
+              colorClass="bg-sky-500"
             />
           </CardContent>
         </Card>
@@ -161,6 +180,19 @@ export default function AnalyticsDashboard({ data }: { data: AgencyAnalytics }) 
 
         <Card>
           <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-black">Sözleşme Durumları</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MiniBar
+              items={contractsByStatus.map((s) => ({ key: s.status, count: s.count }))}
+              labelMap={contractStatusLabel}
+              colorClass="bg-violet-500"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
             <CardTitle className="text-sm text-black">Mülk Tipleri</CardTitle>
           </CardHeader>
           <CardContent>
@@ -168,6 +200,19 @@ export default function AnalyticsDashboard({ data }: { data: AgencyAnalytics }) 
               items={propertiesByType.map((t) => ({ key: t.type, count: t.count }))}
               labelMap={propertyTypeLabel}
               colorClass="bg-teal-500"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-black">Ziyaret Durumları</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MiniBar
+              items={visitsByStatus.map((s) => ({ key: s.status, count: s.count }))}
+              labelMap={visitStatusLabel}
+              colorClass="bg-amber-500"
             />
           </CardContent>
         </Card>

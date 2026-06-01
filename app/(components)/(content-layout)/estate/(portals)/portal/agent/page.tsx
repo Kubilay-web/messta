@@ -21,26 +21,26 @@ const visitStatusVariant: Record<string, "default" | "secondary" | "destructive"
   SCHEDULED: "default", COMPLETED: "secondary",
   CANCELLED: "destructive", NO_SHOW: "outline",
 };
-const contractStatusLabel: Record<string, string> = {
-  DRAFT: "Taslak", ACTIVE: "Aktif", COMPLETED: "Tamamlandı",
-  CANCELLED: "İptal", EXPIRED: "Süresi Doldu",
-};
-const listingTypeLabel: Record<string, string> = {
-  SALE: "Satılık", RENT: "Kiralık", SHORT_RENT: "Kısa Kiralık",
+const contractTypeLabel: Record<string, string> = {
+  SALE: "Satış", RENTAL: "Kiralama", PRE_SALE: "Ön Satış",
 };
 
 export default async function AgentPortalPage() {
   const { user } = await validateRequest();
   if (!user) redirect("/estate/login");
 
-  const agent = await getAgentFromUserId(user.id);
-  if (!agent) redirect("/estate/login");
+  const agent   = await getAgentFromUserId(user.id);
+  const role    = (user as any).roleGayrimenkul as string;
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+  if (!agent && !isAdmin) redirect("/estate/login");
 
-  const [visits, listings, contracts] = await Promise.all([
-    getAgentVisits(agent.id),
-    getAgentListings(agent.id),
-    getAgentContracts(agent.id),
-  ]);
+  const [visits, listings, contracts] = agent
+    ? await Promise.all([
+        getAgentVisits(agent.id),
+        getAgentListings(agent.id),
+        getAgentContracts(agent.id),
+      ])
+    : [[], [], []];
 
   const upcomingVisits = visits.filter((v) => v.status === "SCHEDULED").slice(0, 5);
   const activeListings = listings.filter((l) => l.status === "ACTIVE");
@@ -54,10 +54,10 @@ export default async function AgentPortalPage() {
       {/* Karşılama */}
       <div>
         <h1 className="text-2xl font-bold">
-          Hoş geldin, {agent.firstName} {agent.lastName}
+          Hoş geldin, {agent?.firstName ?? ""} {agent?.lastName ?? ""}
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          {agent.designation} · {agent.departmentName}
+          {agent?.designation ?? role} · {agent?.departmentName ?? ""}
         </p>
       </div>
 
@@ -139,7 +139,7 @@ export default async function AgentPortalPage() {
                     </div>
                     <div className="text-right shrink-0">
                       <Badge variant="secondary" className="text-xs mb-1">
-                        {listingTypeLabel[c.contractType] ?? c.contractType}
+                        {contractTypeLabel[c.contractType] ?? c.contractType}
                       </Badge>
                       {c.commission && (
                         <p className="text-xs font-semibold">

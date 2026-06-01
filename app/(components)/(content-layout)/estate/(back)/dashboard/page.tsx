@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Dashboard - EstatePro" };
 
 export default async function DashboardPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency    = await AgencyUser(user.id);
   const analytics = await getAgencyAnalytics(agency?.id ?? "");

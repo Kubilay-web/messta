@@ -1,6 +1,6 @@
 import { validateRequest } from "@/app/auth";
 import { getAgentFullProfile } from "../../../../actions/agent-portal";
-import { redirect, notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Badge } from "../../../../components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card";
 import { Mail, Phone, Briefcase, MapPin, TrendingUp } from "lucide-react";
@@ -21,8 +21,16 @@ export default async function AgentProfilePage() {
   const { user } = await validateRequest();
   if (!user) redirect("/estate/login");
 
-  const agent = await getAgentFullProfile(user.id);
-  if (!agent) return notFound();
+  const agent   = await getAgentFullProfile(user.id);
+  const role    = (user as any).roleGayrimenkul as string;
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+  if (!agent && !isAdmin) return notFound();
+  if (!agent) return (
+    <div className="max-w-xl mx-auto p-8 text-center text-muted-foreground">
+      <p className="text-lg font-semibold">Danışman profili bulunamadı.</p>
+      <p className="text-sm mt-1">Bu hesaba bağlı bir danışman kaydı yok.</p>
+    </div>
+  );
 
   const dob = agent.dateOfBirth
     ? new Date(agent.dateOfBirth).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })

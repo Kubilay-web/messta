@@ -93,13 +93,14 @@ export default async function PaymentViewPage({ params }: { params: { id: string
       {/* Bilgi Kartları */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
-          { icon: FileText,      label: "Sözleşme No",   value: contract?.contractNo ?? "—" },
-          { icon: User,          label: "Müşteri",        value: contract?.clientName ?? "—" },
+          { icon: FileText,      label: "Sözleşme No",   value: contract?.contractNo  ?? "—" },
+          { icon: User,          label: "Müşteri",        value: contract?.clientName  ?? "—" },
+          { icon: User,          label: "Danışman",       value: contract?.agentName   ?? "—" },
           { icon: DollarSign,    label: "Tutar",          value: fmtMoney(payment.amount, contract?.currency) },
           { icon: CalendarDays,  label: "Vade Tarihi",    value: fmtDate(payment.dueDate) },
           { icon: CheckCircle,   label: "Ödeme Tarihi",   value: fmtDate(payment.paidDate) },
           { icon: CreditCard,    label: "Ödeme Yöntemi",  value: payment.paymentMethod ?? "—" },
-          { icon: ClipboardList, label: "Makbuz No",      value: payment.receiptNo    ?? "—" },
+          { icon: ClipboardList, label: "Makbuz No",      value: payment.receiptNo     ?? "—" },
         ].map(({ icon: Icon, label, value }) => (
           <Card key={label} className="border border-gray-200">
             <CardContent className="p-3 flex flex-col items-center text-center">

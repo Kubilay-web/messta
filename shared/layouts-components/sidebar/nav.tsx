@@ -291,7 +291,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
             active: false,
             children: [
               {
-                path: " /estate/dashboard",
+                path: "/estate/dashboard",
                 type: "link",
                 active: false,
                 selected: false,
@@ -322,7 +322,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: " /estate/dashboard/users",
+                path: "/estate/dashboard/users",
                 type: "link",
                 active: false,
                 selected: false,
@@ -330,7 +330,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: " /estate/dashboard/users/new",
+                path: "/estate/dashboard/users/new",
                 type: "link",
                 active: false,
                 selected: false,
@@ -394,7 +394,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: " /estate/dashboard/attendance/by-department",
+                path: "/estate/dashboard/attendance/by-department",
                 type: "link",
                 active: false,
                 selected: false,
@@ -402,7 +402,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: " /estate/dashboard/attendance/agent",
+                path: "/estate/dashboard/attendance/agent",
                 type: "link",
                 active: false,
                 selected: false,
@@ -415,6 +415,14 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
                 active: false,
                 selected: false,
                 title: "Attendance",
+              },
+
+              {
+                path: "/estate/dashboard/attendance/leaves",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Attendance Leaves",
               },
 
               {
@@ -442,7 +450,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: " /estate/dashboard/finance/revenue",
+                path: "/estate/dashboard/finance/revenue",
                 type: "link",
                 active: false,
                 selected: false,
@@ -450,7 +458,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: " /estate/dashboard/logs",
+                path: "/estate/dashboard/logs",
                 type: "link",
                 active: false,
                 selected: false,
@@ -537,13 +545,19 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
                 active: false,
                 children: [
                   {
+                    path: "/estate/portal/secretary",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Secretary Dashboard",
+                  },
+                  {
                     path: "/estate/portal/secretary/agents",
                     type: "link",
                     active: false,
                     selected: false,
                     title: "Secretary Agents",
                   },
-
                   {
                     path: "/estate/portal/secretary/clients",
                     type: "link",
@@ -551,7 +565,6 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
                     selected: false,
                     title: "Secretary Clients",
                   },
-
                   {
                     path: "/estate/portal/secretary/properties",
                     type: "link",
@@ -610,11 +623,35 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
                     selected: false,
                     title: "Portal Agent Visits",
                   },
+                  {
+                    path: "/estate/portal/agent/attendance",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agent Attendance",
+                  },
                 ],
               },
 
+
+              
+          {
+            title: "Muhasebe",
+            icon: Dashboardicon,
+            type: "sub",
+            active: false,
+            children: [
+              { path: "/estate/portal/accountant",             type: "link", active: false, selected: false, title: "Ana Sayfa"       },
+              { path: "/estate/portal/accountant/revenue",     type: "link", active: false, selected: false, title: "Gelir Takibi"    },
+              { path: "/estate/portal/accountant/payments",    type: "link", active: false, selected: false, title: "Ödeme Planları"  },
+              { path: "/estate/portal/accountant/commissions", type: "link", active: false, selected: false, title: "Komisyonlar"     },
+              { path: "/estate/portal/accountant/contracts",   type: "link", active: false, selected: false, title: "Sözleşmeler"     },
             ],
           },
+
+            ],
+          },
+
 
 
           {
@@ -677,6 +714,9 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/team`,               type: "link", active: false, selected: false, title: "Ekip"              },
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/contact-section`,    type: "link", active: false, selected: false, title: "İletişim"          },
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/footer`,             type: "link", active: false, selected: false, title: "Alt Bilgi"         },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/news`,               type: "link", active: false, selected: false, title: "Haberler"          },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/events`,             type: "link", active: false, selected: false, title: "Etkinlikler"       },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/gallery`,            type: "link", active: false, selected: false, title: "Galeri"            },
             ],
           },
         ],

@@ -22,12 +22,14 @@ const contractStatusVariant: Record<string, "default" | "secondary" | "destructi
 
 export default async function AgentContractsPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
-  const agent = await getAgentFromUserId(user.id);
-  if (!agent) redirect("/estate/login");
+  const agent   = await getAgentFromUserId(user.id);
+  const role    = (user as any).roleGayrimenkul as string;
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+  if (!agent && !isAdmin) redirect("/estate/login");
 
-  const contracts = await getAgentContracts(agent.id);
+  const contracts = agent ? await getAgentContracts(agent.id) : [];
 
   const fmtDate = (d: Date | string | null) =>
     d ? new Date(d).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" }) : "—";

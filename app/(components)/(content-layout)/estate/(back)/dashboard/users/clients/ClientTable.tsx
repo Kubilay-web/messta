@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { Pencil, Trash2 } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import { PropertyClient } from "../../../../types/types";
 import { deletePropertyClient } from "../../../../actions/clients";
 import { Button } from "../../../../components/ui/button";
@@ -36,6 +36,11 @@ function ClientActions({ client }: { client: PropertyClient }) {
 
   return (
     <div className="flex items-center gap-1.5 flex-wrap">
+      <Button asChild size="icon" variant="outline" className="h-8 w-8">
+        <Link href={`/estate/dashboard/users/clients/view/${client.id}`}>
+          <Eye className="w-3.5 h-3.5" />
+        </Link>
+      </Button>
       <Button asChild size="icon" variant="outline" className="h-8 w-8">
         <Link href={`/estate/dashboard/users/clients/edit/${client.id}`}>
           <Pencil className="w-3.5 h-3.5" />

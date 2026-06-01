@@ -15,6 +15,7 @@ import {
   ExternalLink,
   Eye,
   GraduationCap,
+  Heart,
   History,
   Home,
   LayoutGrid,
@@ -29,6 +30,7 @@ import {
   ScrollText,
   ShoppingCart,
   SquareLibrary,
+  TrendingUp,
   User,
   UserPlus,
   Users,
@@ -43,7 +45,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "../../lib/utils";
 
 
-import { UserRole } from "../../types/types";
+import { UserRole, UserRoleGayrimenkul } from "../../types/types";
 
 
 import { useUserSession } from "../../store/auth";
@@ -58,14 +60,12 @@ interface NavLink {
   icon: LucideIcon;
   count?: number;
 }
-// Type for available roles
 
-// Type for the links object structure
-type RoleLinks = {
-  [K in UserRole]: NavLink[];
-};
+type AnyRole = UserRole | UserRoleGayrimenkul | string;
 
-export function renderLoggedInUserLinks(role: UserRole): NavLink[] {
+type RoleLinks = Record<string, NavLink[]>;
+
+export function renderLoggedInUserLinks(role: AnyRole): NavLink[] {
   const commonLinks = [
     {
       title: "Dashboard",
@@ -131,6 +131,11 @@ export function renderLoggedInUserLinks(role: UserRole): NavLink[] {
         icon: ScrollText,
       },
       {
+        title: "Devam Takibi",
+        href: "/estate/portal/agent/attendance",
+        icon: CalendarCheck,
+      },
+      {
         title: "Mesajlar",
         href: "/estate/portal/agent/messages",
         icon: MessagesSquare,
@@ -160,6 +165,11 @@ export function renderLoggedInUserLinks(role: UserRole): NavLink[] {
     ],
     SECRETARY: [
       {
+        title: "Ana Sayfa",
+        href: "/estate/portal/secretary",
+        icon: Home,
+      },
+      {
         title: "Mülkler",
         href: "/estate/portal/secretary/properties",
         icon: Users,
@@ -173,6 +183,33 @@ export function renderLoggedInUserLinks(role: UserRole): NavLink[] {
         title: "Müşteriler",
         href: "/estate/portal/secretary/clients",
         icon: UserPlus,
+      },
+    ],
+    ACCOUNTANT: [
+      {
+        title: "Ana Sayfa",
+        href: "/estate/portal/accountant",
+        icon: Home,
+      },
+      {
+        title: "Gelir Takibi",
+        href: "/estate/portal/accountant/revenue",
+        icon: TrendingUp,
+      },
+      {
+        title: "Ödeme Planları",
+        href: "/estate/portal/accountant/payments",
+        icon: DollarSign,
+      },
+      {
+        title: "Komisyonlar",
+        href: "/estate/portal/accountant/commissions",
+        icon: Banknote,
+      },
+      {
+        title: "Sözleşmeler",
+        href: "/estate/portal/accountant/contracts",
+        icon: ScrollText,
       },
     ],
     LIBRARIAN: [
@@ -195,6 +232,11 @@ export function renderLoggedInUserLinks(role: UserRole): NavLink[] {
         icon: User,
       },
       {
+        title: "Favorilerim",
+        href: "/estate/portal/client/favorites",
+        icon: Heart,
+      },
+      {
         title: "Ziyaretlerim",
         href: "/estate/portal/client/visits",
         icon: Calendar,
@@ -211,9 +253,9 @@ export function renderLoggedInUserLinks(role: UserRole): NavLink[] {
       },
     ],
   };
-  return [...commonLinks, ...links[role]];
+  return [...commonLinks, ...(links[role] ?? [])];
 }
-export default function PortalSidebar({ userRole }: { userRole: UserRole }) {
+export default function PortalSidebar({ userRole }: { userRole: AnyRole }) {
   const sidebarLinks = renderLoggedInUserLinks(userRole);
   const { clearSession } = useUserSession();
   const router = useRouter();

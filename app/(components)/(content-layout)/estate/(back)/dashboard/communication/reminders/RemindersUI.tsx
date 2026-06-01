@@ -317,6 +317,11 @@ export default function RemindersUI({ agencyId, reminders: initial, counts }: Pr
                     <Badge variant="secondary" className="text-[10px] text-black">
                       {fromLabel[r.from] ?? r.from}
                     </Badge>
+                    {r.name && (
+                      <Badge variant="outline" className="text-[10px] text-black">
+                        {r.name}
+                      </Badge>
+                    )}
                     {r.email && (
                       <Badge variant="outline" className="text-[10px] text-black font-mono">
                         {r.email}

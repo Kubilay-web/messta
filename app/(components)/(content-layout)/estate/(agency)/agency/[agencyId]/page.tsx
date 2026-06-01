@@ -1,10 +1,14 @@
 import { getAgencyByIdOrSlug } from "../../../actions/agencies";
 import { getAllAgencySections } from "../../../actions/agency-site";
+import { getFeaturedListings } from "../../../actions/listings";
 import { notFound } from "next/navigation";
-import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
-import { MapPin, Phone, Mail, Clock, Star, Building2, Users, TrendingUp } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Star, Building2, Users, Home, Quote, ArrowRight } from "lucide-react";
 import Link from "next/link";
+
+const listingTypeLabel: Record<string, string> = {
+  SALE: "Satılık", RENT: "Kiralık", SHORT_RENT: "Kısa Dönem",
+};
 
 const propertyTypeLabel: Record<string, string> = {
   APARTMENT: "Daire", HOUSE: "Müstakil Ev", VILLA: "Villa",
@@ -51,12 +55,39 @@ export default async function AgencyPublicPage({
   const about   = getSettings(sections, "ABOUT");
   const feat    = getSettings(sections, "FEATURED_PROPERTIES");
   const svc     = getSettings(sections, "SERVICES");
+  const team    = getSettings(sections, "TEAM");
+  const test    = getSettings(sections, "TESTIMONIALS");
   const contact = getSettings(sections, "CONTACT");
   const footer  = getSettings(sections, "FOOTER");
 
   const services = [1, 2, 3, 4]
     .map((n) => ({ title: svc[`service${n}Title`], desc: svc[`service${n}Desc`] }))
     .filter((s) => s.title);
+
+  const teamMembers = [1, 2, 3, 4]
+    .map((n) => ({
+      name:  team[`member${n}Name`],
+      role:  team[`member${n}Role`],
+      image: team[`member${n}Image`],
+      phone: team[`member${n}Phone`],
+    }))
+    .filter((m) => m.name);
+
+  const testimonials = [1, 2, 3]
+    .map((n) => ({
+      name:    test[`ref${n}Name`],
+      role:    test[`ref${n}Role`],
+      image:   test[`ref${n}Image`],
+      comment: test[`ref${n}Comment`],
+    }))
+    .filter((t) => t.name && t.comment);
+
+  const featuredListings = isActive(sections, "FEATURED_PROPERTIES")
+    ? await getFeaturedListings(agency.id, {
+        count:      Number(feat.count) || 6,
+        filterType: feat.filterType,
+      })
+    : [];
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-900">
@@ -156,6 +187,73 @@ export default async function AgencyPublicPage({
         </section>
       )}
 
+      {/* ── ÖNE ÇIKAN MÜLKLER ── */}
+      {isActive(sections, "FEATURED_PROPERTIES") && featuredListings.length > 0 && (
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2">
+              {sections.find((s) => s.type === "FEATURED_PROPERTIES")?.title || "Öne Çıkan Mülkler"}
+            </h2>
+            {sections.find((s) => s.type === "FEATURED_PROPERTIES")?.subtitle && (
+              <p className="text-center text-muted-foreground mb-10">
+                {sections.find((s) => s.type === "FEATURED_PROPERTIES")?.subtitle}
+              </p>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+              {featuredListings.map((l) => {
+                const p     = l.property;
+                const cover = p?.images?.[0]?.url;
+                return (
+                  <div key={l.id} className="border rounded-2xl overflow-hidden hover:shadow-lg transition-shadow flex flex-col">
+                    <div className="relative h-48 w-full bg-gray-100">
+                      {cover ? (
+                        <img src={cover} alt={l.title} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full items-center justify-center">
+                          <Home className="w-10 h-10 text-gray-300" />
+                        </div>
+                      )}
+                      <span className="absolute top-3 left-3 bg-blue-600 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+                        {listingTypeLabel[l.listingType] ?? l.listingType}
+                      </span>
+                    </div>
+                    <div className="p-5 space-y-2 flex-1 flex flex-col">
+                      <h3 className="font-bold line-clamp-2">{l.title}</h3>
+                      {p && (
+                        <p className="text-sm text-muted-foreground flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                          {p.neighborhood && `${p.neighborhood}, `}{p.district}, {p.city}
+                        </p>
+                      )}
+                      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                        {p?.propertyType && <span className="bg-gray-100 px-2 py-0.5 rounded">{propertyTypeLabel[p.propertyType] ?? p.propertyType}</span>}
+                        {p?.roomCount && <span className="bg-gray-100 px-2 py-0.5 rounded">{p.roomCount}</span>}
+                        {p?.grossArea && <span className="bg-gray-100 px-2 py-0.5 rounded">{p.grossArea} m²</span>}
+                      </div>
+                      <p className="text-xl font-extrabold text-blue-600 mt-auto pt-2">
+                        {l.askingPrice.toLocaleString("tr-TR")} {l.currency}
+                        {l.monthlyRent && (
+                          <span className="text-xs font-normal text-muted-foreground"> · {l.monthlyRent.toLocaleString("tr-TR")}/ay</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {feat.ctaText && feat.ctaLink && (
+              <div className="text-center mt-10">
+                <Button asChild size="lg">
+                  <Link href={feat.ctaLink}>
+                    {feat.ctaText} <ArrowRight className="ml-2 w-4 h-4" />
+                  </Link>
+                </Button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* ── HİZMETLER ── */}
       {isActive(sections, "SERVICES") && services.length > 0 && (
         <section className="py-16 px-4">
@@ -171,6 +269,82 @@ export default async function AgencyPublicPage({
                   </div>
                   <h3 className="font-bold">{s.title}</h3>
                   {s.desc && <p className="text-sm text-muted-foreground">{s.desc}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── EKİP ── */}
+      {isActive(sections, "TEAM") && teamMembers.length > 0 && (
+        <section className="py-16 px-4 bg-gray-50">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2 flex items-center justify-center gap-2">
+              <Users className="w-6 h-6 text-blue-600" />
+              {sections.find((s) => s.type === "TEAM")?.title || "Ekibimiz"}
+            </h2>
+            {sections.find((s) => s.type === "TEAM")?.subtitle && (
+              <p className="text-center text-muted-foreground mb-10">
+                {sections.find((s) => s.type === "TEAM")?.subtitle}
+              </p>
+            )}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+              {teamMembers.map((m, i) => (
+                <div key={i} className="bg-white border rounded-2xl p-6 text-center space-y-3 hover:shadow-md transition-shadow">
+                  {m.image ? (
+                    <img src={m.image} alt={m.name} className="w-24 h-24 rounded-full object-cover mx-auto border-4 border-blue-50" />
+                  ) : (
+                    <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center mx-auto">
+                      <Users className="w-10 h-10 text-blue-600" />
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-bold">{m.name}</p>
+                    {m.role && <p className="text-sm text-muted-foreground">{m.role}</p>}
+                  </div>
+                  {m.phone && (
+                    <a href={`tel:${m.phone}`} className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline">
+                      <Phone className="w-3.5 h-3.5" /> {m.phone}
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── REFERANSLAR ── */}
+      {isActive(sections, "TESTIMONIALS") && testimonials.length > 0 && (
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2">
+              {sections.find((s) => s.type === "TESTIMONIALS")?.title || "Müşteri Yorumları"}
+            </h2>
+            {sections.find((s) => s.type === "TESTIMONIALS")?.subtitle && (
+              <p className="text-center text-muted-foreground mb-10">
+                {sections.find((s) => s.type === "TESTIMONIALS")?.subtitle}
+              </p>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+              {testimonials.map((t, i) => (
+                <div key={i} className="border rounded-2xl p-6 space-y-4 hover:shadow-md transition-shadow">
+                  <Quote className="w-8 h-8 text-blue-200" />
+                  <p className="text-sm text-muted-foreground leading-relaxed italic">"{t.comment}"</p>
+                  <div className="flex items-center gap-3 pt-2 border-t">
+                    {t.image ? (
+                      <img src={t.image} alt={t.name} className="w-11 h-11 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-11 h-11 rounded-full bg-blue-100 flex items-center justify-center">
+                        <Star className="w-5 h-5 text-blue-600" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-semibold text-sm">{t.name}</p>
+                      {t.role && <p className="text-xs text-muted-foreground">{t.role}</p>}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

@@ -5,7 +5,7 @@ import db from "@/app/lib/db";
 const ROLE_REDIRECT: Record<string, string> = {
   SUPER_ADMIN: "/estate/dashboard",
   ADMIN:       "/estate/dashboard",
-  ACCOUNTANT:  "/estate/dashboard",
+  ACCOUNTANT:  "/estate/portal/accountant",
   SECRETARY:   "/estate/portal/secretary",
   AGENT:       "/estate/portal/agent",
   CLIENT:      "/estate/portal/client",

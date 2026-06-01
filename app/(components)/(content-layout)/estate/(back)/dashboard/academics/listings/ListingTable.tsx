@@ -89,7 +89,7 @@ export default function ListingTable({ listings }: { listings: Listing[] }) {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              {["İlan", "Tip / Durum", "Fiyat", "Mülk", "Danışman", "Tarih", "İşlemler"].map((h) => (
+              {["İlan", "Tip / Durum", "Fiyat", "Mülk", "Danışman", "Aktivite", "Tarih", "İşlemler"].map((h) => (
                 <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-black uppercase">{h}</th>
               ))}
             </tr>
@@ -124,6 +124,11 @@ export default function ListingTable({ listings }: { listings: Listing[] }) {
                   <p className="text-xs text-black">{(l as any).property?.city ?? ""}</p>
                 </td>
                 <td className="px-4 py-3 text-sm text-black">{l.agentName}</td>
+                <td className="px-4 py-3 text-xs text-black">
+                  <p>{(l as any)._count?.contracts ?? 0} sözleşme</p>
+                  <p>{(l as any)._count?.visits    ?? 0} ziyaret</p>
+                  <p>{(l as any)._count?.interests ?? 0} ilgi · {l.views} görüntülenme</p>
+                </td>
                 <td className="px-4 py-3 text-xs text-black whitespace-nowrap">
                   {new Date(l.createdAt).toLocaleDateString("tr-TR")}
                 </td>
@@ -149,10 +154,13 @@ export default function ListingTable({ listings }: { listings: Listing[] }) {
             </div>
             <div className="px-4 py-2 space-y-1">
               {[
-                { label: "Fiyat",    value: `${l.askingPrice.toLocaleString("tr-TR")} ${l.currency}` },
-                { label: "Mülk",     value: (l as any).property?.title ?? "—" },
-                { label: "Danışman", value: l.agentName },
-                { label: "İlan No",  value: l.listingNo },
+                { label: "Fiyat",       value: `${l.askingPrice.toLocaleString("tr-TR")} ${l.currency}` },
+                { label: "Mülk",        value: (l as any).property?.title ?? "—" },
+                { label: "Danışman",    value: l.agentName },
+                { label: "İlan No",     value: l.listingNo },
+                { label: "Sözleşme",    value: `${(l as any)._count?.contracts ?? 0}` },
+                { label: "Ziyaret",     value: `${(l as any)._count?.visits    ?? 0}` },
+                { label: "Görüntülenme",value: `${l.views}` },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between gap-2 text-xs">
                   <span className="text-black font-medium shrink-0">{label}</span>

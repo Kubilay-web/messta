@@ -73,6 +73,7 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
         { title: "Genel Bakış",         url: `${base}/attendance` },
         { title: "Departmana Göre",     url: `${base}/attendance/by-department` },
         { title: "Danışman Görüntüsü",  url: `${base}/attendance/agent` },
+        { title: "İzin Takibi",         url: `${base}/attendance/leaves` },
       ],
     },
     {
@@ -112,6 +113,9 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
       items: [
         { title: "Canlı Site",     url: `/estate/${agencySlug}` },
         { title: "Özelleştir",     url: `/estate/${agencySlug}/customize` },
+        { title: "Haberler",       url: `/estate/${agencySlug}/customize/news` },
+        { title: "Etkinlikler",    url: `/estate/${agencySlug}/customize/events` },
+        { title: "Galeri",         url: `/estate/${agencySlug}/customize/gallery` },
       ],
     },
   ];

@@ -112,6 +112,39 @@ export async function getAllAgencies() {
   }
 }
 
+// ==================== UPDATE AGENCY ====================
+export async function updateAgency(
+  id: string,
+  data: Partial<AgencyProps> & { siteEnabled?: boolean }
+) {
+  try {
+    const { user } = await validateRequest();
+    if (!user) throw new Error("Yetkisiz erişim.");
+
+    const agency = await prisma.agency.update({
+      where: { id },
+      data: {
+        ...(data.name          !== undefined && { name:         data.name          }),
+        ...(data.logo          !== undefined && { logo:         data.logo          }),
+        ...(data.primaryEmail  !== undefined && { primaryEmail: data.primaryEmail  }),
+        ...(data.phone         !== undefined && { phone:        data.phone         }),
+        ...(data.address       !== undefined && { address:      data.address       }),
+        ...(data.city          !== undefined && { city:         data.city          }),
+        ...(data.taxNumber     !== undefined && { taxNumber:    data.taxNumber     }),
+        ...(data.licenseNo     !== undefined && { licenseNo:    data.licenseNo     }),
+        ...(data.siteEnabled   !== undefined && { siteEnabled:  data.siteEnabled   }),
+      },
+    });
+
+    revalidatePath(`/estate/agency/${id}/customize`);
+    revalidatePath(`/estate/agency/${id}/customize/settings`);
+    return agency;
+  } catch (error: any) {
+    console.error("updateAgency error:", error);
+    throw new Error(error?.message || "Ofis güncellenemedi.");
+  }
+}
+
 // ==================== DELETE AGENCY ====================
 export async function deleteAgencyById(id: string) {
   if (!id) return null;

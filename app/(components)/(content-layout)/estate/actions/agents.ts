@@ -26,6 +26,13 @@ export type AgentProps = {
   commissionRate?: number;
   bio?: string;
   skills?: string;
+  socialLinks?: {
+    twitter?:   string;
+    linkedin?:  string;
+    instagram?: string;
+    facebook?:  string;
+    website?:   string;
+  };
   specializationTypes: string[];
   specializationCities: string[];
   imageUrl: string;
@@ -100,6 +107,7 @@ export async function createAgent(data: AgentProps) {
       commissionRate:       data.commissionRate ? parseFloat(String(data.commissionRate)) : 2.5,
       bio:                  data.bio ?? null,
       skills:               data.skills ?? null,
+      socialLinks:          data.socialLinks ?? null,
       specializationTypes:  data.specializationTypes as any,
       specializationCities: data.specializationCities,
       agencyId:             data.agencyId,
@@ -141,8 +149,9 @@ export async function updateAgent(id: string, data: Partial<AgentProps>) {
       ...(data.qualification && { qualification: data.qualification }),
       ...(data.experience !== undefined && { experience: data.experience ? Number(data.experience) : null }),
       ...(data.commissionRate !== undefined && { commissionRate: data.commissionRate ? parseFloat(String(data.commissionRate)) : null }),
-      ...(data.bio !== undefined && { bio: data.bio }),
-      ...(data.skills !== undefined && { skills: data.skills }),
+      ...(data.bio         !== undefined && { bio:         data.bio }),
+      ...(data.skills      !== undefined && { skills:      data.skills }),
+      ...(data.socialLinks !== undefined && { socialLinks: data.socialLinks ?? null }),
       ...(data.specializationTypes?.length && { specializationTypes: data.specializationTypes as any }),
       ...(specializationCities && { specializationCities }),
       ...(dateOfJoining && { dateOfJoining: dateOfJoining as any }),
@@ -168,6 +177,18 @@ export async function updateAgent(id: string, data: Partial<AgentProps>) {
 export async function deleteAgent(id: string) {
   const agent = await db.agent.findUnique({ where: { id }, select: { userId: true } });
   if (!agent) throw new Error("Danışman bulunamadı.");
+
+  // Sözleşme bağımlılarını topla ve sil
+  const contractRows = await db.propertyContract.findMany({ where: { agentId: id }, select: { id: true } });
+  const contractIds  = contractRows.map((c) => c.id);
+  if (contractIds.length) {
+    await db.contractPayment.deleteMany({ where: { contractId: { in: contractIds } } });
+    await db.contractDocument.deleteMany({ where: { contractId: { in: contractIds } } });
+    await db.propertyContract.deleteMany({ where: { id: { in: contractIds } } });
+  }
+
+  // Danışmanın ilanlarını unlink et (agentId opsiyonel)
+  await db.listing.updateMany({ where: { agentId: id }, data: { agentId: null } });
 
   await db.$transaction([
     db.agentDocument.deleteMany({ where: { agentId: id } }),
@@ -201,7 +222,7 @@ export async function getAgentById(id: string) {
       listings:  { select: { id: true, title: true, status: true } },
       contracts: { select: { id: true, contractNo: true, status: true } },
       visits:    { select: { id: true, scheduledAt: true, status: true } },
-      documents: { select: { id: true, title: true, type: true, url: true } },
+      documents: { select: { id: true, title: true, type: true, url: true, uploadedAt: true } },
       _count:    { select: { listings: true, contracts: true, visits: true } },
     },
   });

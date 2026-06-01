@@ -7,7 +7,7 @@ import { Button } from "../../../../../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../../components/ui/card";
 import {
   ArrowLeft, Tag, MapPin, User, DollarSign,
-  CalendarDays, Eye, FileText, Users, Home,
+  CalendarDays, Eye, FileText, Users, Home, BadgeCheck,
 } from "lucide-react";
 import { Metadata } from "next";
 
@@ -30,9 +30,11 @@ export default async function ListingViewPage({ params }: { params: { id: string
   const listing = await getListingById(params.id);
   if (!listing) notFound();
 
-  const prop  = (listing as any).property;
-  const agent = (listing as any).agent;
-  const count = (listing as any)._count ?? {};
+  const prop      = (listing as any).property;
+  const agent     = (listing as any).agent;
+  const count     = (listing as any)._count    ?? {};
+  const contracts = (listing as any).contracts ?? [];
+  const visits    = (listing as any).visits    ?? [];
 
   return (
     <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
@@ -124,6 +126,82 @@ export default async function ListingViewPage({ params }: { params: { id: string
           </Card>
         )}
       </div>
+
+      {/* Bağlı Sözleşmeler */}
+      {contracts.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm text-black flex items-center gap-2">
+              <FileText className="w-4 h-4 text-blue-600" /> Sözleşmeler ({contracts.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  {["Sözleşme No", "Tip", "Durum"].map((h) => (
+                    <th key={h} className="px-3 py-2 text-left text-xs font-semibold text-black uppercase">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {contracts.map((c: any) => (
+                  <tr key={c.id} className="hover:bg-gray-50">
+                    <td className="px-3 py-2 font-medium text-black">{c.contractNo}</td>
+                    <td className="px-3 py-2 text-black">
+                      {{ SALE: "Satış", RENTAL: "Kiralama", PRE_SALE: "Ön Satış" }[c.contractType as string] ?? c.contractType}
+                    </td>
+                    <td className="px-3 py-2">
+                      <Badge variant={c.status === "ACTIVE" ? "default" : c.status === "CANCELLED" ? "destructive" : "outline"} className="text-xs">
+                        {{ DRAFT: "Taslak", ACTIVE: "Aktif", COMPLETED: "Tamamlandı", CANCELLED: "İptal", EXPIRED: "Doldu" }[c.status as string] ?? c.status}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Bağlı Ziyaretler */}
+      {visits.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm text-black flex items-center gap-2">
+              <CalendarDays className="w-4 h-4 text-amber-600" /> Ziyaretler ({visits.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  {["Tarih", "Durum"].map((h) => (
+                    <th key={h} className="px-3 py-2 text-left text-xs font-semibold text-black uppercase">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {visits.map((v: any) => (
+                  <tr key={v.id} className="hover:bg-gray-50">
+                    <td className="px-3 py-2 text-black">
+                      {new Date(v.scheduledAt).toLocaleDateString("tr-TR")}
+                    </td>
+                    <td className="px-3 py-2">
+                      <Badge
+                        variant={v.status === "COMPLETED" ? "default" : v.status === "CANCELLED" || v.status === "NO_SHOW" ? "destructive" : "outline"}
+                        className="text-xs"
+                      >
+                        {{ SCHEDULED: "Planlandı", COMPLETED: "Tamamlandı", CANCELLED: "İptal", NO_SHOW: "Gelmedi" }[v.status as string] ?? v.status}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      )}
 
       {/* İstatistikler */}
       <div className="grid grid-cols-3 gap-4">

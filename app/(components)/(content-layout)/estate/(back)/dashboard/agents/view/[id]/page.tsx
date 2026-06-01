@@ -8,9 +8,10 @@ import { Button } from "../../../../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../components/ui/card";
 import {
   ArrowLeft, Mail, Phone, MapPin, Briefcase, Building2,
-  Hash, Star, FileText, CalendarCheck, Home,
+  Hash, Star, FileText, CalendarCheck, Home, User, Globe, ExternalLink,
 } from "lucide-react";
 import { Metadata } from "next";
+import AgentDocsManager from "../../../../../components/dashboard/AgentDocsManager";
 
 export const metadata: Metadata = { title: "Danışman Detayı - EstatePro" };
 
@@ -23,17 +24,28 @@ export default async function AgentViewPage({ params }: { params: { id: string }
 
   const fullName = `${agent.title} ${agent.firstName} ${agent.lastName}`;
 
+  const docs       = (agent as any).documents  ?? [];
+  const socialLinks = (agent.socialLinks as Record<string, string> | null) ?? {};
+
   const infoCards = [
-    { icon: Mail,      label: "E-posta",     value: agent.email },
-    { icon: Phone,     label: "Telefon",      value: agent.phone },
-    { icon: Phone,     label: "WhatsApp",     value: agent.whatsappNo ?? "—" },
-    { icon: Briefcase, label: "Pozisyon",     value: agent.designation },
-    { icon: Building2, label: "Departman",    value: agent.departmentName },
-    { icon: Hash,      label: "Çalışan No",   value: agent.employeeId },
-    { icon: Star,      label: "Komisyon",     value: `%${agent.commissionRate ?? 2.5}` },
-    { icon: FileText,  label: "Lisans / Ruhsat", value: agent.licenseNo ?? "—" },
-    { icon: Hash,      label: "TC Kimlik",    value: agent.NIN },
-    { icon: MapPin,    label: "Uzm. Şehirler", value: agent.specializationCities.join(", ") || "—" },
+    { icon: Mail,         label: "E-posta",       value: agent.email },
+    { icon: Phone,        label: "Telefon",        value: agent.phone },
+    { icon: Phone,        label: "WhatsApp",       value: agent.whatsappNo ?? "—" },
+    { icon: User,         label: "Cinsiyet",       value: ({ MALE: "Erkek", FEMALE: "Kadın", OTHER: "Diğer" } as any)[agent.gender] ?? agent.gender },
+    { icon: Briefcase,    label: "Pozisyon",       value: agent.designation },
+    { icon: Building2,    label: "Departman",      value: agent.departmentName },
+    { icon: Hash,         label: "Çalışan No",     value: agent.employeeId },
+    { icon: Star,         label: "Komisyon",       value: `%${agent.commissionRate ?? 2.5}` },
+    { icon: FileText,     label: "Lisans / Ruhsat",value: agent.licenseNo ?? "—" },
+    { icon: FileText,     label: "Nitelik",        value: agent.qualification },
+    { icon: Hash,         label: "TC Kimlik",      value: agent.NIN },
+    { icon: Phone,        label: "İletişim Tercihi",value: agent.contactMethod },
+    { icon: MapPin,       label: "Uzm. Şehirler",  value: agent.specializationCities.join(", ") || "—" },
+    {
+      icon: CalendarCheck,
+      label: "Doğum Tarihi",
+      value: agent.dateOfBirth ? new Date(agent.dateOfBirth).toLocaleDateString("tr-TR") : "—",
+    },
     {
       icon: CalendarCheck,
       label: "İşe Başlama",
@@ -43,6 +55,11 @@ export default async function AgentViewPage({ params }: { params: { id: string }
       icon: CalendarCheck,
       label: "Deneyim",
       value: agent.experience ? `${agent.experience} yıl` : "—",
+    },
+    {
+      icon: CalendarCheck,
+      label: "Son Giriş",
+      value: agent.lastLogin ? new Date(agent.lastLogin).toLocaleString("tr-TR") : "—",
     },
   ];
 
@@ -125,6 +142,45 @@ export default async function AgentViewPage({ params }: { params: { id: string }
           )}
         </div>
       )}
+
+      {/* Sosyal Medya */}
+      {Object.keys(socialLinks).length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-black flex items-center gap-2">
+              <Globe className="w-4 h-4 text-blue-600" /> Sosyal Medya
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(socialLinks).map(([key, url]) => url ? (
+                <a
+                  key={key}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-blue-600 hover:bg-blue-50 transition-colors"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  <span className="capitalize">{key === "website" ? "Web Sitesi" : key}</span>
+                </a>
+              ) : null)}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Belgeler */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-black flex items-center gap-2">
+            <FileText className="w-4 h-4 text-blue-600" /> Belgeler ({docs.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AgentDocsManager agentId={agent.id} initialDocs={docs} />
+        </CardContent>
+      </Card>
 
       {/* İstatistikler */}
       <div className="grid grid-cols-3 gap-4">

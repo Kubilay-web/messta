@@ -14,20 +14,28 @@ export default async function ClientPortalPage() {
   const { user } = await validateRequest();
   if (!user) redirect("/estate/login");
 
-  const client = await getClientFromUserId(user.id);
-  if (!client) redirect("/estate/login");
+  const client  = await getClientFromUserId(user.id);
+  const role    = (user as any).roleGayrimenkul as string;
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+  if (!client && !isAdmin) redirect("/estate/login");
 
-  const [contracts, visits] = await Promise.all([
-    getClientContracts(client.id),
-    getClientVisits(client.id),
-  ]);
+  const [contracts, visits] = client
+    ? await Promise.all([getClientContracts(client.id), getClientVisits(client.id)])
+    : [[], []];
+
+  if (!client) return (
+    <div className="max-w-xl mx-auto p-8 text-center text-muted-foreground">
+      <p className="text-lg font-semibold">Müşteri profili bulunamadı.</p>
+      <p className="text-sm mt-1">Bu hesaba bağlı bir müşteri kaydı yok.</p>
+    </div>
+  );
 
   return (
     <div className="w-full p-4 sm:p-6 space-y-6">
       <ClientDashboard
-        client={client   as any}
+        client={client as any}
         contracts={contracts as any[]}
-        visits={visits   as any[]}
+        visits={visits as any[]}
       />
     </div>
   );

@@ -211,9 +211,31 @@ export async function getPropertyClientById(id: string) {
   return db.propertyClient.findUnique({
     where: { id },
     include: {
-      contracts: { select: { id: true, contractNo: true, status: true } },
-      visits:    { select: { id: true, scheduledAt: true, status: true } },
-      interests: { select: { id: true, listingId: true } },
+      contracts: {
+        select: {
+          id: true, contractNo: true, contractType: true, status: true,
+          salePrice: true, rentalPrice: true, commission: true, currency: true,
+          startDate: true, endDate: true, agentName: true,
+          property: { select: { title: true, city: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      },
+      visits: {
+        select: {
+          id: true, scheduledAt: true, status: true, rating: true, feedback: true,
+          agent: { select: { firstName: true, lastName: true } },
+          property: { select: { title: true, city: true } },
+        },
+        orderBy: { scheduledAt: "desc" },
+      },
+      interests: {
+        select: {
+          id: true, priority: true, notes: true,
+          listing: { select: { id: true, title: true, listingNo: true, askingPrice: true, currency: true, listingType: true, status: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      },
+      _count: { select: { contracts: true, visits: true, interests: true } },
     },
   });
 }

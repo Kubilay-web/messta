@@ -67,6 +67,14 @@ export default function AgentForm({
 
   const [loading,     setLoading]     = useState(false);
   const [imageUrl,    setImageUrl]    = useState(initialData?.imageUrl ?? "/management/images/realestate-logo.svg");
+  const initLinks = (initialData?.socialLinks as any) ?? {};
+  const [socialLinks, setSocialLinks] = useState({
+    linkedin:  initLinks.linkedin  ?? "",
+    twitter:   initLinks.twitter   ?? "",
+    instagram: initLinks.instagram ?? "",
+    facebook:  initLinks.facebook  ?? "",
+    website:   initLinks.website   ?? "",
+  });
   const [selTitle,    setSelTitle]    = useState<any>(titleOptions.find((o) => o.value === initialData?.title) ?? titleOptions[0]);
   const [selGender,   setSelGender]   = useState<any>(genderOptions.find((o) => o.value === initialData?.gender) ?? genderOptions[0]);
   const [selContact,  setSelContact]  = useState<any>(contactOptions.find((o) => o.value === initialData?.contactMethod) ?? contactOptions[0]);
@@ -107,6 +115,9 @@ export default function AgentForm({
     data.specializationCities = typeof data.specializationCities === "string"
       ? (data.specializationCities as any).split(",").map((c: string) => c.trim()).filter(Boolean)
       : data.specializationCities;
+    data.socialLinks = Object.fromEntries(
+      Object.entries(socialLinks).filter(([, v]) => v.trim())
+    ) as any;
 
     try {
       setLoading(true);
@@ -208,6 +219,25 @@ export default function AgentForm({
         <legend className="text-sm font-semibold px-1 text-black">Hakkında</legend>
         <TextInput register={register} errors={errors} label="Beceriler (virgülle)" name="skills" placeholder="Satış, Müzakere, CRM" />
         <TextArea register={register} errors={errors} label="Biyografi" name="bio" helperText="Danışmanın kısa tanıtımı." />
+      </fieldset>
+
+      {/* Sosyal Medya */}
+      <fieldset className="border rounded-lg p-4 space-y-3">
+        <legend className="text-sm font-semibold px-1 text-black">Sosyal Medya & Web</legend>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {(["linkedin","twitter","instagram","facebook","website"] as const).map((key) => (
+            <div key={key} className="space-y-1">
+              <label className="block text-sm font-medium text-gray-900 capitalize">{key === "website" ? "Web Sitesi" : key.charAt(0).toUpperCase() + key.slice(1)}</label>
+              <input
+                type="url"
+                value={socialLinks[key]}
+                onChange={(e) => setSocialLinks((p) => ({ ...p, [key]: e.target.value }))}
+                placeholder={key === "website" ? "https://..." : `https://${key}.com/kullanici`}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+          ))}
+        </div>
       </fieldset>
 
       {/* Fotoğraf */}

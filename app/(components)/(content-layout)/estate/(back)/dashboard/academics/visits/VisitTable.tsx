@@ -168,6 +168,11 @@ export default function VisitTable({ visits }: { visits: Visit[] }) {
                 </div>
               ))}
             </div>
+            {v.rating && (
+              <div className="px-4 py-1.5 border-t border-gray-100">
+                <span className="text-xs text-amber-500">{"★".repeat(v.rating)}{"☆".repeat(5 - v.rating)}</span>
+              </div>
+            )}
             <div className="flex justify-end px-4 py-2.5 bg-gray-50 border-t border-gray-100">
               <VisitActions visit={v} />
             </div>

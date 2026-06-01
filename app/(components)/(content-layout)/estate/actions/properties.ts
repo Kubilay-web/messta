@@ -142,6 +142,28 @@ export async function updateProperty(id: string, data: Partial<PropertyProps>) {
 
 // ==================== DELETE ====================
 export async function deleteProperty(id: string) {
+  // 1. Bağlı sözleşme ve ilan ID'lerini topla
+  const [contractRows, listingRows] = await Promise.all([
+    db.propertyContract.findMany({ where: { propertyId: id }, select: { id: true } }),
+    db.listing.findMany({ where: { propertyId: id }, select: { id: true } }),
+  ]);
+
+  const contractIds = contractRows.map((c) => c.id);
+  const listingIds  = listingRows.map((l) => l.id);
+
+  // 2. Sözleşme bağımlılarını sil
+  if (contractIds.length) {
+    await db.contractPayment.deleteMany({ where: { contractId: { in: contractIds } } });
+    await db.contractDocument.deleteMany({ where: { contractId: { in: contractIds } } });
+    await db.propertyContract.deleteMany({ where: { id: { in: contractIds } } });
+  }
+
+  // 3. İlan bağımlılarını sil
+  if (listingIds.length) {
+    await db.clientInterest.deleteMany({ where: { listingId: { in: listingIds } } });
+  }
+
+  // 4. Property'ye direkt bağlı kayıtları + property'yi sil
   await db.$transaction([
     db.propertyDocument.deleteMany({ where: { propertyId: id } }),
     db.propertyImage.deleteMany({ where: { propertyId: id } }),
@@ -171,9 +193,10 @@ export async function getPropertyById(id: string) {
     where: { id },
     include: {
       listings:  { select: { id: true, title: true, listingNo: true, status: true, listingType: true, askingPrice: true } },
-      contracts: { select: { id: true, contractNo: true, status: true, contractType: true } },
-      visits:    { select: { id: true, scheduledAt: true, status: true } },
+      contracts: { select: { id: true, contractNo: true, status: true, contractType: true, agentName: true, clientName: true } },
+      visits:    { select: { id: true, scheduledAt: true, status: true, agentId: true, clientId: true } },
       images:    { select: { id: true, url: true, title: true, isCover: true, order: true } },
+      documents: { select: { id: true, title: true, type: true, url: true, size: true, uploadedAt: true } },
       _count:    { select: { listings: true, visits: true, contracts: true } },
     },
   });

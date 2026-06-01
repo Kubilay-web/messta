@@ -26,10 +26,12 @@ export default async function ClientVisitsPage() {
   const { user } = await validateRequest();
   if (!user) redirect("/estate/login");
 
-  const client = await getClientFromUserId(user.id);
-  if (!client) redirect("/estate/login");
+  const client  = await getClientFromUserId(user.id);
+  const role    = (user as any).roleGayrimenkul as string;
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+  if (!client && !isAdmin) redirect("/estate/login");
 
-  const visits = await getClientVisits(client.id);
+  const visits = client ? await getClientVisits(client.id) : [];
 
   const fmtDate = (d: Date | string) =>
     new Date(d).toLocaleDateString("tr-TR", {

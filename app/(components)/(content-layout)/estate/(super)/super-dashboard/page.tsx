@@ -105,12 +105,17 @@ export default async function SuperDashboardPage() {
               <div key={c.id} className="flex items-start justify-between gap-2 rounded-lg border p-3 hover:bg-gray-50">
                 <div className="min-w-0">
                   <p className="font-semibold text-sm truncate">{c.fullName}</p>
-                  <p className="text-xs text-muted-foreground truncate">{c.school} — {c.country}</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {(c as any).school ?? (c as any).companyName ?? "—"}{" "}
+                    {(c as any).country ? `— ${(c as any).country}` : ""}
+                  </p>
                   <p className="text-xs text-muted-foreground truncate">{c.email}</p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-xs text-muted-foreground whitespace-nowrap">{fmtDate(c.createdAt)}</p>
-                  <Badge variant="outline" className="text-xs mt-1">{c.students} danışman</Badge>
+                  {(c as any).students != null && (
+                    <Badge variant="outline" className="text-xs mt-1">{(c as any).students} danışman</Badge>
+                  )}
                 </div>
               </div>
             ))}

@@ -141,8 +141,8 @@ export async function getContractById(id: string) {
   const contract = await db.propertyContract.findUnique({
     where: { id },
     include: {
-      payments:  { select: { id: true, title: true, amount: true, dueDate: true, status: true, paidDate: true } },
-      documents: { select: { id: true, title: true, type: true, url: true } },
+      payments:  { select: { id: true, title: true, amount: true, dueDate: true, paidDate: true, status: true, paymentMethod: true, receiptNo: true, notes: true } },
+      documents: { select: { id: true, title: true, type: true, url: true, size: true, uploadedAt: true } },
       _count:    { select: { payments: true, documents: true } },
     },
   });

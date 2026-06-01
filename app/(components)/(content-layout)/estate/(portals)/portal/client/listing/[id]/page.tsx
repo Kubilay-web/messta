@@ -7,10 +7,11 @@ import { Button } from "../../../../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../components/ui/card";
 import {
   ArrowLeft, MapPin, Home, Building2, CalendarCheck,
-  FileText, Phone, Mail, Star, CheckCircle, Layers,
+  FileText, Phone, Mail, Layers,
   Thermometer, Car, Trees, Waves, Wind,
 } from "lucide-react";
 import { Metadata } from "next";
+import InterestToggleButton from "../../../../../components/portal/InterestToggleButton";
 
 export const metadata: Metadata = { title: "İlan Detayı - Müşteri Portalı" };
 
@@ -85,12 +86,11 @@ export default async function ClientListingDetailPage({
             <ArrowLeft className="mr-1 h-4 w-4" /> Geri
           </Link>
         </Button>
-        {myInterest && (
-          <Badge variant="outline" className="text-xs text-black">
-            ★ İlgileniyorum
-            {myInterest.priority && ` · ${myInterest.priority}`}
-          </Badge>
-        )}
+        <InterestToggleButton
+          clientId={client.id}
+          listingId={listing.id}
+          initialInterest={!!myInterest}
+        />
       </div>
 
       {/* Başlık Kartı */}

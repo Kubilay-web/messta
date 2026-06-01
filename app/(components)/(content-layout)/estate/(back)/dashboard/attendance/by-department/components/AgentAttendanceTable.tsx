@@ -30,7 +30,7 @@ const STATUSES: AttendanceStatusGayrimenkul[] = ["PRESENT", "ABSENT", "LATE", "O
 
 type AttendanceRow = {
   agent: { id: string; firstName: string; lastName: string; employeeId: string };
-  attendance: { status: string; checkIn?: any; checkOut?: any } | null;
+  attendance: { status: string; checkIn?: any; checkOut?: any; note?: string | null } | null;
 };
 
 type Props = {
@@ -56,6 +56,7 @@ export default function AgentAttendanceTable({ rows, overrides, onStatusChange }
               <th className="px-4 py-3 text-left text-xs font-semibold text-black uppercase">Danışman</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-black uppercase">Mevcut Durum</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-black uppercase">Giriş / Çıkış</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-black uppercase">Not</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-black uppercase">Durum Seç</th>
             </tr>
           </thead>
@@ -84,6 +85,9 @@ export default function AgentAttendanceTable({ rows, overrides, onStatusChange }
                     {row.attendance?.checkIn  && <p>Giriş:  {fmtTime(row.attendance.checkIn)}</p>}
                     {row.attendance?.checkOut && <p>Çıkış: {fmtTime(row.attendance.checkOut)}</p>}
                     {!row.attendance?.checkIn && !row.attendance?.checkOut && <span>—</span>}
+                  </td>
+                  <td className="px-4 py-3 text-xs text-black max-w-[120px] truncate">
+                    {row.attendance?.note ?? "—"}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-1">
@@ -130,6 +134,9 @@ export default function AgentAttendanceTable({ rows, overrides, onStatusChange }
                   {changed && <p className="text-[10px] text-amber-600">Değişti *</p>}
                 </div>
               </div>
+              {row.attendance?.note && (
+                <div className="px-4 pb-1 text-xs text-black">Not: {row.attendance.note}</div>
+              )}
               <div className="px-4 py-3 flex flex-wrap gap-1.5">
                 {STATUSES.map((s) => (
                   <button

@@ -131,10 +131,10 @@ export default function PropertyTable({ properties }: { properties: PropertyReal
                       </p>
                     ) : <span className="text-black">—</span>}
                   </td>
-                  <td className="px-4 py-3">
-                    <Badge variant="secondary" className="text-xs text-black">
-                      {count.listings ?? 0} ilan
-                    </Badge>
+                  <td className="px-4 py-3 text-xs text-black">
+                    <p>{count.listings  ?? 0} ilan</p>
+                    <p>{count.contracts ?? 0} sözleşme</p>
+                    <p>{count.visits    ?? 0} ziyaret</p>
                   </td>
                   <td className="px-4 py-3"><PropActions prop={p} /></td>
                 </tr>
@@ -167,7 +167,9 @@ export default function PropertyTable({ properties }: { properties: PropertyReal
                   { label: "Konum",  value: `${p.city}, ${p.district}` },
                   { label: "Alan",   value: p.grossArea ? `${p.grossArea} m²` : "—" },
                   { label: "Fiyat",  value: p.price ? `${p.price.toLocaleString("tr-TR")} ${p.currency}` : "—" },
-                  { label: "İlan",   value: `${count.listings ?? 0}` },
+                  { label: "İlan",      value: `${count.listings  ?? 0}` },
+                  { label: "Sözleşme", value: `${count.contracts ?? 0}` },
+                  { label: "Ziyaret",  value: `${count.visits    ?? 0}` },
                 ].map(({ label, value }) => (
                   <div key={label} className="flex justify-between gap-2 text-xs">
                     <span className="text-black font-medium shrink-0">{label}</span>

@@ -28,15 +28,15 @@ const statusVariant: Record<string, "default" | "secondary" | "destructive" | "o
 };
 
 type Payment = {
-  id:            string;
-  title:         string;
-  amount:        number;
-  dueDate:       Date | string;
-  paidDate?:     Date | string | null;
-  status:        string;
+  id:             string;
+  title:          string;
+  amount:         number;
+  dueDate:        Date | string;
+  paidDate?:      Date | string | null;
+  status:         string;
   paymentMethod?: string | null;
-  receiptNo?:    string | null;
-  contract?:     { contractNo: string; clientName: string; currency: string } | null;
+  receiptNo?:     string | null;
+  contract?:      { contractNo: string; clientName: string; agentName: string; currency: string } | null;
 };
 
 function PaymentActions({ payment }: { payment: Payment }) {
@@ -136,10 +136,14 @@ export default function PaymentTable({ payments }: { payments: Payment[] }) {
                 <td className="px-4 py-3">
                   <p className="font-semibold text-black">{p.title}</p>
                   {p.paymentMethod && <p className="text-xs text-black">{p.paymentMethod}</p>}
+                  {p.receiptNo     && <p className="text-xs text-black">Mkb: {p.receiptNo}</p>}
                 </td>
                 <td className="px-4 py-3">
                   <p className="text-sm text-black font-medium">{p.contract?.contractNo ?? "—"}</p>
                   <p className="text-xs text-black">{p.contract?.clientName ?? ""}</p>
+                  {p.contract?.agentName && (
+                    <p className="text-xs text-black">Danışman: {p.contract.agentName}</p>
+                  )}
                 </td>
                 <td className="px-4 py-3 font-semibold text-black whitespace-nowrap">
                   {fmtMoney(p.amount, p.contract?.currency)}
@@ -182,10 +186,12 @@ export default function PaymentTable({ payments }: { payments: Payment[] }) {
             </div>
             <div className="px-4 py-2 space-y-1">
               {[
-                { label: "Tutar",    value: fmtMoney(p.amount, p.contract?.currency) },
-                { label: "Müşteri",  value: p.contract?.clientName ?? "—" },
-                { label: "Vade",     value: fmtDate(p.dueDate) },
-                { label: "Ödendi",   value: fmtDate(p.paidDate) },
+                { label: "Tutar",      value: fmtMoney(p.amount, p.contract?.currency) },
+                { label: "Müşteri",   value: p.contract?.clientName ?? "—" },
+                { label: "Danışman",  value: p.contract?.agentName  ?? "—" },
+                { label: "Vade",      value: fmtDate(p.dueDate) },
+                { label: "Ödendi",    value: fmtDate(p.paidDate) },
+                ...(p.receiptNo ? [{ label: "Makbuz No", value: p.receiptNo }] : []),
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between gap-2 text-xs">
                   <span className="text-black font-medium shrink-0">{label}</span>

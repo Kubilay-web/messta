@@ -137,6 +137,46 @@ export async function getAllListings(agencyId: string) {
   }));
 }
 
+// ==================== GET FEATURED (public site) ====================
+export async function getFeaturedListings(
+  agencyId: string,
+  opts?: { count?: number; filterType?: string },
+) {
+  const take = Math.min(Math.max(opts?.count ?? 6, 1), 6);
+
+  const where: any = { agencyId, status: "ACTIVE", isPublic: true };
+  if (opts?.filterType && opts.filterType.trim()) {
+    where.listingType = opts.filterType.trim().toUpperCase();
+  }
+
+  const listings = await db.listing.findMany({
+    where,
+    orderBy: { createdAt: "desc" },
+    take,
+    select: {
+      id: true, title: true, listingNo: true, listingType: true,
+      askingPrice: true, currency: true, monthlyRent: true, propertyId: true,
+    },
+  });
+
+  const propertyIds = [...new Set(listings.map((l) => l.propertyId).filter(Boolean))];
+  const properties =
+    propertyIds.length > 0
+      ? await db.propertyRealEstate.findMany({
+          where:  { id: { in: propertyIds } },
+          select: {
+            id: true, city: true, district: true, neighborhood: true,
+            propertyType: true, roomCount: true, grossArea: true,
+            images: { where: { isCover: true }, select: { url: true }, take: 1 },
+          },
+        })
+      : [];
+
+  const propMap = Object.fromEntries(properties.map((p) => [p.id, p]));
+
+  return listings.map((l) => ({ ...l, property: propMap[l.propertyId] ?? null }));
+}
+
 // ==================== GET BY ID ====================
 export async function getListingById(id: string) {
   const listing = await db.listing.findUnique({

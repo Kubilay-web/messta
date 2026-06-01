@@ -1,6 +1,7 @@
 import { validateRequest } from "@/app/auth";
 import { AgencyUser } from "../../../actions/auth";
 import { getTodayAttendanceOverview } from "../../../actions/agent-attendance";
+import { getPendingLeaveCount } from "../../../actions/agent-leaves";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
 import AttendanceDashboard from "./components/AttendanceDashboard";
@@ -12,7 +13,12 @@ export default async function AttendancePage() {
   if (!user) redirect("/estate/login");
 
   const agency   = await AgencyUser(user.id);
-  const overview = await getTodayAttendanceOverview(agency?.id ?? "");
+  const agencyId = agency?.id ?? "";
+
+  const [overview, pendingLeaves] = await Promise.all([
+    getTodayAttendanceOverview(agencyId),
+    getPendingLeaveCount(agencyId),
+  ]);
 
   return (
     <div className="p-4 sm:p-8 space-y-6">
@@ -24,7 +30,7 @@ export default async function AttendancePage() {
           })}
         </p>
       </div>
-      <AttendanceDashboard data={overview as any} />
+      <AttendanceDashboard data={overview as any} pendingLeaves={pendingLeaves} />
     </div>
   );
 }

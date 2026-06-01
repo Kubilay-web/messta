@@ -1,274 +1,4 @@
-// "use server";
-
-// export type Analytics = {
-//   title: string;
-//   count: number;
-// };
-
-// export interface PublicStats {
-//   students: number;
-//   teachers: number;
-//   schools: number;
-//   parents: number;
-// }
-
-// export interface AdminStats {
-//   students: number;
-//   teachers: number;
-//   parents: number;
-//   totalPending: number;
-//   totalPaid: number;
-//   recentStudents: Student[];
-//   recentEvents: Event[];
-// }
-
-// interface Student {
-//   id: string;
-//   name: string;
-//   regNo: string;
-//   gender: "MALE" | "FEMALE";
-//   class: {
-//     title: string;
-//   };
-// }
-
-// interface Event {
-//   id: string;
-//   title: string;
-//   startTime: string;
-//   endTime: string;
-//   date: string;
-//   location: string;
-// }
-
-// export type TeacherAnalyticsData = {
-//   students: number;
-//   exams: number;
-//   reminders: number;
-//   recentStudents: Student[];
-//   recentEvents: Event[];
-// };
-
-
-
-// export async function getAllAnalytics(schoolId: string): Promise<AdminStats> {
-//   try {
-//     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schoolproject/analytics/${schoolId}`, {
-//       method: "GET",
-//       cache: "no-store",
-//     });
-
-//     if (!res.ok) throw new Error("Failed to fetch analytics");
-
-//     const analytics = await res.json();
-//     return analytics as AdminStats;
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       students: 0,
-//       teachers: 0,
-//       parents: 0,
-//       totalPending: 0,
-//       totalPaid: 0,
-//       recentStudents: [],
-//       recentEvents: [],
-//     };
-//   }
-// }
-
-// export async function getTeacherAnalytics(
-//   schoolId: string
-// ): Promise<TeacherAnalyticsData> {
-//   try {
-//     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schoolproject/analytics/teachers/${schoolId}`, {
-//       method: "GET",
-//       cache: "no-store",
-//     });
-
-//     if (!res.ok) throw new Error("Failed to fetch teacher analytics");
-
-//     const analytics = await res.json();
-//     return analytics as TeacherAnalyticsData;
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       students: 0,
-//       reminders: 0,
-//       exams: 0,
-//       recentStudents: [],
-//       recentEvents: [],
-//     };
-//   }
-// }
-
-// export async function getPublicStats(): Promise<PublicStats> {
-//   try {
-//     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schoolproject/analytics/public`, {
-//       method: "GET",
-//       cache: "no-store",
-//     });
-
-//     if (!res.ok) throw new Error("Failed to fetch public stats");
-
-//     const analytics = await res.json();
-//     return analytics as PublicStats;
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       students: 0,
-//       teachers: 0,
-//       schools: 0,
-//       parents: 0,
-//     };
-//   }
-// }
-
-
-
-
-
-
-
-
-
 "use server";
-
-export type Analytics = {
-  title: string;
-  count: number;
-};
-
-export interface PublicStats {
-  students: number;
-  teachers: number;
-  schools: number;
-  parents: number;
-}
-
-export interface AdminStats {
-  students: number;
-  teachers: number;
-  parents: number;
-  totalPending: number;
-  totalPaid: number;
-  recentStudents: Student[];
-  recentEvents: Event[];
-}
-
-interface Student {
-  id: string;
-  name: string;
-  regNo: string;
-  gender: "MALE" | "FEMALE";
-  class: {
-    title: string;
-  };
-}
-
-interface Event {
-  id: string;
-  title: string;
-  startTime: string;
-  endTime: string;
-  date: string;
-  location: string;
-}
-
-export type TeacherAnalyticsData = {
-  students: number;
-  exams: number;
-  reminders: number;
-  recentStudents: Student[];
-  recentEvents: Event[];
-};
-
-// Fetch admin analytics for a specific school
-export async function getAllAnalytics(schoolId: string): Promise<AdminStats> {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/schoolmanage/analytics?type=school&schoolId=${schoolId}`,
-      {
-        method: "GET",
-        cache: "no-store",
-      },
-    );
-
-    if (!res.ok) throw new Error("Failed to fetch analytics");
-
-    const analytics = await res.json();
-    return analytics as AdminStats;
-  } catch (error) {
-    console.log(error);
-    return {
-      students: 0,
-      teachers: 0,
-      parents: 0,
-      totalPending: 0,
-      totalPaid: 0,
-      recentStudents: [],
-      recentEvents: [],
-    };
-  }
-}
-
-// Fetch teacher-specific analytics for a school
-export async function getTeacherAnalytics(
-  schoolId: string,
-): Promise<TeacherAnalyticsData> {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/schoolmanage/analytics?type=teacher&schoolId=${schoolId}`,
-      {
-        method: "GET",
-        cache: "no-store",
-      },
-    );
-
-    if (!res.ok) throw new Error("Failed to fetch teacher analytics");
-
-    const analytics = await res.json();
-    return analytics as TeacherAnalyticsData;
-  } catch (error) {
-    console.log(error);
-    return {
-      students: 0,
-      reminders: 0,
-      exams: 0,
-      recentStudents: [],
-      recentEvents: [],
-    };
-  }
-}
-
-// Fetch public stats (no schoolId required)
-export async function getPublicStats(): Promise<PublicStats> {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/schoolmanage/analytics?type=public`,
-      {
-        method: "GET",
-        cache: "no-store",
-      },
-    );
-
-    if (!res.ok) throw new Error("Failed to fetch public stats");
-
-    const analytics = await res.json();
-    return analytics as PublicStats;
-  } catch (error) {
-    console.log(error);
-    return {
-      students: 0,
-      teachers: 0,
-      schools: 0,
-      parents: 0,
-    };
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Real Estate ERP — Ajans Analitik
-// ─────────────────────────────────────────────────────────────────────────────
 
 import db from "@/app/lib/db";
 
@@ -281,18 +11,23 @@ export interface AgencyAnalytics {
     activeContracts:  number;
     agents:           number;
     clients:          number;
+    departments:      number;
     totalVisits:      number;
     scheduledVisits:  number;
   };
   revenue: {
     totalSaleValue:   number;
+    totalRentalValue: number;
     totalCommission:  number;
     pendingPayments:  number;
     paidPayments:     number;
   };
   listingsByStatus:    { status: string; count: number }[];
-  contractsByType:     { type: string;   count: number }[];
-  propertiesByType:    { type: string;   count: number }[];
+  listingsByType:      { type:   string; count: number }[];
+  contractsByType:     { type:   string; count: number }[];
+  contractsByStatus:   { status: string; count: number }[];
+  propertiesByType:    { type:   string; count: number }[];
+  visitsByStatus:      { status: string; count: number }[];
   recentContracts: {
     id:           string;
     contractNo:   string;
@@ -329,20 +64,22 @@ export async function getAgencyAnalytics(agencyId: string): Promise<AgencyAnalyt
     activeContractCount,
     agentCount,
     clientCount,
+    departmentCount,
     visitCount,
     scheduledVisitCount,
     saleAgg,
+    rentalAgg,
     commissionAgg,
     pendingPayAgg,
     paidPayAgg,
-    listingStatuses,
-    contractTypes,
+    listingRows,
+    contractRows,
     propertyTypes,
+    visitStatuses,
     recentContracts,
     recentListings,
     recentVisits,
   ] = await Promise.all([
-    // Temel sayımlar
     db.propertyRealEstate.count({ where: { agencyId } }),
     db.listing.count({ where: { agencyId } }),
     db.listing.count({ where: { agencyId, status: "ACTIVE" } }),
@@ -350,17 +87,17 @@ export async function getAgencyAnalytics(agencyId: string): Promise<AgencyAnalyt
     db.propertyContract.count({ where: { agencyId, status: "ACTIVE" } }),
     db.agent.count({ where: { agencyId } }),
     db.propertyClient.count({ where: { agencyId } }),
-    db.propertyVisit.count({
-      where: { property: { agencyId } },
-    }),
-    db.propertyVisit.count({
-      where: { property: { agencyId }, status: "SCHEDULED" },
-    }),
+    db.agencyDepartment.count({ where: { agencyId } }),
+    db.propertyVisit.count({ where: { property: { agencyId } } }),
+    db.propertyVisit.count({ where: { property: { agencyId }, status: "SCHEDULED" } }),
 
-    // Gelir
     db.propertyContract.aggregate({
       where: { agencyId, status: "COMPLETED", contractType: "SALE" },
       _sum: { salePrice: true },
+    }),
+    db.propertyContract.aggregate({
+      where: { agencyId, status: "COMPLETED", contractType: "RENTAL" },
+      _sum: { rentalPrice: true },
     }),
     db.propertyContract.aggregate({
       where: { agencyId, status: "COMPLETED" },
@@ -378,18 +115,21 @@ export async function getAgencyAnalytics(agencyId: string): Promise<AgencyAnalyt
     // Dağılımlar — groupBy yerine findMany + map (MongoDB uyumluluğu)
     db.listing.findMany({
       where: { agencyId },
-      select: { status: true },
+      select: { status: true, listingType: true },
     }),
     db.propertyContract.findMany({
       where: { agencyId },
-      select: { contractType: true },
+      select: { contractType: true, status: true },
     }),
     db.propertyRealEstate.findMany({
       where: { agencyId },
       select: { propertyType: true },
     }),
+    db.propertyVisit.findMany({
+      where: { property: { agencyId } },
+      select: { status: true },
+    }),
 
-    // Son 5 kayıt
     db.propertyContract.findMany({
       where: { agencyId },
       orderBy: { createdAt: "desc" },
@@ -410,18 +150,19 @@ export async function getAgencyAnalytics(agencyId: string): Promise<AgencyAnalyt
     }),
   ]);
 
-  // Dağılım hesaplamaları
   function toCounts<T extends string>(arr: T[]): { key: string; count: number }[] {
     const map: Record<string, number> = {};
     arr.forEach((v) => { map[v] = (map[v] ?? 0) + 1; });
     return Object.entries(map).map(([key, count]) => ({ key, count }));
   }
 
-  const listingsByStatus = toCounts(listingStatuses.map((l) => l.status));
-  const contractsByType  = toCounts(contractTypes.map((c) => c.contractType));
-  const propertiesByType = toCounts(propertyTypes.map((p) => p.propertyType));
+  const listingsByStatus  = toCounts(listingRows.map((l) => l.status));
+  const listingsByType    = toCounts(listingRows.map((l) => l.listingType));
+  const contractsByType   = toCounts(contractRows.map((c) => c.contractType));
+  const contractsByStatus = toCounts(contractRows.map((c) => c.status));
+  const propertiesByType  = toCounts(propertyTypes.map((p) => p.propertyType));
+  const visitsByStatus    = toCounts(visitStatuses.map((v) => v.status));
 
-  // Ziyaret için agent/client isimlerini çek
   const agentIds  = [...new Set(recentVisits.map((v) => v.agentId).filter(Boolean))];
   const clientIds = [...new Set(recentVisits.map((v) => v.clientId).filter(Boolean))];
 
@@ -442,25 +183,30 @@ export async function getAgencyAnalytics(agencyId: string): Promise<AgencyAnalyt
       activeContracts: activeContractCount,
       agents:          agentCount,
       clients:         clientCount,
+      departments:     departmentCount,
       totalVisits:     visitCount,
       scheduledVisits: scheduledVisitCount,
     },
     revenue: {
-      totalSaleValue:  saleAgg._sum.salePrice     ?? 0,
-      totalCommission: commissionAgg._sum.commission ?? 0,
-      pendingPayments: pendingPayAgg._sum.amount   ?? 0,
-      paidPayments:    paidPayAgg._sum.amount      ?? 0,
+      totalSaleValue:   saleAgg._sum.salePrice       ?? 0,
+      totalRentalValue: rentalAgg._sum.rentalPrice    ?? 0,
+      totalCommission:  commissionAgg._sum.commission ?? 0,
+      pendingPayments:  pendingPayAgg._sum.amount     ?? 0,
+      paidPayments:     paidPayAgg._sum.amount        ?? 0,
     },
-    listingsByStatus: listingsByStatus.map((s) => ({ status: s.key, count: s.count })),
-    contractsByType:  contractsByType.map((t)  => ({ type:   t.key, count: t.count })),
-    propertiesByType: propertiesByType.map((t) => ({ type:   t.key, count: t.count })),
+    listingsByStatus:  listingsByStatus.map((s)  => ({ status: s.key, count: s.count })),
+    listingsByType:    listingsByType.map((t)    => ({ type:   t.key, count: t.count })),
+    contractsByType:   contractsByType.map((t)   => ({ type:   t.key, count: t.count })),
+    contractsByStatus: contractsByStatus.map((s) => ({ status: s.key, count: s.count })),
+    propertiesByType:  propertiesByType.map((t)  => ({ type:   t.key, count: t.count })),
+    visitsByStatus:    visitsByStatus.map((s)    => ({ status: s.key, count: s.count })),
     recentContracts,
     recentListings,
     recentVisits: recentVisits.map((v) => ({
       id:          v.id,
       scheduledAt: v.scheduledAt,
       status:      v.status,
-      agentName:   agentMap[v.agentId]  ?? "—",
+      agentName:   agentMap[v.agentId]   ?? "—",
       clientName:  clientMap[v.clientId] ?? "—",
     })),
   };

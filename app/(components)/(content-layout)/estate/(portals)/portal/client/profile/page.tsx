@@ -23,8 +23,16 @@ export default async function ClientProfilePage() {
   const { user } = await validateRequest();
   if (!user) redirect("/estate/login");
 
-  const client = await getClientFullProfile(user.id);
-  if (!client) return notFound();
+  const client  = await getClientFullProfile(user.id);
+  const role    = (user as any).roleGayrimenkul as string;
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+  if (!client && !isAdmin) return notFound();
+  if (!client) return (
+    <div className="max-w-xl mx-auto p-8 text-center text-muted-foreground">
+      <p className="text-lg font-semibold">Müşteri profili bulunamadı.</p>
+      <p className="text-sm mt-1">Bu hesaba bağlı bir müşteri kaydı yok.</p>
+    </div>
+  );
 
   const roles = [
     client.isBuyer    && "Alıcı",

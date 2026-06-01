@@ -12,7 +12,7 @@ interface Props {
 export default async function RoleBasedWrapper({ children, allowedRoles }: Props) {
   const { user } = await validateRequest();
 
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const userRole = (user as any).roleGayrimenkul as UserRoleGayrimenkul | undefined;
 

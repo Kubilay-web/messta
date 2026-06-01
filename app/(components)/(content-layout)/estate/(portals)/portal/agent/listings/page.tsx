@@ -29,10 +29,12 @@ export default async function AgentListingsPage() {
   const { user } = await validateRequest();
   if (!user) redirect("/estate/login");
 
-  const agent = await getAgentFromUserId(user.id);
-  if (!agent) redirect("/estate/login");
+  const agent   = await getAgentFromUserId(user.id);
+  const role    = (user as any).roleGayrimenkul as string;
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+  if (!agent && !isAdmin) redirect("/estate/login");
 
-  const listings = await getAgentListings(agent.id);
+  const listings = agent ? await getAgentListings(agent.id) : [];
 
   const fmtDate = (d: Date | string | null) =>
     d ? new Date(d).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" }) : "—";
