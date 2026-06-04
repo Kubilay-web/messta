@@ -126,7 +126,7 @@ export default function ListingForm({
         toast.success("İlan oluşturuldu!");
         reset();
       }
-      router.push("/estate/dashboard/academics/listings");
+      router.push("/estate/dashboard/listings");
     } catch (err: any) {
       toast.error(err?.message ?? "Bir hata oluştu.");
     } finally {

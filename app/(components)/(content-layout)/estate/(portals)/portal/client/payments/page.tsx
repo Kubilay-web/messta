@@ -8,12 +8,12 @@ export const metadata: Metadata = { title: "Ödeme Planlarım - Müşteri Portal
 
 export default async function ClientPaymentsPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const client  = await getClientFromUserId(user.id);
   const role    = (user as any).roleGayrimenkul as string;
   const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
-  if (!client && !isAdmin) redirect("/estate/login");
+  if (!client && !isAdmin) redirect("/login");
 
   const payments = client ? await getClientPayments(client.id) : [];
 

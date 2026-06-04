@@ -30,10 +30,10 @@ const propertyTypeLabel: Record<string, string> = {
 
 export default async function ClientFavoritesPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const client = await getClientFromUserId(user.id);
-  if (!client) redirect("/estate/login");
+  if (!client) redirect("/login");
 
   const interests = await getClientInterests(client.id);
 
@@ -53,6 +53,12 @@ export default async function ClientFavoritesPage() {
             <p className="text-xs text-gray-400 mt-1">
               İlan detayında "İlgileniyorum" butonuna basarak favorilerinize ekleyebilirsiniz.
             </p>
+            <Link
+              href="/estate/portal/client/listings"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              İlanları Keşfet <ArrowRight className="w-4 h-4" />
+            </Link>
           </CardContent>
         </Card>
       ) : (

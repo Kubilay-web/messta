@@ -4410,9 +4410,10 @@ model PropertyClient {
   agencyName String
   agency     Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
 
-  contracts PropertyContract[]
-  visits    PropertyVisit[]
-  interests ClientInterest[]
+  contracts     PropertyContract[]
+  visits        PropertyVisit[]
+  interests     ClientInterest[]
+  savedSearches ClientSavedSearch[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -4634,6 +4635,30 @@ model ClientInterest {
 
   @@unique([clientId, listingId])
   @@map("client-interests")
+}
+
+// Müşterinin kaydettiği arama kriterleri (yeni uygun ilan bildirimi için)
+model ClientSavedSearch {
+  id String @id @default(cuid()) @map("_id")
+
+  clientId String
+  client   PropertyClient @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  name         String
+  listingType  String? // SALE | RENT | SHORT_RENT
+  propertyType String?
+  city         String?
+  minPrice     Float?
+  maxPrice     Float?
+  q            String?
+
+  // Bu zamandan sonra eklenen eşleşmeler "yeni" sayılır
+  lastSeenAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("client-saved-searches")
 }
 
 // ===== DÖKÜMANLAR =====

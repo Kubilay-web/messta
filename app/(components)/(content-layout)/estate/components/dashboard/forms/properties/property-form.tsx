@@ -113,7 +113,7 @@ export default function PropertyForm({ agencyId, agencyName, editingId, initialD
         toast.success("Mülk oluşturuldu!");
         reset();
       }
-      router.push("/estate/dashboard/academics/properties");
+      router.push("/estate/dashboard/properties");
     } catch (err: any) {
       toast.error(err?.message ?? "Bir hata oluştu.");
     } finally {

@@ -12,12 +12,12 @@ export const metadata: Metadata = { title: "Müşteri Portalı - EstatePro" };
 
 export default async function ClientPortalPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const client  = await getClientFromUserId(user.id);
   const role    = (user as any).roleGayrimenkul as string;
   const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
-  if (!client && !isAdmin) redirect("/estate/login");
+  if (!client && !isAdmin) redirect("/login");
 
   const [contracts, visits] = client
     ? await Promise.all([getClientContracts(client.id), getClientVisits(client.id)])

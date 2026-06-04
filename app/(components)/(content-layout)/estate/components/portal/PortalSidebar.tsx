@@ -5,6 +5,7 @@ import {
   Banknote,
   Bell,
   BookOpen,
+  Building2,
   Calendar,
   CalendarCheck,
   Check,
@@ -121,6 +122,11 @@ export function renderLoggedInUserLinks(role: AnyRole): NavLink[] {
         icon: GraduationCap,
       },
       {
+        title: "Müşterilerim",
+        href: "/estate/portal/agent/clients",
+        icon: Users,
+      },
+      {
         title: "Ziyaretler",
         href: "/estate/portal/agent/visits",
         icon: Calendar,
@@ -227,6 +233,11 @@ export function renderLoggedInUserLinks(role: AnyRole): NavLink[] {
         icon: Home,
       },
       {
+        title: "İlanlar",
+        href: "/estate/portal/client/listings",
+        icon: Building2,
+      },
+      {
         title: "Profilim",
         href: "/estate/portal/client/profile",
         icon: User,
@@ -235,6 +246,11 @@ export function renderLoggedInUserLinks(role: AnyRole): NavLink[] {
         title: "Favorilerim",
         href: "/estate/portal/client/favorites",
         icon: Heart,
+      },
+      {
+        title: "Kayıtlı Aramalar",
+        href: "/estate/portal/client/saved-searches",
+        icon: Bell,
       },
       {
         title: "Ziyaretlerim",

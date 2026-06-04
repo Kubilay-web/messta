@@ -26,7 +26,7 @@ export async function createDepartment(data: DepartmentCreateProps) {
     }
 
     const responseData = await res.json();
-    revalidatePath("/dashboard/academics/departments");
+    revalidatePath("/dashboard/departments");
 
     return responseData.data as Department;
   } catch (error) {
@@ -48,7 +48,7 @@ export async function deleteDepartment(id: string) {
     }
 
     const responseData = await res.json();
-    revalidatePath("/dashboard/academics/departments");
+    revalidatePath("/dashboard/departments");
 
     return responseData.data as Department;
   } catch (error) {

@@ -123,7 +123,7 @@ export const columns: ColumnDef<PropertyRow>[] = [
       <ActionColumn
         row={row}
         model="property"
-        editEndpoint={`/estate/dashboard/academics/properties/edit/${row.original.id}`}
+        editEndpoint={`/estate/dashboard/properties/edit/${row.original.id}`}
         id={row.original.id}
       />
     ),

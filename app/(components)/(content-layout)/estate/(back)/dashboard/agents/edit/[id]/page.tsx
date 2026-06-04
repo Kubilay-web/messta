@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Danışmanı Düzenle - EstatePro" }
 
 export default async function EditAgentPage({ params }: { params: { id: string } }) {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency = await AgencyUser(user.id);
   const [agent, departments] = await Promise.all([

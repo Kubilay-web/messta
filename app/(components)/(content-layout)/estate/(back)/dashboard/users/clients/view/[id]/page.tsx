@@ -56,7 +56,7 @@ function fmtDate(d: any) {
 
 export default async function ClientViewPage({ params }: { params: { id: string } }) {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const client = await getPropertyClientById(params.id);
   if (!client) notFound();
@@ -235,7 +235,7 @@ export default async function ClientViewPage({ params }: { params: { id: string 
                   {contracts.map((c: any) => (
                     <tr key={c.id} className="hover:bg-gray-50">
                       <td className="px-3 py-2 font-medium text-black">
-                        <Link href={`/estate/dashboard/academics/contracts/view/${c.id}`}
+                        <Link href={`/estate/dashboard/contracts/view/${c.id}`}
                           className="text-blue-600 hover:underline">
                           {c.contractNo}
                         </Link>
@@ -261,7 +261,7 @@ export default async function ClientViewPage({ params }: { params: { id: string 
               {contracts.map((c: any) => (
                 <div key={c.id} className="p-3 space-y-1.5">
                   <div className="flex items-center justify-between gap-2">
-                    <Link href={`/estate/dashboard/academics/contracts/view/${c.id}`}
+                    <Link href={`/estate/dashboard/contracts/view/${c.id}`}
                       className="text-sm font-semibold text-blue-600 hover:underline">
                       {c.contractNo}
                     </Link>
@@ -378,7 +378,7 @@ export default async function ClientViewPage({ params }: { params: { id: string 
                   </div>
                   {l?.id && (
                     <Button asChild size="icon" variant="outline" className="h-7 w-7 shrink-0">
-                      <Link href={`/estate/dashboard/academics/listings/view/${l.id}`}>
+                      <Link href={`/estate/dashboard/listings/view/${l.id}`}>
                         <ExternalLink className="h-3.5 w-3.5" />
                       </Link>
                     </Button>

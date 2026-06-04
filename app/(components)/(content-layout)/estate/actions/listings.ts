@@ -24,7 +24,7 @@ export type ListingProps = {
   agencyId:    string;
 };
 
-const PATH = "/estate/dashboard/academics/listings";
+const PATH = "/estate/dashboard/listings";
 
 function toFloat(v: any) { return v ? parseFloat(String(v)) : null; }
 function toDate(s?: string) { return s ? new Date(s) : null; }
@@ -211,6 +211,89 @@ export async function getAgencyProperties(agencyId: string) {
     select: { id: true, title: true, city: true, propertyType: true },
     orderBy: { createdAt: "desc" },
   });
+}
+
+// ==================== PUBLIC / CLIENT BROWSE ====================
+export type PublicListingFilters = {
+  listingType?:  string; // SALE | RENT | SHORT_RENT
+  propertyType?: string;
+  city?:         string;
+  minPrice?:     number;
+  maxPrice?:     number;
+  q?:            string;
+};
+
+// Müşteri / ziyaretçi için yayında olan ilanları (filtreli) döndürür
+export async function getPublicListings(
+  agencyId: string,
+  filters: PublicListingFilters = {},
+) {
+  const where: any = { agencyId, status: "ACTIVE", isPublic: true };
+
+  if (filters.listingType) where.listingType = filters.listingType;
+  if (filters.q) where.title = { contains: filters.q, mode: "insensitive" };
+
+  if (filters.minPrice != null || filters.maxPrice != null) {
+    where.askingPrice = {};
+    if (filters.minPrice != null) where.askingPrice.gte = filters.minPrice;
+    if (filters.maxPrice != null) where.askingPrice.lte = filters.maxPrice;
+  }
+
+  const propWhere: any = {};
+  if (filters.propertyType) propWhere.propertyType = filters.propertyType;
+  if (filters.city) propWhere.city = { contains: filters.city, mode: "insensitive" };
+  if (Object.keys(propWhere).length) where.property = propWhere;
+
+  return db.listing.findMany({
+    where,
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true, title: true, listingType: true, status: true,
+      askingPrice: true, currency: true, monthlyRent: true,
+      property: {
+        select: {
+          city: true, district: true, neighborhood: true,
+          propertyType: true, roomCount: true, grossArea: true,
+          latitude: true, longitude: true,
+          images: { where: { isCover: true }, select: { url: true }, take: 1 },
+        },
+      },
+    },
+  });
+}
+
+// Halka açık ilan detayı (giriş gerektirmez) — yalnızca yayında olanlar
+export async function getPublicListingDetail(listingId: string) {
+  const listing = await db.listing.findFirst({
+    where: { id: listingId, status: "ACTIVE", isPublic: true },
+    select: {
+      id: true, title: true, listingNo: true, listingType: true, status: true,
+      askingPrice: true, currency: true, monthlyRent: true, deposit: true,
+      isNegotiable: true, description: true, highlights: true,
+      agentId: true, agentName: true, agencyId: true, propertyId: true,
+    },
+  });
+  if (!listing) return null;
+
+  const [property, agent] = await Promise.all([
+    db.propertyRealEstate.findUnique({
+      where:  { id: listing.propertyId },
+      select: {
+        id: true, title: true, address: true, city: true, district: true, neighborhood: true,
+        latitude: true, longitude: true, propertyType: true, grossArea: true, netArea: true,
+        roomCount: true, bathroomCount: true, description: true,
+        images: { select: { url: true, isCover: true, order: true }, orderBy: { order: "asc" } },
+      },
+    }),
+    listing.agentId
+      ? db.agent.findUnique({
+          where:  { id: listing.agentId },
+          select: { id: true, firstName: true, lastName: true, phone: true, email: true, imageUrl: true },
+        })
+      : Promise.resolve(null),
+  ]);
+
+  return { listing, property, agent };
 }
 
 // ==================== GENERATE LISTING NO ====================

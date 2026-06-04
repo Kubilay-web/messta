@@ -14,10 +14,10 @@ export const metadata: Metadata = { title: "Sekreter Portalı - EstatePro" };
 
 export default async function SecretaryPortalPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency = await AgencyUser(user.id);
-  if (!agency) redirect("/estate/login");
+  if (!agency) redirect("/login");
 
   const [properties, agents, clients] = await Promise.all([
     getAllProperties(agency.id),

@@ -19,10 +19,10 @@ function fmt(v: number, cur = "TRY") {
 
 export default async function AccountantPortalPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency = await AgencyUser(user.id);
-  if (!agency) redirect("/estate/login");
+  if (!agency) redirect("/login");
 
   const year = new Date().getFullYear();
   const [revenue, commissionsData] = await Promise.all([

@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Danışmanlar - Sekreter Portalı" }
 
 export default async function SecretaryAgentsPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency = await AgencyUser(user.id);
   const agents = (await getAllAgents(agency?.id ?? "")) || [];

@@ -127,6 +127,49 @@ export async function getAgentAttendanceSelf(agentId: string) {
   });
 }
 
+// ==================== DANIŞMAN MÜŞTERİLERİ ====================
+// Danışmanın müşterileri: ziyaret + sözleşme kayıtlarından türetilir
+export async function getAgentClients(agentId: string) {
+  const [visits, contracts] = await Promise.all([
+    db.propertyVisit.findMany({
+      where:  { agentId },
+      select: { clientId: true, scheduledAt: true },
+    }),
+    db.propertyContract.findMany({
+      where:  { agentId },
+      select: { clientId: true, createdAt: true },
+    }),
+  ]);
+
+  const stats = new Map<string, { visits: number; contracts: number; last: Date | null }>();
+  const bump = (id: string | null | undefined, kind: "visits" | "contracts", date: Date | null) => {
+    if (!id) return;
+    const s = stats.get(id) ?? { visits: 0, contracts: 0, last: null };
+    s[kind] += 1;
+    if (date && (!s.last || date > s.last)) s.last = date;
+    stats.set(id, s);
+  };
+  visits.forEach((v) => bump(v.clientId, "visits", v.scheduledAt));
+  contracts.forEach((c) => bump(c.clientId, "contracts", c.createdAt));
+
+  const ids = [...stats.keys()];
+  if (!ids.length) return [];
+
+  const clients = await db.propertyClient.findMany({
+    where:  { id: { in: ids } },
+    select: {
+      id: true, firstName: true, lastName: true, email: true, phone: true,
+      isBuyer: true, isSeller: true, isTenant: true, isLandlord: true,
+      preferredCities: true, minBudget: true, maxBudget: true, currency: true,
+      _count: { select: { interests: true } },
+    },
+  });
+
+  return clients
+    .map((c) => ({ ...c, ...(stats.get(c.id) ?? { visits: 0, contracts: 0, last: null }) }))
+    .sort((a, b) => (b.last?.getTime() ?? 0) - (a.last?.getTime() ?? 0));
+}
+
 // ==================== AJANS MESAJLARI (danışmana) ====================
 export async function getAgentMessages(agencyId: string) {
   return db.agencyReminder.findMany({

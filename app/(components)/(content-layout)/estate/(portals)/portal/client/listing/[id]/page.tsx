@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Metadata } from "next";
 import InterestToggleButton from "../../../../../components/portal/InterestToggleButton";
+import MortgageCalculator from "../../../../../components/public/MortgageCalculator";
 
 export const metadata: Metadata = { title: "İlan Detayı - Müşteri Portalı" };
 
@@ -57,10 +58,10 @@ export default async function ClientListingDetailPage({
   const { id } = await params;
 
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const client = await getClientFromUserId(user.id);
-  if (!client) redirect("/estate/login");
+  if (!client) redirect("/login");
 
   const data = await getListingDetailForClient(id, client.id);
   if (!data) notFound();
@@ -290,6 +291,11 @@ export default async function ClientListingDetailPage({
             ))}
           </CardContent>
         </Card>
+      )}
+
+      {/* Kredi Hesaplayıcı (satılık) */}
+      {listing.listingType === "SALE" && (
+        <MortgageCalculator price={listing.askingPrice} currency={listing.currency} />
       )}
     </div>
   );

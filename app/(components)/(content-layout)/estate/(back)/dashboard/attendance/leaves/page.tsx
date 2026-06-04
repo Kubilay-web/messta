@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "İzin Yönetimi - EstatePro" };
 
 export default async function LeavesPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency  = await AgencyUser(user.id);
   const agencyId = agency?.id ?? "";

@@ -105,7 +105,7 @@ export default function VisitForm({
         toast.success("Gezi oluşturuldu!");
         reset();
       }
-      router.push("/estate/dashboard/academics/visits");
+      router.push("/estate/dashboard/visits");
     } catch (err: any) {
       toast.error(err?.message ?? "Bir hata oluştu.");
     } finally {

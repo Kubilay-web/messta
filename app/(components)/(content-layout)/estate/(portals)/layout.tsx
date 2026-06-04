@@ -6,7 +6,7 @@ import React, { ReactNode } from "react";
 
 export default async function PortalLayout({ children }: { children: ReactNode }) {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const role = (user as any).roleGayrimenkul as string;
 

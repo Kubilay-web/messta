@@ -42,7 +42,7 @@ function fmtTime(d: Date | string | null) {
 
 export default async function AgentAttendancePage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agent   = await getAgentFromUserId(user.id);
   const role    = (user as any).roleGayrimenkul as string;

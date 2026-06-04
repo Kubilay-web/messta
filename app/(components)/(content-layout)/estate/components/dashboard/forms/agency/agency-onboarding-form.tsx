@@ -41,7 +41,7 @@ export default function AgencyOnboardingForm() {
       toast.success("Ofis başarıyla oluşturuldu!");
       reset();
       router.push(
-        `/estate/super-dashboard/agencies/agency-admin/${agency.id}?name=${agency.name}`
+        `/estate/agency-admin/${agency.id}?name=${agency.name}`
       );
     } catch (error: any) {
       toast.error(error?.message ?? "Ofis oluşturulamadı. Lütfen tekrar deneyin.");

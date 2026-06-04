@@ -1,9 +1,12 @@
 import { getAgencyByIdOrSlug } from "../../../actions/agencies";
 import { getAllAgencySections } from "../../../actions/agency-site";
 import { getFeaturedListings } from "../../../actions/listings";
+import { getPublicGalleryImages } from "../../../actions/agency-gallery";
+import { getPublicAgencyNews } from "../../../actions/agency-news";
+import { getPublicAgencyEvents } from "../../../actions/agency-events";
 import { notFound } from "next/navigation";
 import { Button } from "../../../components/ui/button";
-import { MapPin, Phone, Mail, Clock, Star, Building2, Users, Home, Quote, ArrowRight } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Star, Building2, Users, Home, Quote, ArrowRight, Images, Newspaper, CalendarDays } from "lucide-react";
 import Link from "next/link";
 
 const listingTypeLabel: Record<string, string> = {
@@ -82,12 +85,20 @@ export default async function AgencyPublicPage({
     }))
     .filter((t) => t.name && t.comment);
 
-  const featuredListings = isActive(sections, "FEATURED_PROPERTIES")
-    ? await getFeaturedListings(agency.id, {
-        count:      Number(feat.count) || 6,
-        filterType: feat.filterType,
-      })
-    : [];
+  const [featuredListings, galleryImages, newsItems, events] = await Promise.all([
+    isActive(sections, "FEATURED_PROPERTIES")
+      ? getFeaturedListings(agency.id, {
+          count:      Number(feat.count) || 6,
+          filterType: feat.filterType,
+        })
+      : Promise.resolve([]),
+    getPublicGalleryImages(agency.id),
+    getPublicAgencyNews(agency.id),
+    getPublicAgencyEvents(agency.id),
+  ]);
+
+  const fmtEventDate = (d: Date | string) =>
+    new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" });
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-900">
@@ -204,7 +215,7 @@ export default async function AgencyPublicPage({
                 const p     = l.property;
                 const cover = p?.images?.[0]?.url;
                 return (
-                  <div key={l.id} className="border rounded-2xl overflow-hidden hover:shadow-lg transition-shadow flex flex-col">
+                  <Link key={l.id} href={`/estate/agency/${agencyId}/ilanlar/${l.id}`} className="border rounded-2xl overflow-hidden hover:shadow-lg transition-shadow flex flex-col bg-white">
                     <div className="relative h-48 w-full bg-gray-100">
                       {cover ? (
                         <img src={cover} alt={l.title} className="h-full w-full object-cover" />
@@ -237,19 +248,17 @@ export default async function AgencyPublicPage({
                         )}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
-            {feat.ctaText && feat.ctaLink && (
-              <div className="text-center mt-10">
-                <Button asChild size="lg">
-                  <Link href={feat.ctaLink}>
-                    {feat.ctaText} <ArrowRight className="ml-2 w-4 h-4" />
-                  </Link>
-                </Button>
-              </div>
-            )}
+            <div className="text-center mt-10">
+              <Button asChild size="lg">
+                <Link href={`/estate/agency/${agencyId}/ilanlar`}>
+                  {feat.ctaText || "Tüm İlanları Gör"} <ArrowRight className="ml-2 w-4 h-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </section>
       )}
@@ -269,6 +278,34 @@ export default async function AgencyPublicPage({
                   </div>
                   <h3 className="font-bold">{s.title}</h3>
                   {s.desc && <p className="text-sm text-muted-foreground">{s.desc}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── GALERİ ── */}
+      {galleryImages.length > 0 && (
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-10 flex items-center justify-center gap-2">
+              <Images className="w-6 h-6 text-blue-600" /> Galeri
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
+              {galleryImages.map((img) => (
+                <div key={img.id} className="group relative aspect-square overflow-hidden rounded-2xl border bg-white">
+                  <img
+                    src={img.image}
+                    alt={img.title}
+                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+                    <p className="text-white text-sm font-semibold line-clamp-1">{img.title}</p>
+                    {img.category && (
+                      <p className="text-white/80 text-xs">{img.category.name}</p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -343,6 +380,76 @@ export default async function AgencyPublicPage({
                     <div>
                       <p className="font-semibold text-sm">{t.name}</p>
                       {t.role && <p className="text-xs text-muted-foreground">{t.role}</p>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── HABERLER ── */}
+      {newsItems.length > 0 && (
+        <section className="py-16 px-4 bg-gray-50">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-10 flex items-center justify-center gap-2">
+              <Newspaper className="w-6 h-6 text-blue-600" /> Haberler
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+              {newsItems.map((n) => (
+                <article key={n.id} className="bg-white border rounded-2xl overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+                  {n.image && (
+                    <div className="h-44 w-full bg-gray-100">
+                      <img src={n.image} alt={n.title} className="h-full w-full object-cover" />
+                    </div>
+                  )}
+                  <div className="p-5 space-y-2 flex-1 flex flex-col">
+                    <p className="text-xs text-muted-foreground">{fmtEventDate(n.createdAt)}</p>
+                    <h3 className="font-bold line-clamp-2">{n.title}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-3">{n.content}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── ETKİNLİKLER ── */}
+      {events.length > 0 && (
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-10 flex items-center justify-center gap-2">
+              <CalendarDays className="w-6 h-6 text-blue-600" /> Yaklaşan Etkinlikler
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+              {events.map((ev) => (
+                <div key={ev.id} className="border rounded-2xl overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+                  {ev.image && (
+                    <div className="h-40 w-full bg-gray-100">
+                      <img src={ev.image} alt={ev.title} className="h-full w-full object-cover" />
+                    </div>
+                  )}
+                  <div className="p-5 space-y-2 flex-1 flex flex-col">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-600">
+                      <CalendarDays className="w-3.5 h-3.5" /> {fmtEventDate(ev.date)}
+                    </div>
+                    <h3 className="font-bold line-clamp-2">{ev.title}</h3>
+                    {ev.description && (
+                      <p className="text-sm text-muted-foreground line-clamp-2">{ev.description}</p>
+                    )}
+                    <div className="mt-auto pt-2 space-y-1 text-xs text-muted-foreground">
+                      {(ev.startTime || ev.endTime) && (
+                        <p className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5 text-blue-600" /> {ev.startTime}{ev.endTime && ` – ${ev.endTime}`}
+                        </p>
+                      )}
+                      {ev.location && (
+                        <p className="flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-blue-600" /> {ev.location}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>

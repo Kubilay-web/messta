@@ -69,3 +69,12 @@ export async function getClientInterests(clientId: string) {
 
   return interests;
 }
+
+// Yalnızca favori (ilgilenilen) ilan ID'leri — listede kalp durumu için
+export async function getClientInterestListingIds(clientId: string) {
+  const rows = await db.clientInterest.findMany({
+    where:  { clientId },
+    select: { listingId: true },
+  });
+  return rows.map((r) => r.listingId);
+}

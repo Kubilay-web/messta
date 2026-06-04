@@ -146,8 +146,8 @@ export async function updateMarkSheetWithMarks(data: UpdateMarkSheetProps) {
       throw new Error(result.error);
     }
 
-    revalidatePath("/dashboard/academics/exams");
-    revalidatePath(`/dashboard/academics/exams?mid=${data.markSheetId}`);
+    revalidatePath("/dashboard/exams");
+    revalidatePath(`/dashboard/exams?mid=${data.markSheetId}`);
 
     return result.data;
   } catch (error: any) {
@@ -263,7 +263,7 @@ export async function deleteMarkSheet(markSheetId: string) {
       throw new Error(result.error);
     }
 
-    revalidatePath("/dashboard/academics/exams");
+    revalidatePath("/dashboard/exams");
     return result.data;
   } catch (error: any) {
     console.error("Delete marksheet error:", error);
@@ -294,7 +294,7 @@ export async function updateStudentMark(markId: string, data: {
       throw new Error(result.error);
     }
 
-    revalidatePath("/dashboard/academics/exams");
+    revalidatePath("/dashboard/exams");
     return result.data;
   } catch (error: any) {
     console.error("Update student mark error:", error);

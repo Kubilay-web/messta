@@ -7,7 +7,7 @@ import { Card, CardContent } from "../../../../../components/ui/card";
 
 export default async function NewAgentPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency = await AgencyUser(user.id);
 

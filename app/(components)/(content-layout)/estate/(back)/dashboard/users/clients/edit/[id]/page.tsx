@@ -16,7 +16,7 @@ export default async function EditClientPage({
   params: { id: string };
 }) {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const [agency, client] = await Promise.all([
     AgencyUser(user.id),

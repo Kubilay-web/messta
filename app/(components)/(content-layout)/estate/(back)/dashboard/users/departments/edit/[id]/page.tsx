@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Departmanı Düzenle - EstatePro" };
 
 export default async function EditDepartmentPage({ params }: { params: { id: string } }) {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency = await AgencyUser(user.id);
 

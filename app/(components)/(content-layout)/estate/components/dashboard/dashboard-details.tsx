@@ -47,7 +47,7 @@ const kpiConfig = (analytics: AgencyAnalytics) => [
     value:    analytics.counts.properties,
     icon:     Building2,
     color:    "bg-blue-50 text-blue-600",
-    href:     `${base}/academics/properties`,
+    href:     `${base}/properties`,
   },
   {
     title:    "Aktif İlan",
@@ -55,7 +55,7 @@ const kpiConfig = (analytics: AgencyAnalytics) => [
     sub:      `Toplam: ${analytics.counts.totalListings}`,
     icon:     FileText,
     color:    "bg-green-50 text-green-600",
-    href:     `${base}/academics/listings`,
+    href:     `${base}/listings`,
   },
   {
     title:    "Aktif Sözleşme",
@@ -63,7 +63,7 @@ const kpiConfig = (analytics: AgencyAnalytics) => [
     sub:      `Toplam: ${analytics.counts.totalContracts}`,
     icon:     CheckCircle,
     color:    "bg-purple-50 text-purple-600",
-    href:     `${base}/academics/contracts`,
+    href:     `${base}/contracts`,
   },
   {
     title:    "Danışman",
@@ -85,7 +85,7 @@ const kpiConfig = (analytics: AgencyAnalytics) => [
     sub:      `Toplam: ${analytics.counts.totalVisits}`,
     icon:     CalendarCheck,
     color:    "bg-rose-50 text-rose-600",
-    href:     `${base}/academics/visits`,
+    href:     `${base}/visits`,
   },
   {
     title:    "Satış Cirosu",
@@ -106,7 +106,7 @@ const kpiConfig = (analytics: AgencyAnalytics) => [
     value:    fmt(analytics.revenue.pendingPayments),
     icon:     Clock,
     color:    "bg-amber-50 text-amber-600",
-    href:     `${base}/academics/payments`,
+    href:     `${base}/payments`,
   },
 ];
 
@@ -152,7 +152,7 @@ export default function DashboardDetails({
               <span className="flex items-center gap-2">
                 <FileText className="w-4 h-4 text-blue-600" /> Son Sözleşmeler
               </span>
-              <Link href={`${base}/academics/contracts`}
+              <Link href={`${base}/contracts`}
                 className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1">
                 Tümü <ArrowRight className="w-3 h-3" />
               </Link>

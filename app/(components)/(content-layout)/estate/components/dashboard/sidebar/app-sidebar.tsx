@@ -28,7 +28,7 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
       isActive: true,
       items: [
         { title: "Genel Bakış",       url: `${base}` },
-        { title: "Analitik",          url: `${base}/academics/analytics` },
+        { title: "Analitik",          url: `${base}/analytics` },
         { title: "Aktivite Logları",  url: `${base}/logs` },
       ],
     },
@@ -36,17 +36,17 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
       title: "Mülk Yönetimi",
       icon:  Building2,
       items: [
-        { title: "Mülkler",          url: `${base}/academics/properties` },
-        { title: "İlanlar",          url: `${base}/academics/listings` },
-        { title: "Sözleşmeler",      url: `${base}/academics/contracts` },
-        { title: "Mülk Gezileri",    url: `${base}/academics/visits` },
+        { title: "Mülkler",          url: `${base}/properties` },
+        { title: "İlanlar",          url: `${base}/listings` },
+        { title: "Sözleşmeler",      url: `${base}/contracts` },
+        { title: "Mülk Gezileri",    url: `${base}/visits` },
       ],
     },
     {
       title: "Ödeme Planları",
       icon:  ClipboardList,
       items: [
-        { title: "Tüm Ödemeler",     url: `${base}/academics/payments` },
+        { title: "Tüm Ödemeler",     url: `${base}/payments` },
       ],
     },
     {

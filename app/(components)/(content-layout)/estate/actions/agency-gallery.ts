@@ -90,3 +90,13 @@ export async function getAllGalleryImages(agencyId: string) {
     include: { category: { select: { id: true, name: true } } },
   });
 }
+
+// Halka açık site için — yalnızca aktif görseller
+export async function getPublicGalleryImages(agencyId: string, take = 12) {
+  return db.agencyGalleryImage.findMany({
+    where:   { agencyId, active: true },
+    orderBy: { createdAt: "desc" },
+    take,
+    include: { category: { select: { id: true, name: true } } },
+  });
+}

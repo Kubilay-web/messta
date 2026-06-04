@@ -41,7 +41,7 @@ export type PropertyProps = {
   agencyName:   string;
 };
 
-const PATH = "/estate/dashboard/academics/properties";
+const PATH = "/estate/dashboard/properties";
 
 function n(v: any) { return v != null && v !== "" ? parseFloat(String(v)) : null; }
 function i(v: any) { return v != null && v !== "" ? parseInt(String(v), 10)  : null; }

@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Devam Takibi - EstatePro" };
 
 export default async function AttendancePage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency   = await AgencyUser(user.id);
   const agencyId = agency?.id ?? "";

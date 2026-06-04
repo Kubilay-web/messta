@@ -31,10 +31,10 @@ function fmtDate(d: any) {
 
 export default async function AccountantContractsPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency = await AgencyUser(user.id);
-  if (!agency) redirect("/estate/login");
+  if (!agency) redirect("/login");
 
   const contracts = await db.propertyContract.findMany({
     where:   { agencyId: agency.id },

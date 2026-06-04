@@ -19,12 +19,12 @@ const visitStatusVariant: Record<string, "default" | "secondary" | "destructive"
 
 export default async function AgentVisitsPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agent   = await getAgentFromUserId(user.id);
   const role    = (user as any).roleGayrimenkul as string;
   const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
-  if (!agent && !isAdmin) redirect("/estate/login");
+  if (!agent && !isAdmin) redirect("/login");
 
   const visits = agent ? await getAgentVisits(agent.id) : [];
 

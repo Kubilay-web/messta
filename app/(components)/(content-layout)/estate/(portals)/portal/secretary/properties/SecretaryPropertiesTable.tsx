@@ -115,7 +115,7 @@ function PropertyDetail({ p }: { p: PropertyItem }) {
           </Link>
         </Button>
         <Button asChild size="sm" variant="outline" className="flex-1 text-xs">
-          <Link href={`/estate/dashboard/academics/properties/edit/${p.id}`}>
+          <Link href={`/estate/dashboard/properties/edit/${p.id}`}>
             Düzenle
           </Link>
         </Button>

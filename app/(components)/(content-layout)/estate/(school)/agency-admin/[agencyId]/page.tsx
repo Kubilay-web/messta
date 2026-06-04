@@ -11,7 +11,7 @@ export default async function AgencyAdminPage({
   params: Promise<{ agencyId: string }>;
 }) {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const { agencyId } = await params;
   const [agency, users] = await Promise.all([

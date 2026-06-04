@@ -14,7 +14,7 @@ export default async function AgencyOnboardingPage() {
   const { user } = await validateRequest();
 
   if (!user) {
-    redirect("/estate/login");
+    redirect("/login");
   }
 
   // Yalnızca SUPER_ADMIN ofis oluşturabilir

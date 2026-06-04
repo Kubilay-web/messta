@@ -54,3 +54,12 @@ export async function getAllAgencyNews(agencyId: string) {
 export async function getAgencyNewsById(id: string) {
   return db.agencyNewsItem.findUnique({ where: { id } });
 }
+
+// Halka açık site için — son haberler
+export async function getPublicAgencyNews(agencyId: string, take = 6) {
+  return db.agencyNewsItem.findMany({
+    where:   { agencyId },
+    orderBy: { createdAt: "desc" },
+    take,
+  });
+}

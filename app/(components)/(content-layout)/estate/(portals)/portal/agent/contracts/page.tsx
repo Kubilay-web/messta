@@ -27,7 +27,7 @@ export default async function AgentContractsPage() {
   const agent   = await getAgentFromUserId(user.id);
   const role    = (user as any).roleGayrimenkul as string;
   const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
-  if (!agent && !isAdmin) redirect("/estate/login");
+  if (!agent && !isAdmin) redirect("/login");
 
   const contracts = agent ? await getAgentContracts(agent.id) : [];
 

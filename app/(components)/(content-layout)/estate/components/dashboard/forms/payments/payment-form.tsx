@@ -99,7 +99,7 @@ export default function PaymentForm({ contracts, editingId, initialData }: Props
         toast.success("Ödeme oluşturuldu!");
         reset();
       }
-      router.push("/estate/dashboard/academics/payments");
+      router.push("/estate/dashboard/payments");
     } catch (err: any) {
       toast.error(err?.message ?? "Bir hata oluştu.");
     } finally {

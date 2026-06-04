@@ -410,7 +410,7 @@ export default function TeacherForm({
                 options={departments}
                 option={selectedDepartment}
                 setOption={setSelectedDepartment}
-                href="/dashboard/academics/departments"
+                href="/dashboard/departments"
                 toolTipText="Create New Department"
               />
             </div>
@@ -427,7 +427,7 @@ export default function TeacherForm({
                 options={subjects}
                 option={mainSubject}
                 setOption={setMainSubject}
-                href="/dashboard/academics/subjects"
+                href="/dashboard/subjects"
                 toolTipText="Add New Subject"
               />
               {/* Multi select */}
@@ -450,7 +450,7 @@ export default function TeacherForm({
                   options={classes}
                   option={selectedClasses}
                   setOption={setSelectedClasses}
-                  href="/dashboard/academics/classes"
+                  href="/dashboard/classes"
                   toolTipText="Add New Class"
                    isMultiple={true}
                 />

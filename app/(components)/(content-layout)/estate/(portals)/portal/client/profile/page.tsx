@@ -21,7 +21,7 @@ const typeLabel: Record<string, string> = {
 
 export default async function ClientProfilePage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const client  = await getClientFullProfile(user.id);
   const role    = (user as any).roleGayrimenkul as string;

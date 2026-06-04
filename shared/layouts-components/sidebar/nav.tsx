@@ -274,7 +274,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: "/estate/agency-onboarding",
+                path: "/estate/agencies/new",
                 type: "link",
                 active: false,
                 selected: false,
@@ -346,7 +346,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: "/estate/dashboard/academics/listings",
+                path: "/estate/dashboard/listings",
                 type: "link",
                 active: false,
                 selected: false,
@@ -354,7 +354,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: "/estate/dashboard/academics/properties",
+                path: "/estate/dashboard/properties",
                 type: "link",
                 active: false,
                 selected: false,
@@ -362,7 +362,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: "/estate/dashboard/academics/contracts",
+                path: "/estate/dashboard/contracts",
                 type: "link",
                 active: false,
                 selected: false,
@@ -370,7 +370,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: "/estate/dashboard/academics/analytics",
+                path: "/estate/dashboard/analytics",
                 type: "link",
                 active: false,
                 selected: false,
@@ -378,7 +378,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: "/estate/dashboard/academics/visits",
+                path: "/estate/dashboard/visits",
                 type: "link",
                 active: false,
                 selected: false,
@@ -386,7 +386,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
-                path: "/estate/dashboard/academics/payments",
+                path: "/estate/dashboard/payments",
                 type: "link",
                 active: false,
                 selected: false,
@@ -497,11 +497,27 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
                   },
 
                   {
-                    path: "/estate/portal/client/listing",
+                    path: "/estate/portal/client/listings",
                     type: "link",
                     active: false,
                     selected: false,
-                    title: "Client Listing",
+                    title: "Client Listings",
+                  },
+
+                  {
+                    path: "/estate/portal/client/favorites",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Client Favorites",
+                  },
+
+                  {
+                    path: "/estate/portal/client/saved-searches",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Client Saved Searches",
                   },
 
                   {
@@ -601,6 +617,13 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
                     active: false,
                     selected: false,
                     title: "Portal Agent Listings",
+                  },
+                  {
+                    path: "/estate/portal/agent/clients",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agent Clients",
                   },
                   {
                     path: "/estate/portal/agent/messages",
@@ -704,6 +727,8 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
             type: "sub",
             active: false,
             children: [
+              { path: `/estate/agency/${user?.agencyId ?? ""}`,                              type: "link", active: false, selected: false, title: "Canlı Site"        },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/ilanlar`,                       type: "link", active: false, selected: false, title: "Tüm İlanlar"       },
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize`,                    type: "link", active: false, selected: false, title: "Site Yönetimi"      },
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/logo`,               type: "link", active: false, selected: false, title: "Logo & Navigasyon" },
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/hero-section`,       type: "link", active: false, selected: false, title: "Hero Bölümü"       },

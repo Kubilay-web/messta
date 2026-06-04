@@ -25,7 +25,7 @@ export type ContractProps = {
   agencyId:     string;
 };
 
-const PATH = "/estate/dashboard/academics/contracts";
+const PATH = "/estate/dashboard/contracts";
 
 function f(v: any) { return v != null && v !== "" ? parseFloat(String(v)) : null; }
 function d(s?: string) { return s ? new Date(s) : null; }

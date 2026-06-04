@@ -16,13 +16,13 @@ export default function SidebarHeader({
       {/* Hızlı erişim butonları */}
       <div className="flex items-center gap-2 flex-1">
         <Button asChild variant="outline" size="sm" className="h-8 text-xs">
-          <Link href="/estate/dashboard/academics/listings/new">
+          <Link href="/estate/dashboard/listings/new">
             <Plus className="h-3.5 w-3.5 mr-1" />
             Yeni İlan
           </Link>
         </Button>
         <Button asChild variant="outline" size="sm" className="h-8 text-xs hidden sm:flex">
-          <Link href="/estate/dashboard/academics/contracts/new">
+          <Link href="/estate/dashboard/contracts/new">
             <Plus className="h-3.5 w-3.5 mr-1" />
             Yeni Sözleşme
           </Link>

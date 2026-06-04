@@ -66,3 +66,14 @@ export async function getAllAgencyEvents(agencyId: string) {
 export async function getAgencyEventById(id: string) {
   return db.agencyEvent.findUnique({ where: { id } });
 }
+
+// Halka açık site için — yaklaşan etkinlikler (geçmişler hariç)
+export async function getPublicAgencyEvents(agencyId: string, take = 6) {
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  return db.agencyEvent.findMany({
+    where:   { agencyId, date: { gte: startOfToday } },
+    orderBy: { date: "asc" },
+    take,
+  });
+}

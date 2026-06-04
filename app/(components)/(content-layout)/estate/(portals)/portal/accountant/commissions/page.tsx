@@ -13,10 +13,10 @@ export default async function AccountantCommissionsPage({
   searchParams: Promise<{ year?: string }>;
 }) {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency  = await AgencyUser(user.id);
-  if (!agency) redirect("/estate/login");
+  if (!agency) redirect("/login");
 
   const params  = await searchParams;
   const current = new Date().getFullYear();

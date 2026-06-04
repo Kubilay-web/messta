@@ -13,7 +13,7 @@ export default async function CommissionsPage({
   searchParams: Promise<{ year?: string }>;
 }) {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency    = await AgencyUser(user.id);
   const params    = await searchParams;

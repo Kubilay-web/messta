@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Aktivite Logları - EstatePro" };
 
 export default async function LogsPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency = await AgencyUser(user.id);
   const logs   = await getAllAgencyLogs(agency?.id ?? "");

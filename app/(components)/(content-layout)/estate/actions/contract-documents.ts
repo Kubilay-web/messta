@@ -3,7 +3,7 @@
 import db from "@/app/lib/db";
 import { revalidatePath } from "next/cache";
 
-const PATH = "/estate/dashboard/academics/contracts";
+const PATH = "/estate/dashboard/contracts";
 
 export type ContractDocumentProps = {
   contractId: string;

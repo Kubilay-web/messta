@@ -12,7 +12,7 @@ import {
   StreamCreateProps,
 } from "../types/types";
 
-const PATH = "/management/dashboard/academics/classes";
+const PATH = "/management/dashboard/classes";
 
 // ── CLASS ──────────────────────────────────────────────
 

@@ -15,7 +15,7 @@ export type ContractPaymentProps = {
   notes?:        string;
 };
 
-const PATH = "/estate/dashboard/academics/payments";
+const PATH = "/estate/dashboard/payments";
 
 function d(s?: string) { return s ? new Date(s) : null; }
 

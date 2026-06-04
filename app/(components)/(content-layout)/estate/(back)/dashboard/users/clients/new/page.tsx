@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function NewClientPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const [agency, users] = await Promise.all([
     AgencyUser(user.id),

@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Departmanlar - EstatePro" };
 
 export default async function DepartmentsPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency      = await AgencyUser(user.id);
   const departments = await getAllAgencyDepartments(agency?.id ?? "");

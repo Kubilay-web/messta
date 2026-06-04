@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Danışman Devam Görüntüsü - Est
 
 export default async function AgentAttendancePage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency = await AgencyUser(user.id);
   const agents = await getBriefAgents(agency?.id ?? "");

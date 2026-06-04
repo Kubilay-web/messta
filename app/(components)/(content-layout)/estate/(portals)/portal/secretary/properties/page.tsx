@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Mülkler - Sekreter Portalı" };
 
 export default async function SecretaryPropertiesPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency = await AgencyUser(user.id);
   const properties = (await getAllProperties(agency?.id ?? "")) || [];

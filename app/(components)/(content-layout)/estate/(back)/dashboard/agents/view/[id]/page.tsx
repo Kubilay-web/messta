@@ -17,7 +17,7 @@ export const metadata: Metadata = { title: "Danışman Detayı - EstatePro" };
 
 export default async function AgentViewPage({ params }: { params: { id: string } }) {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agent = await getAgentById(params.id);
   if (!agent) notFound();

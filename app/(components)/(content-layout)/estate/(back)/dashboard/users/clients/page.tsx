@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 
 export default async function ClientsPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const agency  = await AgencyUser(user.id);
   const clients = await getAllPropertyClients(agency?.id ?? "");

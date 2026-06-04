@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Yeni Ofis Ekle - EstatePro" };
 
 export default async function NewAgencyPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">

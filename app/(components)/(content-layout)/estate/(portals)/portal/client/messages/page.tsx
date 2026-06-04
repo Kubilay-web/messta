@@ -8,12 +8,12 @@ export const metadata: Metadata = { title: "Mesajlar - Müşteri Portalı" };
 
 export default async function ClientMessagesPage() {
   const { user } = await validateRequest();
-  if (!user) redirect("/estate/login");
+  if (!user) redirect("/login");
 
   const client  = await getClientFromUserId(user.id);
   const role    = (user as any).roleGayrimenkul as string;
   const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
-  if (!client && !isAdmin) redirect("/estate/login");
+  if (!client && !isAdmin) redirect("/login");
 
   const messages = client ? await getClientMessages(client.agencyId) : [];
 
