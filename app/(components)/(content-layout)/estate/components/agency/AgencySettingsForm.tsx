@@ -87,7 +87,7 @@ export default function AgencySettingsForm({
           <ImageInput
             title="Ajans Logosu"
             imageUrl={form.logo || "/management/images/realestate-logo.svg"}
-            setImageUrl={(url) => set("logo", url)}
+            setImageUrl={(url: string) => set("logo", url)}
             size="sm"
           />
           <div className="space-y-1.5">

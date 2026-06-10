@@ -1,9 +1,11 @@
 "use server";
 
-import { ContactProps } from "../components/frontend/contact-us";
 import { Contact } from "../types/types";
 import { revalidatePath } from "next/cache";
 import prisma from "../../../../lib/db";
+
+// contact-us bileşeni artık AgencyContactProps kullanıyor; burada esnek tip yeterli
+type ContactProps = Record<string, any>;
 
 
 export async function createContact(data: ContactProps) {

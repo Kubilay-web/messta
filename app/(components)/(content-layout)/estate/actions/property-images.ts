@@ -3,7 +3,7 @@
 import db from "@/app/lib/db";
 import { revalidatePath } from "next/cache";
 
-const PATH = "/estate/dashboard/academics/properties";
+const PATH = "/estate/dashboard/properties";
 
 // ==================== ADD IMAGE ====================
 export async function addPropertyImage(data: {

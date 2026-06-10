@@ -74,7 +74,7 @@ const Basic: FC<BasicProps> = () => {
         }
 
         const fullOTP = `${one}${two}${three}${four}`;
-        router.push('/dashboards/sales');
+        router.push('/estate');
                 toast.success('Verify Your Account successful', {
                     position: 'top-right',
                     autoClose: 1500,

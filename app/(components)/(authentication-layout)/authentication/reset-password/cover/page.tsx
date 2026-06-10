@@ -34,7 +34,7 @@ const Cover = () => {
     };
     const router = useRouter();
     const onSubmit = (data: any) => {
-        router.push('/dashboards/sales');
+        router.push('/estate');
         toast.success('Created Password successful', {
             position: 'top-right',
             autoClose: 1500,

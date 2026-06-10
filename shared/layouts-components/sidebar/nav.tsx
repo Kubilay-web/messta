@@ -230,6 +230,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
   {
     menutitle: "MAIN",
   },
+
   {
     title: "Home",
     icon: Dashboardicon,
@@ -742,10 +743,45 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/news`,               type: "link", active: false, selected: false, title: "Haberler"          },
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/events`,             type: "link", active: false, selected: false, title: "Etkinlikler"       },
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/gallery`,            type: "link", active: false, selected: false, title: "Galeri"            },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/settings`,           type: "link", active: false, selected: false, title: "Ayarlar"          },
             ],
           },
         ],
       },
+
+      // ===================== Gayrimenkul CRM =====================
+      {
+        title: "Gayrimenkul CRM",
+        icon: Appsicon,
+        type: "sub",
+        active: false,
+        children: [
+          { path: `/crm/agency/${user?.agencyId ?? ""}`,                     type: "link", active: false, selected: false, title: "Gösterge Paneli"   },
+          { path: `/crm/agency/${user?.agencyId ?? ""}/pipeline`,            type: "link", active: false, selected: false, title: "Satış Hattı"       },
+          { path: `/crm/agency/${user?.agencyId ?? ""}/leads`,               type: "link", active: false, selected: false, title: "Fırsatlar"         },
+          { path: `/crm/agency/${user?.agencyId ?? ""}/clients`,             type: "link", active: false, selected: false, title: "Müşteriler"        },
+          { path: `/crm/agency/${user?.agencyId ?? ""}/tasks`,               type: "link", active: false, selected: false, title: "Görevler"          },
+          { path: `/crm/agency/${user?.agencyId ?? ""}/activities`,          type: "link", active: false, selected: false, title: "Ajanda"            },
+          { path: `/crm/agency/${user?.agencyId ?? ""}/notifications`,       type: "link", active: false, selected: false, title: "Eşleşme Uyarıları" },
+          { path: `/crm/agency/${user?.agencyId ?? ""}/agents`,              type: "link", active: false, selected: false, title: "Danışmanlar"       },
+          { path: `/crm/agency/${user?.agencyId ?? ""}/reports`,             type: "link", active: false, selected: false, title: "Raporlar"          },
+          { path: `/crm/agency/${user?.agencyId ?? ""}/settings/pipelines`,  type: "link", active: false, selected: false, title: "Hat Ayarları"      },
+        ],
+      },
+
+      // =============== Gayrimenkul Proje Yönetimi ===============
+      // {
+      //   title: "Proje Yönetimi",
+      //   icon: Appsicon,
+      //   type: "sub",
+      //   active: false,
+      //   children: [
+      //     { path: `/estateproject/agency/${user?.agencyId ?? ""}`,           type: "link", active: false, selected: false, title: "Portföy"      },
+      //     { path: `/estateproject/agency/${user?.agencyId ?? ""}/projects`,  type: "link", active: false, selected: false, title: "Projeler"     },
+      //   ],
+      // },
+
+ 
 
 
 

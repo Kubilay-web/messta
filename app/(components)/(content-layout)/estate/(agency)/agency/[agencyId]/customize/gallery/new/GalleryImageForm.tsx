@@ -48,7 +48,7 @@ export default function GalleryImageForm({ agencyId, categories }: { agencyId: s
         {image && <img src={image} alt="" className="mt-2 h-28 w-auto rounded-md border object-cover" />}
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="space-y-1"><label className="text-sm font-medium">Tarih</label>
           <input value={date} onChange={(e) => setDate(e.target.value)} className={c} placeholder="2024-06" />
         </div>

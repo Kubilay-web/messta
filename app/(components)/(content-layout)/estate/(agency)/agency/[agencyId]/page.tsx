@@ -104,7 +104,7 @@ export default async function AgencyPublicPage({
     <div className="min-h-screen flex flex-col bg-white text-gray-900">
 
       {/* ── HEADER ── */}
-      <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
+      <header className="top-0 z-50 bg-white border-b shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {logo.logoUrl && (

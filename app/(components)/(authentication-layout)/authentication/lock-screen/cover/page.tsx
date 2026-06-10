@@ -57,7 +57,7 @@ const Cover = () => {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (validate()) {
-            router.push('/dashboards/sales');
+            router.push('/estate');
             toast.success('Save Password successful', {
                 position: 'top-right',
                 autoClose: 1500,

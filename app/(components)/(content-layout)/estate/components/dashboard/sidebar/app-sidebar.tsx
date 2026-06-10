@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Building2, FileText, CalendarCheck,
   Users, User, BarChart3, MessageSquare, DollarSign,
   Activity, Settings2, Key, Globe, ChevronRight,
-  ClipboardList, TrendingUp,
+  ClipboardList, TrendingUp, Kanban,
 } from "lucide-react";
 import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
@@ -30,6 +30,24 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
         { title: "Genel Bakış",       url: `${base}` },
         { title: "Analitik",          url: `${base}/analytics` },
         { title: "Aktivite Logları",  url: `${base}/logs` },
+      ],
+    },
+    {
+      title: "CRM",
+      icon:  Kanban,
+      items: [
+        { title: "Genel Bakış",   url: `${base}/crm` },
+        { title: "Potansiyeller", url: `${base}/crm/leads` },
+        { title: "Fırsatlar",     url: `${base}/crm/deals` },
+        { title: "Görevler",      url: `${base}/crm/tasks` },
+        { title: "Takvim",        url: `${base}/crm/calendar` },
+        { title: "Projeler",      url: `${base}/crm/projects` },
+        { title: "Dosyalar",      url: `${base}/crm/files` },
+        { title: "E-posta",       url: `${base}/crm/emails` },
+        { title: "Aboneler",      url: `${base}/crm/subscribers` },
+        { title: "Kategoriler",   url: `${base}/crm/categories` },
+        { title: "Analitik",      url: `${base}/crm/analytics` },
+        { title: "Pipeline Ayarları", url: `${base}/crm/pipelines` },
       ],
     },
     {

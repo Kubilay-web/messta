@@ -116,7 +116,7 @@ export default function ContractForm({
         toast.success("Sözleşme oluşturuldu!");
         reset();
       }
-      router.push("/estate/dashboard/academics/contracts");
+      router.push("/estate/dashboard/contracts");
     } catch (err: any) {
       toast.error(err?.message ?? "Bir hata oluştu.");
     } finally {

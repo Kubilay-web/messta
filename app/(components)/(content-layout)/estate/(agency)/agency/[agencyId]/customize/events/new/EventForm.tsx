@@ -54,7 +54,7 @@ export default function EventForm({ agencyId, initialData, editingId }: { agency
         <input value={title} onChange={(e) => setTitle(e.target.value)} required className={c} placeholder="Etkinlik adı" />
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="space-y-1"><label className="text-sm font-medium">Tarih *</label>
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required className={c} />
         </div>

@@ -2445,6 +2445,8 @@ model SubscriptionFinance {
 
 //
 
+
+
 // Project Management Project Schemas
 
 model AccountProject {
@@ -4109,6 +4111,7 @@ enum StudentAttendanceStatus {
 
 
 
+
 //Real Estate ERP
 
 
@@ -4286,6 +4289,15 @@ model Agency {
   sections          AgencySection[]
   contactMessages   AgencyContactMessage[]
 
+  // CRM
+  crmPipelines  CrmPipeline[]
+  crmLeads      Lead[]
+  crmTasks      CrmTask[]
+  crmActivities CrmActivity[]
+
+  // Proje Yönetimi
+  estateProjects EstateProject[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -4365,6 +4377,11 @@ model Agent {
   leaves     AgentLeave[]
   visits     PropertyVisit[]
 
+  // CRM
+  crmLeads      Lead[]
+  crmTasks      CrmTask[]
+  crmActivities CrmActivity[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -4414,6 +4431,9 @@ model PropertyClient {
   visits        PropertyVisit[]
   interests     ClientInterest[]
   savedSearches ClientSavedSearch[]
+
+  // CRM
+  crmLeads Lead[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -4513,6 +4533,9 @@ model Listing {
   contracts PropertyContract[]
   visits    PropertyVisit[]
   interests ClientInterest[]
+
+  // CRM
+  crmLeads Lead[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -4944,3 +4967,687 @@ model AgencyContactMessage {
 
 //Real Estate ERP
 
+
+
+
+// ============================================================
+// ===============  REAL ESTATE CRM (ERP üstü)  ===============
+// ============================================================
+
+enum LeadStatus {
+  OPEN        // Açık (hatta aktif)
+  WON         // Kazanıldı
+  LOST        // Kaybedildi
+}
+
+enum LeadSource {
+  WEBSITE         // Web sitesi
+  PORTAL          // Sahibinden / Hepsiemlak vb.
+  PHONE           // Telefon
+  WALK_IN         // Ofise gelen
+  REFERRAL        // Tavsiye
+  SOCIAL_MEDIA    // Sosyal medya
+  ADVERTISEMENT   // Reklam
+  EMAIL_CAMPAIGN  // E-posta kampanyası
+  PARTNER         // İş ortağı
+  OTHER
+}
+
+enum LeadTemperature {
+  HOT    // Sıcak
+  WARM   // Ilık
+  COLD   // Soğuk
+}
+
+enum CrmTaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+enum CrmTaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum CrmActivityType {
+  NOTE          // Not
+  CALL          // Telefon görüşmesi
+  EMAIL         // E-posta
+  WHATSAPP      // WhatsApp
+  MEETING       // Toplantı
+  VISIT         // Mülk gezisi
+  SMS
+  STAGE_CHANGE  // Aşama değişikliği (otomatik)
+  TASK          // Görev (otomatik)
+  WON           // Kazanıldı (otomatik)
+  LOST          // Kaybedildi (otomatik)
+  CREATED       // Oluşturuldu (otomatik)
+  FILE          // Dosya
+}
+
+// Satış hattı (örn. "Satılık Pipeline", "Kiralık Pipeline")
+model CrmPipeline {
+  id          String  @id @default(cuid()) @map("_id")
+  name        String
+  description String?
+  listingType ListingType? // Bu hat hangi ilan türü için (opsiyonel)
+  color       String  @default("#6366f1")
+  isDefault   Boolean @default(false)
+  isActive    Boolean @default(true)
+  order       Int     @default(0)
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  stages CrmStage[]
+  leads  Lead[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@map("crm-pipelines")
+}
+
+// Hat aşaması (örn. "Yeni", "İletişim Kuruldu", "Teklif", "Pazarlık")
+model CrmStage {
+  id          String  @id @default(cuid()) @map("_id")
+  name        String
+  color       String  @default("#94a3b8")
+  order       Int     @default(0)
+  probability Int     @default(0) // Kazanma olasılığı (%)
+  isWon       Boolean @default(false)
+  isLost      Boolean @default(false)
+  rottenDays  Int?    // Bu kadar gün hareketsiz kalırsa "çürük" sayılır
+
+  pipelineId String
+  pipeline   CrmPipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+
+  leads Lead[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pipelineId])
+  @@map("crm-stages")
+}
+
+// Müşteri adayı / Fırsat (Deal)
+model Lead {
+  id    String @id @default(cuid()) @map("_id")
+  title String // Fırsat başlığı, örn. "Kadıköy 3+1 arayan - Ahmet Yılmaz"
+
+  // İletişim bilgileri (henüz Client kaydı olmayabilir)
+  contactName  String
+  contactEmail String?
+  contactPhone String?
+  company      String?
+
+  source      LeadSource      @default(OTHER)
+  status      LeadStatus      @default(OPEN)
+  temperature LeadTemperature @default(WARM)
+
+  // Finansal
+  value          Float?  // Fırsatın tahmini değeri
+  currency       String  @default("TRY")
+  budgetMin      Float?
+  budgetMax      Float?
+
+  // Talep / eşleştirme kriterleri
+  listingType   ListingType?
+  propertyType  PropertyType?
+  city          String?
+  district      String?
+  roomCount     String?
+  requirements  String? // Serbest metin talep
+
+  expectedCloseDate DateTime?
+  lostReason        String?
+  wonAt             DateTime?
+  lostAt            DateTime?
+  lastActivityAt    DateTime  @default(now())
+  position          Int       @default(0) // Aşama içi sıralama
+
+  tags String[]
+
+  // İlişkiler
+  pipelineId String
+  pipeline   CrmPipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+
+  stageId String
+  stage   CrmStage @relation(fields: [stageId], references: [id])
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  // Atanan danışman
+  agentId   String?
+  agentName String?
+  agent     Agent?  @relation(fields: [agentId], references: [id])
+
+  // Var olan müşteriye bağlıysa
+  clientId String?
+  client   PropertyClient? @relation(fields: [clientId], references: [id])
+
+  // İlgilenilen ilana bağlıysa
+  listingId String?
+  listing   Listing? @relation(fields: [listingId], references: [id])
+
+  activities CrmActivity[]
+  tasks      CrmTask[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([pipelineId, stageId])
+  @@index([agentId])
+  @@map("crm-leads")
+}
+
+// Aktivite / zaman çizelgesi kaydı (not, çağrı, e-posta, aşama değişimi...)
+model CrmActivity {
+  id      String          @id @default(cuid()) @map("_id")
+  type    CrmActivityType
+  title   String
+  content String?
+  meta    Json? // Örn. { fromStage, toStage } veya { duration }
+
+  // Planlı/yapıldı bilgisi (çağrı/toplantı planı için)
+  dueAt       DateTime?
+  completedAt DateTime?
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  // Aktiviteyi yapan danışman
+  agentId   String?
+  agentName String?
+  agent     Agent?  @relation(fields: [agentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([leadId])
+  @@index([agencyId])
+  @@map("crm-activities")
+}
+
+// Görev (takip et, ara, evrak hazırla...)
+model CrmTask {
+  id          String          @id @default(cuid()) @map("_id")
+  title       String
+  description String?
+  status      CrmTaskStatus   @default(TODO)
+  priority    CrmTaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  completedAt DateTime?
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  agentId   String?
+  agentName String?
+  agent     Agent?  @relation(fields: [agentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([leadId])
+  @@index([agentId])
+  @@map("crm-tasks")
+}
+
+
+
+
+
+
+// ============================================================
+// ========  GAYRİMENKUL PROJE YÖNETİMİ (ERP üstü)  ===========
+// ============================================================
+
+enum EstateProjectType {
+  RESIDENTIAL  // Konut
+  COMMERCIAL   // Ticari
+  MIXED_USE    // Karma kullanım
+  INDUSTRIAL   // Sanayi
+  LAND         // Arsa geliştirme
+}
+
+enum EstateProjectStatus {
+  PLANNING            // Planlama
+  PRESALE             // Ön satış
+  UNDER_CONSTRUCTION  // İnşaat halinde
+  COMPLETED           // Tamamlandı
+  DELIVERED           // Teslim edildi
+  ON_HOLD             // Beklemede
+  CANCELLED           // İptal
+}
+
+enum ProjectUnitStatus {
+  AVAILABLE  // Müsait
+  RESERVED   // Rezerve
+  SOLD       // Satıldı
+  BLOCKED    // Bloke / satışa kapalı
+  DELIVERED  // Teslim edildi
+}
+
+enum ProjectPhaseStatus {
+  NOT_STARTED  // Başlamadı
+  IN_PROGRESS  // Devam ediyor
+  COMPLETED    // Tamamlandı
+  DELAYED      // Gecikti
+  ON_HOLD      // Durduruldu
+}
+
+enum ProjectTaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  BLOCKED
+}
+
+enum ProjectTaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ProjectMilestoneStatus {
+  PENDING
+  REACHED
+  MISSED
+}
+
+enum ProjectExpenseCategory {
+  LAND          // Arsa
+  CONSTRUCTION  // İnşaat
+  LABOR         // İşçilik
+  MATERIAL      // Malzeme
+  PERMIT        // Ruhsat / izin
+  MARKETING     // Pazarlama
+  LEGAL         // Hukuk
+  FINANCE       // Finansman
+  OTHER
+}
+
+enum ProjectExpenseStatus {
+  PLANNED    // Planlandı
+  COMMITTED  // Taahhüt edildi
+  PAID       // Ödendi
+}
+
+enum UnitSaleStatus {
+  RESERVATION  // Ön rezervasyon / kapora
+  CONTRACT     // Sözleşme imzalandı
+  COMPLETED    // Tamamlandı (tapu devri)
+  CANCELLED    // İptal
+}
+
+// Geliştirme / inşaat projesi (örn. "Marina Residence")
+model EstateProject {
+  id          String  @id @default(cuid()) @map("_id")
+  name        String
+  slug        String  @unique
+  code        String? // Proje kodu
+  description String?
+
+  type   EstateProjectType
+  status EstateProjectStatus @default(PLANNING)
+
+  // Konum
+  address      String?
+  city         String
+  district     String?
+  neighborhood String?
+  latitude     Float?
+  longitude    Float?
+
+  // Tarihler
+  startDate         DateTime?
+  estimatedEndDate  DateTime?
+  actualEndDate     DateTime?
+  deliveryDate      DateTime?
+
+  // Finans
+  budget   Float?
+  currency String  @default("TRY")
+
+  // Alanlar
+  totalLandArea         Float? // Arsa alanı (m²)
+  totalConstructionArea Float? // Toplam inşaat alanı (m²)
+  totalBlocks           Int?
+  totalFloors           Int?
+
+  // Medya & ilerleme
+  coverImage String?
+  progress   Int     @default(0) // İnşaat ilerlemesi (%)
+  isFeatured Boolean @default(false)
+
+  // Proje yöneticisi (danışman)
+  managerName String?
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  blocks      ProjectBlock[]
+  units       ProjectUnit[]
+  sales       UnitSale[]
+  phases      ProjectPhase[]
+  milestones  ProjectMilestone[]
+  tasks       ProjectTask[]
+  expenses    ProjectExpense[]
+  contractors ProjectContractor[]
+  documents   ProjectDocument[]
+  images      ProjectImage[]
+  updates     ProjectUpdate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@map("estate-projects")
+}
+
+// Blok / Etap (örn. "A Blok")
+model ProjectBlock {
+  id           String  @id @default(cuid()) @map("_id")
+  name         String
+  code         String?
+  floors       Int?
+  unitsPerFloor Int?
+  description  String?
+  progress     Int     @default(0) // İnşaat ilerlemesi (%)
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  units ProjectUnit[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@map("estate-project-blocks")
+}
+
+// Bağımsız bölüm (daire / dükkan / ofis)
+model ProjectUnit {
+  id     String @id @default(cuid()) @map("_id")
+  unitNo String // "A-12", "Daire 5"
+
+  type   PropertyType
+  status ProjectUnitStatus @default(AVAILABLE)
+
+  floor        Int?
+  roomCount    String? // "3+1"
+  grossArea    Float?
+  netArea      Float?
+  balconyArea  Float?
+  facing       String? // Cephe (Güney, Deniz vb.)
+  listPrice    Float?
+  currency     String  @default("TRY")
+  description  String?
+  features     String[]
+  isFeatured   Boolean @default(false)
+
+  agencyId String // kapsam kolaylığı için denormalize
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  blockId String?
+  block   ProjectBlock? @relation(fields: [blockId], references: [id], onDelete: SetNull)
+
+  sales UnitSale[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([blockId])
+  @@index([agencyId])
+  @@map("estate-project-units")
+}
+
+// Bağımsız bölüm satışı (ERP müşteri/danışmanına bağlı)
+model UnitSale {
+  id     String         @id @default(cuid()) @map("_id")
+  status UnitSaleStatus @default(RESERVATION)
+
+  salePrice   Float
+  currency    String  @default("TRY")
+  downPayment Float? // Peşinat / kapora
+  commission  Float?
+  saleDate    DateTime?
+  notes       String?
+
+  unitId String
+  unit   ProjectUnit @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  agencyId String
+
+  // ERP bağlantıları (id + denormalize ad)
+  clientId   String?
+  clientName String?
+  agentId    String?
+  agentName  String?
+
+  payments ProjectPayment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([unitId])
+  @@index([agencyId])
+  @@map("estate-project-unit-sales")
+}
+
+// Satış ödeme planı / taksitler
+model ProjectPayment {
+  id String @id @default(cuid()) @map("_id")
+
+  saleId String
+  sale   UnitSale @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  title         String
+  amount        Float
+  dueDate       DateTime
+  paidDate      DateTime?
+  status        PaymentStatusGayrimenkul @default(PENDING)
+  paymentMethod String?
+  receiptNo     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([saleId])
+  @@map("estate-project-payments")
+}
+
+// İnşaat fazı
+model ProjectPhase {
+  id            String             @id @default(cuid()) @map("_id")
+  name          String
+  description   String?
+  status        ProjectPhaseStatus @default(NOT_STARTED)
+  order         Int                @default(0)
+  progress      Int                @default(0)
+  startDate     DateTime?
+  endDate       DateTime?
+  plannedBudget Float?
+  actualCost    Float?
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  tasks ProjectTask[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@map("estate-project-phases")
+}
+
+// Kilometre taşı
+model ProjectMilestone {
+  id          String                 @id @default(cuid()) @map("_id")
+  title       String
+  description String?
+  dueDate     DateTime?
+  status      ProjectMilestoneStatus @default(PENDING)
+  completedAt DateTime?
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@map("estate-project-milestones")
+}
+
+// Proje görevi
+model ProjectTask {
+  id          String              @id @default(cuid()) @map("_id")
+  title       String
+  description String?
+  status      ProjectTaskStatus   @default(TODO)
+  priority    ProjectTaskPriority @default(MEDIUM)
+  progress    Int                 @default(0)
+  dueDate     DateTime?
+  completedAt DateTime?
+  assigneeName String?
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  phaseId String?
+  phase   ProjectPhase? @relation(fields: [phaseId], references: [id], onDelete: SetNull)
+
+  agencyId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@map("estate-project-tasks")
+}
+
+// Müteahhit / taşeron
+model ProjectContractor {
+  id          String  @id @default(cuid()) @map("_id")
+  name        String
+  contactName String?
+  phone       String?
+  email       String?
+  specialty   String? // "Elektrik", "Kaba inşaat" vb.
+  taxNumber   String?
+  contractAmount Float?
+  notes       String?
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@map("estate-project-contractors")
+}
+
+// Harcama kalemi
+model ProjectExpense {
+  id       String                 @id @default(cuid()) @map("_id")
+  title    String
+  category ProjectExpenseCategory @default(OTHER)
+  status   ProjectExpenseStatus   @default(PLANNED)
+  amount   Float
+  currency String                 @default("TRY")
+  date     DateTime?
+  vendor   String?
+  notes    String?
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  agencyId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@map("estate-project-expenses")
+}
+
+// Proje dökümanı
+model ProjectDocument {
+  id String @id @default(cuid()) @map("_id")
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  type       DocumentTypeGayrimenkul
+  title      String
+  url        String
+  size       Int?
+  uploadedAt DateTime @default(now())
+
+  @@index([projectId])
+  @@map("estate-project-documents")
+}
+
+// Proje görseli / render
+model ProjectImage {
+  id String @id @default(cuid()) @map("_id")
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  url     String
+  title   String?
+  isCover Boolean @default(false)
+  order   Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([projectId])
+  @@map("estate-project-images")
+}
+
+// Saha / ilerleme güncellemesi
+model ProjectUpdate {
+  id            String @id @default(cuid()) @map("_id")
+  title         String
+  content       String?
+  progress      Int?
+  imageUrl      String?
+  createdByName String?
+
+  projectId String
+  project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([projectId])
+  @@map("estate-project-updates")
+}

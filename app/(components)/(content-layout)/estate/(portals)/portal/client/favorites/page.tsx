@@ -38,7 +38,7 @@ export default async function ClientFavoritesPage() {
   const interests = await getClientInterests(client.id);
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
+    <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
       <div className="flex items-center gap-2">
         <Heart className="w-5 h-5 text-blue-600 fill-current" />
         <h1 className="text-xl sm:text-2xl font-extrabold text-black">Favorilerim</h1>
@@ -62,17 +62,23 @@ export default async function ClientFavoritesPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {interests.map((it) => {
             const l    = it.listing;
             const p    = l?.property;
             const cover = p?.images?.[0]?.url;
             return (
               <Link key={it.id} href={`/estate/portal/client/listing/${l.id}`}>
-                <Card className="overflow-hidden hover:shadow-md transition-shadow h-full">
-                  <div className="relative h-40 w-full bg-gray-100">
+                <Card className="overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
+                  <div className="relative h-44 sm:h-40 w-full shrink-0 overflow-hidden bg-gray-100">
                     {cover ? (
-                      <Image src={cover} alt={l.title} fill className="object-cover" />
+                      <Image
+                        src={cover}
+                        alt={l.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover"
+                      />
                     ) : (
                       <div className="flex h-full items-center justify-center">
                         <Home className="w-10 h-10 text-gray-300" />

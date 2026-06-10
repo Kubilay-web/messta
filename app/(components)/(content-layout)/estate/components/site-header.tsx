@@ -131,7 +131,7 @@ export default function SiteHeader() {
 	const [showFeatures, setShowFeatures] = React.useState(false);
 
 	return (
-		<header className="top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
+		<header className="top-0 w-full border-b bg-background/95 backdrop-blur-sm">
 			{/* <PromoBanner /> */}
 			{/* <div className="container max-w-6xl mx-auto flex h-14 items-center justify-between">
         <div className="flex items-center space-x-4">

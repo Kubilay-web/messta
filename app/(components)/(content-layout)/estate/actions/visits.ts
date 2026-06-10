@@ -16,7 +16,7 @@ export type VisitProps = {
   clientId:    string;
 };
 
-const PATH = "/estate/dashboard/academics/visits";
+const PATH = "/estate/dashboard/visits";
 
 function d(s?: string) { return s ? new Date(s) : null; }
 function r(v: any) { return v ? parseInt(String(v), 10) : null; }

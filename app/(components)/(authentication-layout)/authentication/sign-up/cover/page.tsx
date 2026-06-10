@@ -37,7 +37,7 @@ const onSubmit = async (values: SignUpValues) => {
       } else {
         toast.success('Account created successfully!');
         setTimeout(() => {
-          router.push("/dashboards/sales/");
+          router.push("/estate");
         }, 3000); // 3 saniye sonra yönlendirme
       }
     } catch (err) {

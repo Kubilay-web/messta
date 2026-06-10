@@ -326,7 +326,7 @@ export default function Header2() {
 
 	return (
 		<>
-			<header className="sticky top-0 z-40 w-full border-b border-gray-100 bg-white">
+			<header className="top-0 z-40 w-full border-b border-gray-100 bg-white">
 				<div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
 					<div className="flex h-16 items-center justify-between">
 						<div className="flex items-center gap-6">
