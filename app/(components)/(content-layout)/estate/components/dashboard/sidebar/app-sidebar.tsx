@@ -15,26 +15,31 @@ import {
 } from "../../../components/ui/sidebar";
 import Logo    from "../../../components/logo";
 import UserMenu from "./user-menu";
+import { hasPermission } from "../../../lib/permissions";
 
-type Props = { agencySlug: string; agencyName: string };
+type Props = { agencySlug: string; agencyName: string; userRole?: string };
 
-export default function AppSidebar({ agencySlug, agencyName }: Props) {
+export default function AppSidebar({ agencySlug, agencyName, userRole }: Props) {
   const base = "/estate/dashboard";
 
   const sidebarLinks = [
     {
       title: "Dashboard",
       icon:  LayoutDashboard,
+      perm:  "dashboard.view",
       isActive: true,
       items: [
-        { title: "Genel Bakış",       url: `${base}` },
-        { title: "Analitik",          url: `${base}/analytics` },
-        { title: "Aktivite Logları",  url: `${base}/logs` },
+        { title: "Genel Bakış",        url: `${base}` },
+        { title: "Analitik",           url: `${base}/analytics` },
+        { title: "Gelişmiş Analitik",  url: `${base}/insights` },
+        { title: "Denetim Kayıtları",  url: `${base}/audit-logs` },
+        { title: "Aktivite Logları",   url: `${base}/logs` },
       ],
     },
     {
       title: "CRM",
       icon:  Kanban,
+      perm:  "dashboard.view",
       items: [
         { title: "Genel Bakış",   url: `${base}/crm` },
         { title: "Potansiyeller", url: `${base}/crm/leads` },
@@ -53,16 +58,21 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
     {
       title: "Mülk Yönetimi",
       icon:  Building2,
+      perm:  "properties.view",
       items: [
         { title: "Mülkler",          url: `${base}/properties` },
         { title: "İlanlar",          url: `${base}/listings` },
+        { title: "Teklifler",        url: `${base}/offers` },
+        { title: "Rezervasyonlar",   url: `${base}/reservations` },
         { title: "Sözleşmeler",      url: `${base}/contracts` },
         { title: "Mülk Gezileri",    url: `${base}/visits` },
+        { title: "Bakım Talepleri",  url: `${base}/maintenance` },
       ],
     },
     {
       title: "Ödeme Planları",
       icon:  ClipboardList,
+      perm:  "finance.view",
       items: [
         { title: "Tüm Ödemeler",     url: `${base}/payments` },
       ],
@@ -70,6 +80,7 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
     {
       title: "Danışmanlar",
       icon:  User,
+      perm:  "agents.view",
       items: [
         { title: "Tüm Danışmanlar",  url: `${base}/agents` },
         { title: "Yeni Danışman",    url: `${base}/agents/new` },
@@ -79,6 +90,7 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
     {
       title: "Müşteriler",
       icon:  Users,
+      perm:  "clients.view",
       items: [
         { title: "Tüm Müşteriler",   url: `${base}/users/clients` },
         { title: "Yeni Müşteri",     url: `${base}/users/clients/new` },
@@ -87,6 +99,7 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
     {
       title: "Devam Takibi",
       icon:  CalendarCheck,
+      perm:  "agents.view",
       items: [
         { title: "Genel Bakış",         url: `${base}/attendance` },
         { title: "Departmana Göre",     url: `${base}/attendance/by-department` },
@@ -97,7 +110,10 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
     {
       title: "İletişim",
       icon:  MessageSquare,
+      perm:  "communications.view",
       items: [
+        { title: "İletişim Kayıtları",   url: `${base}/communication/logs` },
+        { title: "Bildirimler",          url: `${base}/notifications` },
         { title: "Hatırlatıcılar",       url: `${base}/communication/reminders` },
         { title: "Web Sitesi Mesajları", url: `${base}/communication/website-messages` },
       ],
@@ -105,14 +121,20 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
     {
       title: "Finans",
       icon:  DollarSign,
+      perm:  "finance.view",
       items: [
-        { title: "Komisyonlar",   url: `${base}/finance/commissions` },
+        { title: "Komisyon Özeti",   url: `${base}/finance/commissions` },
+        { title: "Komisyon Kayıtları", url: `${base}/finance/commission-records` },
+        { title: "Faturalar",     url: `${base}/finance/invoices` },
+        { title: "Giderler",      url: `${base}/finance/expenses` },
+        { title: "Bordro / Maaş", url: `${base}/finance/payroll` },
         { title: "Gelir Takibi",  url: `${base}/finance/revenue` },
       ],
     },
     {
       title: "Kullanıcılar",
       icon:  Settings2,
+      perm:  "settings.manage",
       items: [
         { title: "Ajans Kullanıcıları", url: `${base}/users` },
         { title: "Rol Ata",             url: `${base}/users/new` },
@@ -121,6 +143,7 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
     {
       title: "Admin",
       icon:  Key,
+      perm:  "settings.manage",
       items: [
         { title: "Talepler / İletişim", url: `${base}/admin/contacts` },
       ],
@@ -128,6 +151,7 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
     {
       title: "Web Sitesi",
       icon:  Globe,
+      perm:  "settings.manage",
       items: [
         { title: "Canlı Site",     url: `/estate/${agencySlug}` },
         { title: "Özelleştir",     url: `/estate/${agencySlug}/customize` },
@@ -137,6 +161,9 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
       ],
     },
   ];
+
+  // Rol bazlı görünürlük: perm tanımlı değilse herkese açık; tanımlıysa yetki gerekir.
+  const visibleLinks = sidebarLinks.filter((g) => !(g as any).perm || hasPermission(userRole, (g as any).perm));
 
   return (
     <Sidebar className="!bg-gray-200 !text-black [&_*]:!text-black" collapsible="icon">
@@ -151,7 +178,7 @@ export default function AppSidebar({ agencySlug, agencyName }: Props) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {sidebarLinks.map((item) => (
+            {visibleLinks.map((item) => (
               <Collapsible
                 key={item.title}
                 asChild

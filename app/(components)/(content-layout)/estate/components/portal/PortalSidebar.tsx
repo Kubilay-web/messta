@@ -137,6 +137,21 @@ export function renderLoggedInUserLinks(role: AnyRole): NavLink[] {
         icon: ScrollText,
       },
       {
+        title: "Tekliflerim",
+        href: "/estate/portal/agent/offers",
+        icon: Banknote,
+      },
+      {
+        title: "Rezervasyonlarım",
+        href: "/estate/portal/agent/reservations",
+        icon: Calendar,
+      },
+      {
+        title: "Bakım Taleplerim",
+        href: "/estate/portal/agent/maintenance",
+        icon: CalendarCheck,
+      },
+      {
         title: "Devam Takibi",
         href: "/estate/portal/agent/attendance",
         icon: CalendarCheck,
@@ -208,9 +223,29 @@ export function renderLoggedInUserLinks(role: AnyRole): NavLink[] {
         icon: DollarSign,
       },
       {
-        title: "Komisyonlar",
+        title: "Komisyon Özeti",
         href: "/estate/portal/accountant/commissions",
         icon: Banknote,
+      },
+      {
+        title: "Komisyon Kayıtları",
+        href: "/estate/portal/accountant/commission-records",
+        icon: Banknote,
+      },
+      {
+        title: "Faturalar",
+        href: "/estate/portal/accountant/invoices",
+        icon: ScrollText,
+      },
+      {
+        title: "Giderler",
+        href: "/estate/portal/accountant/expenses",
+        icon: DollarSign,
+      },
+      {
+        title: "Bordro / Maaş",
+        href: "/estate/portal/accountant/payroll",
+        icon: TrendingUp,
       },
       {
         title: "Sözleşmeler",
@@ -255,6 +290,16 @@ export function renderLoggedInUserLinks(role: AnyRole): NavLink[] {
       {
         title: "Ziyaretlerim",
         href: "/estate/portal/client/visits",
+        icon: Calendar,
+      },
+      {
+        title: "Tekliflerim",
+        href: "/estate/portal/client/offers",
+        icon: Banknote,
+      },
+      {
+        title: "Rezervasyonlarım",
+        href: "/estate/portal/client/reservations",
         icon: Calendar,
       },
       {

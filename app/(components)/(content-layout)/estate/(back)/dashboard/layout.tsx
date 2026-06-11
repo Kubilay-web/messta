@@ -1,6 +1,7 @@
 import { validateRequest } from "@/app/auth";
 import { AgencyUser } from "../../actions/auth";
 import { getAgencyActivities } from "../../actions/agency-logs";
+import { getUnreadNotificationCount } from "../../actions/notifications";
 import AppSidebar from "../../components/dashboard/sidebar/app-sidebar";
 import SidebarHeader from "../../components/dashboard/sidebar/sidebar-header";
 import { SidebarInset, SidebarProvider } from "../../components/ui/sidebar";
@@ -18,12 +19,13 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   const agency        = await AgencyUser(user.id);
   const notifications = await getAgencyActivities(agency?.id ?? "");
+  const unreadNotifCount = await getUnreadNotificationCount(agency?.id ?? "");
 
   return (
     <SidebarProvider>
-      {/* <AppSidebar agencySlug={agency?.slug ?? ""} agencyName={agency?.name ?? "EstatePro"} /> */}
+      {/* <AppSidebar agencySlug={agency?.slug ?? ""} agencyName={agency?.name ?? "EstatePro"} userRole={userRole} /> */}
       <SidebarInset>
-        <SidebarHeader notifications={notifications as any[]} />
+        <SidebarHeader notifications={notifications as any[]} unreadNotifCount={unreadNotifCount} />
         {children}
       </SidebarInset>
     </SidebarProvider>

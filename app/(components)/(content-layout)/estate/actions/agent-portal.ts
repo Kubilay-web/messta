@@ -182,3 +182,63 @@ export async function getAgentMessages(agencyId: string) {
     },
   });
 }
+
+// ==================== DANIŞMAN TEKLİFLERİ ====================
+export async function getAgentOffers(agentId: string) {
+  const offers = await db.propertyOffer.findMany({
+    where:   { agentId },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true, offerNo: true, offerType: true, status: true,
+      amount: true, counterAmount: true, currency: true,
+      clientName: true, createdAt: true, listingId: true, propertyId: true,
+    },
+  });
+  if (!offers.length) return [];
+
+  const listingIds = [...new Set(offers.map((o) => o.listingId).filter(Boolean))];
+  const propIds    = [...new Set(offers.map((o) => o.propertyId).filter(Boolean))];
+  const [listings, props] = await Promise.all([
+    listingIds.length ? db.listing.findMany({ where: { id: { in: listingIds } }, select: { id: true, title: true, listingNo: true } }) : [],
+    propIds.length    ? db.propertyRealEstate.findMany({ where: { id: { in: propIds } }, select: { id: true, title: true, city: true } }) : [],
+  ]);
+  const lm = Object.fromEntries(listings.map((l) => [l.id, l]));
+  const pm = Object.fromEntries(props.map((p) => [p.id, p]));
+  return offers.map((o) => ({ ...o, listing: lm[o.listingId] ?? null, property: pm[o.propertyId] ?? null }));
+}
+
+// ==================== DANIŞMAN REZERVASYONLARI ====================
+export async function getAgentReservations(agentId: string) {
+  const reservations = await db.propertyReservation.findMany({
+    where:   { agentId },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true, reservationNo: true, status: true, depositAmount: true,
+      currency: true, reservedUntil: true, clientName: true, propertyId: true,
+    },
+  });
+  if (!reservations.length) return [];
+
+  const propIds = [...new Set(reservations.map((r) => r.propertyId).filter(Boolean))];
+  const props = propIds.length ? await db.propertyRealEstate.findMany({ where: { id: { in: propIds } }, select: { id: true, title: true, city: true } }) : [];
+  const pm = Object.fromEntries(props.map((p) => [p.id, p]));
+  return reservations.map((r) => ({ ...r, property: pm[r.propertyId] ?? null }));
+}
+
+// ==================== DANIŞMAN BAKIM TALEPLERİ ====================
+export async function getAgentMaintenance(agentId: string) {
+  const reqs = await db.maintenanceRequest.findMany({
+    where:   { agentId },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true, requestNo: true, title: true, priority: true, status: true,
+      cost: true, currency: true, vendor: true, createdAt: true, propertyId: true,
+    },
+  });
+  if (!reqs.length) return [];
+
+  const propIds = [...new Set(reqs.map((r) => r.propertyId).filter(Boolean))];
+  const props = propIds.length ? await db.propertyRealEstate.findMany({ where: { id: { in: propIds } }, select: { id: true, title: true, city: true } }) : [];
+  const pm = Object.fromEntries(props.map((p) => [p.id, p]));
+  return reqs.map((r) => ({ ...r, property: pm[r.propertyId] ?? null }));
+}

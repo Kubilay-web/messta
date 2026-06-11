@@ -298,8 +298,9 @@ export async function assignUserAsAgent(data: AssignAgentProps) {
   const byEmpId = await db.agent.findUnique({ where: { employeeId: data.employeeId } });
   if (byEmpId) throw new Error("Bu çalışan numarası zaten mevcut.");
 
-  const firstName = user.firstName ?? user.name?.split(" ")[0] ?? "";
-  const lastName  = user.lastName  ?? user.name?.split(" ").slice(1).join(" ") ?? "";
+  const fallbackName = user.name ?? user.email?.split("@")[0] ?? "Danışman";
+  const firstName = user.firstName || user.name?.split(" ")[0] || fallbackName;
+  const lastName  = user.lastName  || user.name?.split(" ").slice(1).join(" ") || "";
 
   const specializationCities = Array.isArray(data.specializationCities)
     ? data.specializationCities

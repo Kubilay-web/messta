@@ -1,13 +1,15 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, BellRing } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { SidebarFooter, SidebarMenu, SidebarMenuItem, SidebarTrigger } from "../../../components/ui/sidebar";
 import NotificationButton from "./notification-button";
 
 export default function SidebarHeader({
   notifications,
+  unreadNotifCount = 0,
 }: {
   notifications: any[];
+  unreadNotifCount?: number;
 }) {
   return (
     <div className="flex h-16 items-center gap-3 border-b px-4">
@@ -28,6 +30,18 @@ export default function SidebarHeader({
           </Link>
         </Button>
       </div>
+
+      {/* Bildirim rozeti (okunmamış ERP bildirimleri) */}
+      <Button asChild variant="outline" size="icon" className="relative h-9 w-9">
+        <Link href="/estate/dashboard/notifications" aria-label="Bildirimler">
+          <BellRing className="h-5 w-5" />
+          {unreadNotifCount > 0 && (
+            <span className="absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold text-white">
+              {unreadNotifCount > 9 ? "9+" : unreadNotifCount}
+            </span>
+          )}
+        </Link>
+      </Button>
 
       <NotificationButton notifications={notifications} />
 

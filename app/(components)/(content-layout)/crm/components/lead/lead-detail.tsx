@@ -23,6 +23,8 @@ import {
   Home,
   UserPlus,
   ExternalLink,
+  Trophy,
+  Banknote,
 } from "lucide-react";
 import {
   Card,
@@ -64,8 +66,9 @@ import { ConvertClientDialog } from "./convert-client-dialog";
 import type { FormOptions, KanbanLead } from "../pipeline/types";
 import { addActivity, deleteActivity } from "../../actions/activities";
 import { createTask, updateTaskStatus, deleteTask } from "../../actions/tasks";
-import { moveLead, markLeadLost, deleteLead } from "../../actions/leads";
+import { moveLead, markLeadLost, deleteLead, markLeadWon, convertLeadToOffer } from "../../actions/leads";
 import { addListingInterestFromLead } from "../../actions/matching";
+import { scoreTier } from "../../lib/score";
 
 const activityIcons: Record<string, any> = {
   NOTE: StickyNote,
@@ -123,6 +126,27 @@ export function LeadDetail({
     }
   };
 
+  const handleWin = async () => {
+    try {
+      await markLeadWon(lead.id);
+      toast.success("Fırsat kazanıldı 🎉");
+      router.refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Hata");
+    }
+  };
+
+  const handleConvertOffer = async () => {
+    if (!window.confirm("Bu fırsat ERP'de bir teklife (PropertyOffer) dönüştürülsün mü?")) return;
+    try {
+      const offer = await convertLeadToOffer(lead.id);
+      toast.success(`Teklif oluşturuldu: ${(offer as any)?.offerNo ?? ""}`);
+      router.refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Dönüştürülemedi.");
+    }
+  };
+
   const handleDelete = async () => {
     if (!window.confirm("Bu fırsat silinsin mi? Bu işlem geri alınamaz.")) return;
     try {
@@ -176,17 +200,20 @@ export function LeadDetail({
           </Button>
           <div className="min-w-0">
             <h1 className="text-xl font-bold truncate">{lead.title}</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground flex items-center gap-1.5 flex-wrap">
               {lead.pipeline.name} ·{" "}
               <Badge
                 variant={lead.status === "WON" ? "default" : lead.status === "LOST" ? "destructive" : "secondary"}
               >
                 {leadStatusLabel[lead.status]}
               </Badge>
+              {(() => { const t = scoreTier(lead.score ?? 0); return (
+                <Badge style={{ backgroundColor: `${t.color}1a`, color: t.color }}>Skor {lead.score ?? 0} · {t.label}</Badge>
+              ); })()}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
           {lead.clientId ? (
             <Button asChild variant="outline" size="sm">
               <Link href={`/crm/agency/${agencyId}/clients/${lead.clientId}`}>
@@ -198,9 +225,19 @@ export function LeadDetail({
               <UserPlus className="size-4" /> Müşteriye Dönüştür
             </Button>
           )}
+          {lead.clientId && lead.listingId && (
+            <Button variant="outline" size="sm" onClick={handleConvertOffer}>
+              <Banknote className="size-4" /> Teklife Çevir
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
             <Pencil className="size-4" /> Düzenle
           </Button>
+          {lead.status === "OPEN" && (
+            <Button variant="default" size="sm" onClick={handleWin}>
+              <Trophy className="size-4" /> Kazandır
+            </Button>
+          )}
           {lead.status === "OPEN" && (
             <Button variant="outline" size="sm" onClick={handleLost}>
               <XCircle className="size-4" /> Kaybedildi

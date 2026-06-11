@@ -127,7 +127,7 @@ export function ConvertClientDialog({
         </DialogHeader>
 
         <div className="grid gap-4 py-2">
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <F label="Ünvan">
               <Select value={form.title} onValueChange={(v) => set("title", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
@@ -156,7 +156,7 @@ export function ConvertClientDialog({
             </F>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <F label="E-posta *">
               <Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} />
             </F>
@@ -171,7 +171,7 @@ export function ConvertClientDialog({
             </F>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <F label="TC Kimlik No *">
               <Input
                 value={form.NIN}
@@ -206,7 +206,7 @@ export function ConvertClientDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <F label="Min Bütçe">
               <Input
                 type="number"

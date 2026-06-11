@@ -44,7 +44,7 @@ enum RoleProject {
 //
 
 model User {
- id       String @id @default(cuid()) @map("_id")
+  id String @id @default(cuid()) @map("_id")
 
   //Project Management
 
@@ -82,57 +82,39 @@ model User {
 
   //
 
-
-
   // Invoice Generator Start
 
+  jobTitle String?
 
+  account AccountInvoice[]
 
-
-
-  jobTitle      String?
-
-
-  account      AccountInvoice[]
-
-  isVerified    Boolean   @default(false)
-
+  isVerified Boolean @default(false)
 
   // Subscription related fields
   stripeCustomerId String?
   subscription     SubscriptionInvoice?
-  payment         PaymentInvoice[]
-  invoiceCount     Int           @default(0)
+  payment          PaymentInvoice[]
+  invoiceCount     Int                  @default(0)
 
   // Invoice tracking fields (modified)
-  dailyInvoicesCreated Int       @default(0) // Count for current day
+  dailyInvoicesCreated Int            @default(0) // Count for current day
   lastInvoiceDate      DateTime? // Last invoice creation date (for daily reset)
-  totalInvoicesCreated Int       @default(0) // Lifetime count
+  totalInvoicesCreated Int            @default(0) // Lifetime count
   // Invoice SaaS relationships
   brand                Brand?
   clients              Client[]
-  invoice            InvoiceModel[]
+  invoice              InvoiceModel[]
 
   // Invoice Generator Finish
 
-
-
-
-
   //School Manage Start
 
-
-
-
-  roleschool     UserRoleSchool?
-
+  roleschool UserRoleSchool?
 
   // School-related fields
   schoolId   String?
   schoolName String?
   school     School? @relation(fields: [schoolId], references: [id])
-
-  
 
   // One-to-One relationships
   teacher Teacher?
@@ -141,25 +123,18 @@ model User {
 
   refreshTokens RefreshToken[]
 
-
   //School Manage Finish
 
+  // Real Estate ERP
 
+  roleGayrimenkul UserRoleGayrimenkul?
+  agencyId        String?
+  agencyName      String?
+  agency          Agency?              @relation(fields: [agencyId], references: [id])
+  agent           Agent?
+  propertyClient  PropertyClient?
 
-// Real Estate ERP
-
-
-
-  roleGayrimenkul    UserRoleGayrimenkul?
-  agencyId           String?
-  agencyName         String?
-  agency             Agency?   @relation(fields: [agencyId], references: [id])
-  agent              Agent?
-  propertyClient     PropertyClient?
-
-//Real Estate ERP
-
-
+  //Real Estate ERP
 
   // Medical App
 
@@ -263,7 +238,7 @@ model User {
 
   //Shop2
 
-  cartData  Json?
+  cartData Json?
 
   //
 
@@ -1850,20 +1825,20 @@ model Writer {
 }
 
 model News {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  writerId    String
-  writerName  String
-  title       String
-  slug        String   @unique
-  image       String
-  imagePublicId  String?  // Cloudinary public ID için
-  category    String
-  description String   @default("")
-  date        String
-  status      String   @default("pending")
-  count       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  writerId      String
+  writerName    String
+  title         String
+  slug          String   @unique
+  image         String
+  imagePublicId String? // Cloudinary public ID için
+  category      String
+  description   String   @default("")
+  date          String
+  status        String   @default("pending")
+  count         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("news")
 }
@@ -1881,7 +1856,6 @@ model Image {
   @@map("images")
 }
 
-
 model CategoryNews {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String   @unique
@@ -1893,8 +1867,6 @@ model CategoryNews {
 }
 
 ////////////////////////////
-
-
 
 model Messages {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
@@ -2076,10 +2048,6 @@ model NotificationSocial {
 
 //////////////////////////////////////////////
 
-
-
-
-
 /////VideoClone
 
 enum ReactionType {
@@ -2109,7 +2077,7 @@ model Video {
   duration       Int             @default(0)
   visibility     VideoVisibility @default(private)
   userId         String
-  categoryId     String?    
+  categoryId     String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -2207,7 +2175,7 @@ model PlaylistVideo {
 }
 
 model VideoCategory {
-   id     String @id @default(cuid()) @map("_id")
+  id          String   @id @default(cuid()) @map("_id")
   name        String   @unique
   description String?
   createdAt   DateTime @default(now())
@@ -2274,7 +2242,6 @@ model FollowerInstagram {
 //////////////////////////////////
 
 ////
-
 
 model LandingPageSection {
   id       String  @id @default(cuid()) @map("_id")
@@ -2387,7 +2354,6 @@ model Query {
 
 /// Finance App
 
-
 model Account {
   id      String  @id @default(cuid()) @map("_id")
   plaidId String?
@@ -2444,8 +2410,6 @@ model SubscriptionFinance {
 }
 
 //
-
-
 
 // Project Management Project Schemas
 
@@ -2677,8 +2641,6 @@ model CategoryProject {
 
 ////
 
-
-
 //Medical App
 
 model AccountMedical {
@@ -2778,7 +2740,7 @@ model Appointment {
   meetingProvider          String            @default("zoom")
 
   // Stripe ödeme alanları
-  paymentIntentId String?   
+  paymentIntentId String?
   paymentStatus   String?   @default("unpaid") // unpaid, paid, refunded
   paymentAmount   Int? // stripe amount in cents
   paymentMethod   String?
@@ -2872,17 +2834,10 @@ enum AppointmentStatusMedical {
 
 ////
 
-
-
-
-
-
 //Invoice Generator Start
 
-
-
 model AccountInvoice {
-  id          String   @id @default(cuid()) @map("_id")
+  id                String  @id @default(cuid()) @map("_id")
   userId            String
   type              String
   provider          String
@@ -2899,8 +2854,6 @@ model AccountInvoice {
 
   @@unique([provider, providerAccountId])
 }
-
-
 
 enum UserRoleInvoice {
   USER
@@ -2934,7 +2887,7 @@ enum PaymentStatusInvoice {
 }
 
 model SubscriptionInvoice {
-   id          String   @id @default(cuid()) @map("_id")
+  id     String @id @default(cuid()) @map("_id")
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -2966,7 +2919,7 @@ model SubscriptionInvoice {
 }
 
 model PaymentInvoice {
-  id          String   @id @default(cuid()) @map("_id")
+  id     String @id @default(cuid()) @map("_id")
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -2977,7 +2930,7 @@ model PaymentInvoice {
 
   // Payment details
   amount      Int // Amount in cents
-  currency    String        @default("usd")
+  currency    String               @default("usd")
   status      PaymentStatusInvoice @default(PENDING)
   description String?
 
@@ -3003,7 +2956,7 @@ model PaymentInvoice {
 // Optional: Track plan limits and usage
 
 model PlanLimit {
-   id          String   @id @default(cuid()) @map("_id")
+  id                String           @id @default(cuid()) @map("_id")
   plan              SubscriptionPlan @unique
   maxDailyInvoices  Int?             @default(2)
   maxClients        Int? // null means unlimited
@@ -3037,7 +2990,7 @@ enum InvoiceTemplate {
 
 // User Brand Model (One-to-One with User)
 model Brand {
-   id          String   @id @default(cuid()) @map("_id")
+  id     String @id @default(cuid()) @map("_id")
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -3074,7 +3027,7 @@ model Brand {
 
 // User Clients Model
 model Client {
-  id          String   @id @default(cuid()) @map("_id")
+  id     String @id @default(cuid()) @map("_id")
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -3101,9 +3054,8 @@ model Client {
 
 // Invoice Model
 
-
 model InvoiceModel {
-  id          String   @id @default(cuid()) @map("_id")
+  id       String @id @default(cuid()) @map("_id")
   userId   String
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   clientId String
@@ -3143,7 +3095,7 @@ model InvoiceModel {
 
 // Invoice Item Model
 model InvoiceItem {
-  id          String   @id @default(cuid()) @map("_id")
+  id        String       @id @default(cuid()) @map("_id")
   invoiceId String
   invoice   InvoiceModel @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
@@ -3162,32 +3114,18 @@ model InvoiceItem {
   @@map("invoice_items")
 }
 
-
-
-
-
-
 //Invoice Generator Finish
-
-
-
-
 
 //School Management Start
 
-
-
-
-
 model School {
-  id                String            @id @default(cuid()) @map("_id")
+  id           String  @id @default(cuid()) @map("_id")
   name         String
   logo         String?
   primaryEmail String?
   slug         String  @unique
 
-
-    users               User[] // <--- BUNU EKLEYİN (User modelindeki school ile eşleşecek)
+  users User[] // <--- BUNU EKLEYİN (User modelindeki school ile eşleşecek)
 
   // Add relations
   userLogs               UserLog[] // One-to-many with students
@@ -3222,7 +3160,7 @@ model School {
 }
 
 model Contact {
-  id                String            @id @default(cuid()) @map("_id")
+  id         String   @id @default(cuid()) @map("_id")
   fullName   String
   email      String   @unique
   phone      String
@@ -3240,7 +3178,7 @@ model Contact {
 }
 
 model Class {
-  id                String            @id @default(cuid()) @map("_id")
+  id    String @id @default(cuid()) @map("_id")
   title String
   slug  String @unique
 
@@ -3249,7 +3187,7 @@ model Class {
 
   // Add class teacher relationship
 
-  classTeacherId   String?         
+  classTeacherId   String?
   classTeacherName String?
   classTeacher     Teacher?        @relation("ClassTeacher", fields: [classTeacherId], references: [id])
   createdAt        DateTime        @default(now())
@@ -3266,7 +3204,7 @@ model Class {
 }
 
 model ExamClass {
-id                String            @id @default(cuid()) @map("_id")
+  id         String   @id @default(cuid()) @map("_id")
   examId     String
   examTitle  String
   classId    String
@@ -3282,7 +3220,7 @@ id                String            @id @default(cuid()) @map("_id")
 }
 
 model ExamSubject {
-  id                String            @id @default(cuid()) @map("_id") 
+  id           String   @id @default(cuid()) @map("_id")
   examId       String
   examTitle    String
   subjectId    String
@@ -3298,7 +3236,7 @@ model ExamSubject {
 }
 
 model Stream {
-  id                String            @id @default(cuid()) @map("_id")
+  id             String          @id @default(cuid()) @map("_id")
   title          String
   slug           String          @unique
   classId        String // Foreign key to Class
@@ -3323,9 +3261,8 @@ enum UserRoleSchool {
   LIBRARIAN
 }
 
-
 model RefreshToken {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   token     String   @unique
   userId    String
   user      User     @relation(fields: [userId], references: [id])
@@ -3336,7 +3273,7 @@ model RefreshToken {
 }
 
 model Parent {
-  id                String            @id @default(cuid()) @map("_id")
+  id String @id @default(cuid()) @map("_id")
 
   // One-to-One relationship with User
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -3371,7 +3308,7 @@ model Parent {
 }
 
 model Student {
-  id                String            @id @default(cuid()) @map("_id")
+  id                 String             @id @default(cuid()) @map("_id")
   // One-to-One relationship with User
   user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String             @unique
@@ -3418,7 +3355,7 @@ model Student {
 }
 
 model GuardianInfo {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String  @id @default(cuid()) @map("_id")
   // Link to student
   studentId String  @unique
   student   Student @relation("StudentToGuardianInfo", fields: [studentId], references: [id])
@@ -3450,7 +3387,7 @@ model GuardianInfo {
 }
 
 model Teacher {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -3460,31 +3397,31 @@ model Teacher {
 
   // assignedClass  Class?     @relation("ClassTeacher")
 
-  assignedClasses Class[] @relation("ClassTeacher") // One-to-many
-  isClassTeacher Boolean    @default(false)
+  assignedClasses Class[]      @relation("ClassTeacher") // One-to-many
+  isClassTeacher  Boolean      @default(false)
   // Personal Information
-  title          String
-  firstName      String
-  lastName       String
-  email          String     @unique
-  phone          String     @unique
-  whatsappNo     String?
-  dateOfBirth    DateTime?
-  gender         GenderSchool
-  imageUrl       String? // URL for profile picture
-  NIN            String     @unique
+  title           String
+  firstName       String
+  lastName        String
+  email           String       @unique
+  phone           String       @unique
+  whatsappNo      String?
+  dateOfBirth     DateTime?
+  gender          GenderSchool
+  imageUrl        String? // URL for profile picture
+  NIN             String       @unique
   // Authentication
-  password       String? // Hashed password
-  isActive       Boolean    @default(true)
-  lastLogin      DateTime?
-  contactMethod  String
+  password        String? // Hashed password
+  isActive        Boolean      @default(true)
+  lastLogin       DateTime?
+  contactMethod   String
   // Professional Information
-  employeeId     String     @unique // School-specific ID
-  dateOfJoining  DateTime
-  designation    String // e.g., "Senior Teacher", "Head of Department"
-  departmentName String
-  department     Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  departmentId   String
+  employeeId      String       @unique // School-specific ID
+  dateOfJoining   DateTime
+  designation     String // e.g., "Senior Teacher", "Head of Department"
+  departmentName  String
+  department      Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  departmentId    String
 
   mainSubject   String? // Main subject expertise
   mainSubjectId String? // Main subject expertise
@@ -3507,11 +3444,10 @@ model Teacher {
   emergencyContactRelation String?
 
   // Additional Information
-  experience Int? // Years of experience
-  bio        String? 
-  skills     String? // Comma-separated list of skills
-  socialLinks  Json?    // Store social media links as JSON
-
+  experience  Int? // Years of experience
+  bio         String?
+  skills      String? // Comma-separated list of skills
+  socialLinks Json? // Store social media links as JSON
 
   // School Relationship
   school     School @relation(fields: [schoolId], references: [id])
@@ -3526,7 +3462,7 @@ model Teacher {
 }
 
 model Department {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -3554,7 +3490,7 @@ model Department {
 }
 
 model Subject {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -3614,7 +3550,7 @@ enum SubjectType {
 }
 
 model TeacherDocument {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String  @id @default(cuid()) @map("_id")
   teacher   Teacher @relation(fields: [teacherId], references: [id])
   teacherId String
 
@@ -3628,7 +3564,7 @@ model TeacherDocument {
 }
 
 model TeacherAttendance {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String  @id @default(cuid()) @map("_id")
   teacher   Teacher @relation(fields: [teacherId], references: [id])
   teacherId String
 
@@ -3643,7 +3579,7 @@ model TeacherAttendance {
 }
 
 model TeacherLeave {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String  @id @default(cuid()) @map("_id")
   teacher   Teacher @relation(fields: [teacherId], references: [id])
   teacherId String
 
@@ -3701,7 +3637,7 @@ enum LeaveStatus {
 }
 
 model Period {
-  id                String            @id @default(cuid()) @map("_id")
+  id                 String             @id @default(cuid()) @map("_id")
   year               Int
   term               Int
   startDate          DateTime
@@ -3720,7 +3656,7 @@ model Period {
 }
 
 model SchoolFee {
-  id                String            @id @default(cuid()) @map("_id")
+  id                 String             @id @default(cuid()) @map("_id")
   term               String
   year               Int
   title              String
@@ -3740,7 +3676,7 @@ model SchoolFee {
 }
 
 model Fee {
-  id                String            @id @default(cuid()) @map("_id")
+  id          String    @id @default(cuid()) @map("_id")
   title       String
   amount      Int
   schoolFee   SchoolFee @relation(fields: [schoolFeeId], references: [id])
@@ -3752,17 +3688,17 @@ model Fee {
 }
 
 model SchoolFeePayment {
-  id                String            @id @default(cuid()) @map("_id")
+  id               String              @id @default(cuid()) @map("_id")
   schoolName       String
   // School Relationship
-  school           School        @relation(fields: [schoolId], references: [id])
+  school           School              @relation(fields: [schoolId], references: [id])
   schoolId         String
-  period           Period        @relation(fields: [periodId], references: [id])
+  period           Period              @relation(fields: [periodId], references: [id])
   periodId         String
-  schoolFee        SchoolFee     @relation(fields: [schoolFeeId], references: [id])
+  schoolFee        SchoolFee           @relation(fields: [schoolFeeId], references: [id])
   schoolFeeId      String
-  student          Student       @relation(fields: [studentProfileId], references: [id])
-  parent           Parent        @relation(fields: [parentProfileId], references: [id])
+  student          Student             @relation(fields: [studentProfileId], references: [id])
+  parent           Parent              @relation(fields: [parentProfileId], references: [id])
   studentProfileId String
   studentUserId    String
   studentName      String
@@ -3778,8 +3714,8 @@ model SchoolFeePayment {
   year             Int
   className        String
   // Timestamps
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @default(now()) @updatedAt
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @default(now()) @updatedAt
 
   @@map("school-fees-payments")
 }
@@ -3796,7 +3732,7 @@ enum FeeStatus {
 }
 
 model UserLog {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   name      String
   activity  String
   time      String
@@ -3809,7 +3745,7 @@ model UserLog {
 }
 
 model Reminder {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   name      String?
   email     String?
   message   String
@@ -3838,7 +3774,7 @@ enum From {
 }
 
 model StudentDocument {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   name      String
   type      String
   url       String
@@ -3850,7 +3786,7 @@ model StudentDocument {
 }
 
 model StudentMark {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   examId    String
   studentId String
   subjectId String
@@ -3879,7 +3815,7 @@ enum ExamType {
 }
 
 model Exam {
-  id                String            @id @default(cuid()) @map("_id")
+  id           String       @id @default(cuid()) @map("_id")
   title        String
   examType     ExamType     @default(REGULAR)
   termName     Int          @default(1)
@@ -3904,7 +3840,7 @@ model Exam {
 }
 
 model Marksheet {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String          @id @default(cuid()) @map("_id")
   title     String?         @default("Default Marksheet")
   examId    String
   classId   String
@@ -3935,7 +3871,7 @@ enum ExamCategory {
 }
 
 model Section {
-  id                String            @id @default(cuid()) @map("_id")
+  id         String      @id @default(cuid()) @map("_id")
   schoolId   String
   type       SectionType
   isComplete Boolean     @default(false)
@@ -3954,11 +3890,11 @@ model Section {
 }
 
 model NewsItem {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   schoolId  String
   title     String
   slug      String
-  content   String   
+  content   String
   image     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -3983,7 +3919,7 @@ enum SectionType {
 }
 
 model RecentActivity {
-  id                String            @id @default(cuid()) @map("_id")
+  id          String   @id @default(cuid()) @map("_id")
   activity    String
   type        String   @default("site")
   description String
@@ -3996,10 +3932,10 @@ model RecentActivity {
 }
 
 model Event {
-  id                String            @id @default(cuid()) @map("_id")
+  id          String   @id @default(cuid()) @map("_id")
   schoolId    String
   title       String
-  description String  
+  description String
   image       String
   date        DateTime
   startTime   String
@@ -4014,7 +3950,7 @@ model Event {
 }
 
 model GalleryImage {
-  id                String            @id @default(cuid()) @map("_id")
+  id          String           @id @default(cuid()) @map("_id")
   schoolId    String
   title       String
   description String?
@@ -4032,7 +3968,7 @@ model GalleryImage {
 }
 
 model GalleryCategory {
-  id                String            @id @default(cuid()) @map("_id")
+  id       String         @id @default(cuid()) @map("_id")
   schoolId String
   name     String
   order    Int            @unique
@@ -4045,7 +3981,7 @@ model GalleryCategory {
 }
 
 model SchoolContactMessage {
-  id                String            @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid()) @map("_id")
   fullName  String
   email     String   @unique
   phone     String
@@ -4060,7 +3996,7 @@ model SchoolContactMessage {
 }
 
 model AttendanceLog {
-  id                String            @id @default(cuid()) @map("_id")
+  id          String       @id @default(cuid()) @map("_id")
   date        DateTime
   startTime   String
   endTime     String
@@ -4082,7 +4018,7 @@ model AttendanceLog {
 }
 
 model Attendance {
-  id                String            @id @default(cuid()) @map("_id")
+  id              String                  @id @default(cuid()) @map("_id")
   status          StudentAttendanceStatus
   note            String?
   createdAt       DateTime                @default(now())
@@ -4102,25 +4038,18 @@ enum StudentAttendanceStatus {
   EXCUSED
 }
 
-
-
-
 //School Management Finish
-
-
 
 
 
 
 //Real Estate ERP
 
-
-
 enum UserRoleGayrimenkul {
   SUPER_ADMIN
   ADMIN
-  AGENT       // Emlak danışmanı
-  CLIENT      // Müşteri (alıcı / kiracı / satıcı)
+  AGENT // Emlak danışmanı
+  CLIENT // Müşteri (alıcı / kiracı / satıcı)
   SECRETARY
   ACCOUNTANT
   USER
@@ -4133,43 +4062,43 @@ enum GayrimenkulGender {
 }
 
 enum PropertyType {
-  APARTMENT    // Daire
-  HOUSE        // Müstakil ev
+  APARTMENT // Daire
+  HOUSE // Müstakil ev
   VILLA
-  OFFICE       // Ofis
-  SHOP         // Dükkan
-  LAND         // Arsa
-  WAREHOUSE    // Depo
-  BUILDING     // Bina / Apartman
+  OFFICE // Ofis
+  SHOP // Dükkan
+  LAND // Arsa
+  WAREHOUSE // Depo
+  BUILDING // Bina / Apartman
 }
 
 enum ListingType {
-  SALE         // Satılık
-  RENT         // Kiralık
-  SHORT_RENT   // Kısa dönem kiralık
+  SALE // Satılık
+  RENT // Kiralık
+  SHORT_RENT // Kısa dönem kiralık
 }
 
 enum ListingStatus {
   ACTIVE
   SOLD
   RENTED
-  WITHDRAWN    // Geri çekildi
-  PENDING      // Beklemede
-  RESERVED     // Rezerve edildi
+  WITHDRAWN // Geri çekildi
+  PENDING // Beklemede
+  RESERVED // Rezerve edildi
 }
 
 enum PropertyStatus {
-  AVAILABLE         // Müsait
+  AVAILABLE // Müsait
   SOLD
   RENTED
-  UNDER_CONTRACT    // Sözleşme sürecinde
+  UNDER_CONTRACT // Sözleşme sürecinde
   UNDER_MAINTENANCE // Bakımda
 }
 
 enum ContractType {
   SALE
   RENTAL
-  PRE_SALE          // Ön satış / Satış vaadi
+  PRE_SALE // Ön satış / Satış vaadi
 }
 
 enum ContractStatus {
@@ -4189,13 +4118,13 @@ enum PaymentStatusGayrimenkul {
 }
 
 enum DocumentTypeGayrimenkul {
-  DEED              // Tapu
-  CONTRACT          // Sözleşme
-  INSPECTION        // Ekspertiz raporu
-  FLOOR_PLAN        // Kat planı / Vaziyet planı
-  PHOTO             // Fotoğraf
-  ENERGY_CERT       // Enerji kimlik belgesi
-  ID_PROOF          // Kimlik belgesi
+  DEED // Tapu
+  CONTRACT // Sözleşme
+  INSPECTION // Ekspertiz raporu
+  FLOOR_PLAN // Kat planı / Vaziyet planı
+  PHOTO // Fotoğraf
+  ENERGY_CERT // Enerji kimlik belgesi
+  ID_PROOF // Kimlik belgesi
   POWER_OF_ATTORNEY // Vekaletname
   OTHER
 }
@@ -4254,8 +4183,6 @@ enum SectionTypeGayrimenkul {
   FOOTER
 }
 
-
-
 // Agency → School karşılığı (Emlak ofisi / şirketi)
 model Agency {
   id           String  @id @default(cuid()) @map("_id")
@@ -4298,6 +4225,18 @@ model Agency {
   // Proje Yönetimi
   estateProjects EstateProject[]
 
+  // Gelişmiş ERP (teklif, muhasebe, kira, iletişim)
+  offers              PropertyOffer[]
+  reservations        PropertyReservation[]
+  commissions         Commission[]
+  invoices2           AgencyInvoice[]
+  expenses            AgencyExpense[]
+  payrolls            AgentPayroll[]
+  maintenanceRequests MaintenanceRequest[]
+  communicationLogs   CommunicationLog[]
+  notifications       AgencyNotification[]
+  auditLogs           AgencyAuditLog[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -4306,9 +4245,9 @@ model Agency {
 
 // AgencyDepartment → Department karşılığı
 model AgencyDepartment {
-  id       String @id @default(cuid()) @map("_id")
-  name     String
-  slug     String @unique
+  id   String @id @default(cuid()) @map("_id")
+  name String
+  slug String @unique
 
   agencyId String
   agency   Agency @relation(fields: [agencyId], references: [id])
@@ -4349,19 +4288,19 @@ model Agent {
   lastLogin     DateTime?
   contactMethod String
 
-  employeeId     String   @unique
+  employeeId     String           @unique
   dateOfJoining  DateTime
-  designation    String   // "Kıdemli Danışman", "Şube Müdürü" vb.
+  designation    String // "Kıdemli Danışman", "Şube Müdürü" vb.
   departmentName String
   department     AgencyDepartment @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId   String
-  licenseNo      String?  // Emlak danışmanlığı belgesi no
+  licenseNo      String? // Emlak danışmanlığı belgesi no
   qualification  String
   experience     Int?
   bio            String?
   skills         String?
   socialLinks    Json?
-  commissionRate Float?   @default(2.5) // Komisyon oranı (%)
+  commissionRate Float?           @default(2.5) // Komisyon oranı (%)
 
   specializationTypes  PropertyType[]
   specializationCities String[]
@@ -4382,9 +4321,21 @@ model Agent {
   crmTasks      CrmTask[]
   crmActivities CrmActivity[]
 
+  // Gelişmiş ERP
+  offers              PropertyOffer[]
+  reservations        PropertyReservation[]
+  commissions         Commission[]
+  expenses            AgencyExpense[]
+  payrolls            AgentPayroll[]
+  maintenanceRequests MaintenanceRequest[]
+  communicationLogs   CommunicationLog[]
+  notifications       AgencyNotification[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([agencyId])
+  @@index([departmentId])
   @@map("agents")
 }
 
@@ -4398,20 +4349,20 @@ model PropertyClient {
   title         String
   firstName     String
   lastName      String
-  email         String @unique
-  phone         String @unique
+  email         String   @unique
+  phone         String   @unique
   whatsappNo    String?
   gender        String
   dob           DateTime
   nationality   String
   imageUrl      String?
-  NIN           String @unique // TC Kimlik No
+  NIN           String   @unique // TC Kimlik No
   contactMethod String
   occupation    String?
   address       String
   password      String
 
-  isBuyer    Boolean @default(true)  // Alıcı
+  isBuyer    Boolean @default(true) // Alıcı
   isSeller   Boolean @default(false) // Satıcı
   isTenant   Boolean @default(false) // Kiracı
   isLandlord Boolean @default(false) // Kiraya veren / mülk sahibi
@@ -4435,9 +4386,19 @@ model PropertyClient {
   // CRM
   crmLeads Lead[]
 
+  // Gelişmiş ERP
+  ownedProperties     PropertyRealEstate[]  @relation("PropertyOwner")
+  offers              PropertyOffer[]
+  reservations        PropertyReservation[]
+  invoices2           AgencyInvoice[]
+  maintenanceRequests MaintenanceRequest[]
+  communicationLogs   CommunicationLog[]
+  notifications       AgencyNotification[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([agencyId])
   @@map("property-clients")
 }
 
@@ -4449,7 +4410,7 @@ model PropertyRealEstate {
 
   address      String
   city         String
-  district     String  // İlçe
+  district     String // İlçe
   neighborhood String? // Mahalle
   zipCode      String?
   latitude     Float?
@@ -4457,24 +4418,28 @@ model PropertyRealEstate {
 
   propertyType  PropertyType
   status        PropertyStatus @default(AVAILABLE)
-  grossArea     Float?   // Brüt alan (m²)
-  netArea       Float?   // Net alan (m²)
-  roomCount     String?  // "3+1", "2+1" vb.
+  grossArea     Float? // Brüt alan (m²)
+  netArea       Float? // Net alan (m²)
+  roomCount     String? // "3+1", "2+1" vb.
   bathroomCount Int?
   floorNo       Int?
   totalFloors   Int?
-  buildingAge   Int?     // Bina yaşı (yıl)
+  buildingAge   Int? // Bina yaşı (yıl)
   heatingType   String?
-  hasElevator   Boolean  @default(false)
-  hasParking    Boolean  @default(false)
-  isFurnished   Boolean  @default(false)
-  hasGarden     Boolean  @default(false)
-  hasPool       Boolean  @default(false)
-  hasBalcony    Boolean  @default(false)
-  isFeatured    Boolean  @default(false)
+  hasElevator   Boolean        @default(false)
+  hasParking    Boolean        @default(false)
+  isFurnished   Boolean        @default(false)
+  hasGarden     Boolean        @default(false)
+  hasPool       Boolean        @default(false)
+  hasBalcony    Boolean        @default(false)
+  isFeatured    Boolean        @default(false)
   description   String?
   notes         String?
 
+  // Mülk sahibi: kayıtlı müşteriye (satıcı/mülk sahibi) bağlanabilir.
+  // ownerName/ownerPhone/ownerNIN, ownerId yoksa veya snapshot için tutulur.
+  ownerId    String?
+  owner      PropertyClient? @relation("PropertyOwner", fields: [ownerId], references: [id], onDelete: SetNull)
   ownerName  String?
   ownerPhone String?
   ownerNIN   String? // TC Kimlik No
@@ -4486,15 +4451,23 @@ model PropertyRealEstate {
   agencyName String
   agency     Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
 
-  listings  Listing[]
-  documents PropertyDocument[]
-  images    PropertyImage[]
-  visits    PropertyVisit[]
-  contracts PropertyContract[]
+  listings            Listing[]
+  documents           PropertyDocument[]
+  images              PropertyImage[]
+  visits              PropertyVisit[]
+  contracts           PropertyContract[]
+  offers              PropertyOffer[]
+  reservations        PropertyReservation[]
+  maintenanceRequests MaintenanceRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([agencyId])
+  @@index([ownerId])
+  @@index([status])
+  @@index([propertyType])
+  @@index([city])
   @@map("properties")
 }
 
@@ -4504,13 +4477,13 @@ model Listing {
   title     String
   listingNo String @unique // İlan numarası
 
-  listingType  ListingType
-  status       ListingStatus @default(ACTIVE)
+  listingType ListingType
+  status      ListingStatus @default(ACTIVE)
 
   askingPrice  Float
   currency     String  @default("TRY")
-  monthlyRent  Float?  // Aylık kira (kiralık ilanlar için)
-  deposit      Float?  // Depozito
+  monthlyRent  Float? // Aylık kira (kiralık ilanlar için)
+  deposit      Float? // Depozito
   isNegotiable Boolean @default(true)
 
   publishedAt DateTime?
@@ -4537,9 +4510,19 @@ model Listing {
   // CRM
   crmLeads Lead[]
 
+  // Gelişmiş ERP
+  offers            PropertyOffer[]
+  reservations      PropertyReservation[]
+  communicationLogs CommunicationLog[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([agencyId])
+  @@index([propertyId])
+  @@index([agentId])
+  @@index([status])
+  @@index([listingType])
   @@map("listings")
 }
 
@@ -4563,6 +4546,12 @@ model PropertyContract {
   currency    String  @default("TRY")
   notes       String?
 
+  // Kira yönetimi (kiralık sözleşmeler için)
+  rentIncreaseRate Float? // Yıllık kira artış oranı (%)
+  rentPaymentDay   Int? // Ayın kaçında kira ödenecek (1-31)
+  nextRentDueDate  DateTime? // Bir sonraki kira tahakkuk tarihi
+  autoRenew        Boolean   @default(false) // Otomatik yenileme
+
   propertyId String
   property   PropertyRealEstate @relation(fields: [propertyId], references: [id])
 
@@ -4583,9 +4572,19 @@ model PropertyContract {
   payments  ContractPayment[]
   documents ContractDocument[]
 
+  // Gelişmiş ERP
+  commissions         Commission[]
+  invoices2           AgencyInvoice[]
+  maintenanceRequests MaintenanceRequest[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([agencyId])
+  @@index([propertyId])
+  @@index([agentId])
+  @@index([clientId])
+  @@index([status])
   @@map("property-contracts")
 }
 
@@ -4596,18 +4595,20 @@ model ContractPayment {
   contractId String
   contract   PropertyContract @relation(fields: [contractId], references: [id])
 
-  title         String   // "Peşinat", "1. Taksit", "Kira - Ocak 2025"
+  title         String // "Peşinat", "1. Taksit", "Kira - Ocak 2025"
   amount        Float
   dueDate       DateTime
   paidDate      DateTime?
   status        PaymentStatusGayrimenkul @default(PENDING)
-  paymentMethod String?  // "Nakit", "EFT/Havale", "Çek"
+  paymentMethod String? // "Nakit", "EFT/Havale", "Çek"
   receiptNo     String?
   notes         String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([contractId])
+  @@index([status])
   @@map("contract-payments")
 }
 
@@ -4620,7 +4621,7 @@ model PropertyVisit {
   status      VisitStatus @default(SCHEDULED)
   notes       String?
   feedback    String?
-  rating      Int?     // 1-5 memnuniyet puanı
+  rating      Int? // 1-5 memnuniyet puanı
 
   propertyId String
   property   PropertyRealEstate @relation(fields: [propertyId], references: [id])
@@ -4629,7 +4630,7 @@ model PropertyVisit {
   listing   Listing? @relation(fields: [listingId], references: [id])
 
   agentId String
-  agent   Agent   @relation(fields: [agentId], references: [id])
+  agent   Agent  @relation(fields: [agentId], references: [id])
 
   clientId String
   client   PropertyClient @relation(fields: [clientId], references: [id])
@@ -4637,6 +4638,10 @@ model PropertyVisit {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([propertyId])
+  @@index([agentId])
+  @@index([clientId])
+  @@index([status])
   @@map("property-visits")
 }
 
@@ -4657,6 +4662,8 @@ model ClientInterest {
   updatedAt DateTime @updatedAt
 
   @@unique([clientId, listingId])
+  @@index([clientId])
+  @@index([listingId])
   @@map("client-interests")
 }
 
@@ -4696,7 +4703,7 @@ model PropertyDocument {
   title      String
   url        String
   size       Int?
-  uploadedAt DateTime @default(now())
+  uploadedAt DateTime                @default(now())
 
   @@index([propertyId])
   @@map("property-documents")
@@ -4712,7 +4719,7 @@ model ContractDocument {
   title      String
   url        String
   size       Int?
-  uploadedAt DateTime @default(now())
+  uploadedAt DateTime                @default(now())
 
   @@index([contractId])
   @@map("contract-documents")
@@ -4728,7 +4735,7 @@ model AgentDocument {
   type       DocumentTypeGayrimenkul
   title      String
   url        String
-  uploadedAt DateTime @default(now())
+  uploadedAt DateTime                @default(now())
 
   @@index([agentId])
   @@map("agent-documents")
@@ -4915,7 +4922,7 @@ model AgencyGalleryCategory {
   order    Int     @unique
   active   Boolean @default(true)
 
-  agency Agency             @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  agency Agency               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   images AgencyGalleryImage[]
 
   @@unique([agencyId, name])
@@ -4924,13 +4931,13 @@ model AgencyGalleryCategory {
 
 // AgencySection → Section karşılığı (Web sitesi bölümleri)
 model AgencySection {
-  id         String @id @default(cuid()) @map("_id")
+  id         String                 @id @default(cuid()) @map("_id")
   agencyId   String
   type       SectionTypeGayrimenkul
-  isComplete Boolean @default(false)
+  isComplete Boolean                @default(false)
   title      String
   subtitle   String?
-  isActive   Boolean @default(true)
+  isActive   Boolean                @default(true)
   order      Int
   settings   Json
 
@@ -4963,7 +4970,500 @@ model AgencyContactMessage {
   @@map("agency-contact-messages")
 }
 
+// ============================================================
+// ===========  GELİŞMİŞ ERP: TEKLİF / PAZARLIK  ==============
+// ============================================================
 
+enum OfferStatus {
+  PENDING // Beklemede
+  COUNTERED // Karşı teklif verildi
+  ACCEPTED // Kabul edildi
+  REJECTED // Reddedildi
+  WITHDRAWN // Geri çekildi
+  EXPIRED // Süresi doldu
+}
+
+// Müşterinin bir ilana verdiği teklif (alım/kiralama pazarlığı)
+model PropertyOffer {
+  id      String @id @default(cuid()) @map("_id")
+  offerNo String @unique
+
+  offerType ListingType // SALE / RENT / SHORT_RENT
+  status    OfferStatus @default(PENDING)
+
+  amount        Float // Teklif tutarı
+  currency      String    @default("TRY")
+  counterAmount Float? // Ofisin/satıcının verdiği karşı teklif
+  depositOffer  Float? // Önerilen kapora / depozito
+  message       String? // Teklif notu
+  validUntil    DateTime? // Teklif geçerlilik süresi
+
+  acceptedAt   DateTime?
+  rejectedAt   DateTime?
+  rejectReason String?
+
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  propertyId String
+  property   PropertyRealEstate @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  clientId   String
+  clientName String
+  client     PropertyClient @relation(fields: [clientId], references: [id])
+
+  agentId   String?
+  agentName String?
+  agent     Agent?  @relation(fields: [agentId], references: [id])
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  reservation PropertyReservation?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([listingId])
+  @@index([clientId])
+  @@index([status])
+  @@map("property-offers")
+}
+
+enum ReservationStatus {
+  ACTIVE // Aktif rezervasyon
+  CONVERTED // Sözleşmeye dönüştü
+  CANCELLED // İptal edildi
+  EXPIRED // Süresi doldu
+  REFUNDED // Kapora iade edildi
+}
+
+// Kabul edilen teklif sonrası kapora ile mülkün rezerve edilmesi
+model PropertyReservation {
+  id            String @id @default(cuid()) @map("_id")
+  reservationNo String @unique
+
+  status        ReservationStatus @default(ACTIVE)
+  depositAmount Float // Alınan kapora
+  currency      String            @default("TRY")
+  reservedUntil DateTime // Rezervasyon bitiş tarihi
+  notes         String?
+  cancelReason  String?
+  refundedAt    DateTime?
+
+  offerId String?        @unique
+  offer   PropertyOffer? @relation(fields: [offerId], references: [id], onDelete: SetNull)
+
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id])
+
+  propertyId String
+  property   PropertyRealEstate @relation(fields: [propertyId], references: [id])
+
+  clientId   String
+  clientName String
+  client     PropertyClient @relation(fields: [clientId], references: [id])
+
+  agentId String?
+  agent   Agent?  @relation(fields: [agentId], references: [id])
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([propertyId])
+  @@index([status])
+  @@map("property-reservations")
+}
+
+// ============================================================
+// ============  GELİŞMİŞ ERP: KOMİSYON & MUHASEBE  ===========
+// ============================================================
+
+enum CommissionSide {
+  BUYER // Alıcı tarafı
+  SELLER // Satıcı tarafı
+  TENANT // Kiracı tarafı
+  LANDLORD // Mülk sahibi tarafı
+}
+
+enum CommissionStatus {
+  PENDING // Beklemede
+  INVOICED // Faturalandı
+  PAID // Ödendi
+  PARTIAL // Kısmi ödendi
+  CANCELLED // İptal
+}
+
+// Sözleşme başına danışman komisyonu (taraf bazlı, co-broking destekli)
+model Commission {
+  id String @id @default(cuid()) @map("_id")
+
+  contractId String
+  contract   PropertyContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  agentId   String
+  agentName String
+  agent     Agent  @relation(fields: [agentId], references: [id])
+
+  side       CommissionSide
+  baseAmount Float // Üzerinden hesaplanan tutar (satış/kira bedeli)
+  percentage Float? // Komisyon oranı (%)
+  amount     Float // Komisyon tutarı
+  currency   String           @default("TRY")
+  status     CommissionStatus @default(PENDING)
+  paidAt     DateTime?
+  notes      String?
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([contractId])
+  @@index([agentId])
+  @@index([status])
+  @@map("commissions")
+}
+
+enum InvoiceTypeGayrimenkul {
+  COMMISSION // Komisyon faturası
+  RENT // Kira faturası
+  SERVICE // Hizmet faturası
+  OTHER
+}
+
+enum InvoiceStatusGayrimenkul {
+  DRAFT
+  SENT
+  PAID
+  PARTIAL
+  OVERDUE
+  CANCELLED
+}
+
+// Ofisin kestiği fatura (komisyon / kira / hizmet)
+model AgencyInvoice {
+  id        String @id @default(cuid()) @map("_id")
+  invoiceNo String @unique
+
+  type   InvoiceTypeGayrimenkul
+  status InvoiceStatusGayrimenkul @default(DRAFT)
+
+  issueDate DateTime  @default(now())
+  dueDate   DateTime?
+  paidDate  DateTime?
+
+  // Fatura edilen taraf bilgileri (snapshot)
+  billToName    String
+  billToTaxNo   String?
+  billToAddress String?
+  billToEmail   String?
+
+  subtotal  Float
+  taxRate   Float?  @default(20) // KDV (%)
+  taxAmount Float?
+  total     Float
+  currency  String  @default("TRY")
+  notes     String?
+
+  contractId String?
+  contract   PropertyContract? @relation(fields: [contractId], references: [id], onDelete: SetNull)
+
+  clientId String?
+  client   PropertyClient? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  items AgencyInvoiceItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([status])
+  @@map("agency-invoices")
+}
+
+model AgencyInvoiceItem {
+  id        String        @id @default(cuid()) @map("_id")
+  invoiceId String
+  invoice   AgencyInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  description String
+  quantity    Float  @default(1)
+  unitPrice   Float
+  amount      Float
+
+  @@index([invoiceId])
+  @@map("agency-invoice-items")
+}
+
+enum ExpenseCategoryGayrimenkul {
+  RENT // Ofis kirası
+  SALARY // Maaş
+  MARKETING // Pazarlama / ilan yayını
+  UTILITIES // Faturalar (elektrik/su/internet)
+  COMMISSION // Danışman komisyonu
+  MAINTENANCE // Bakım/onarım
+  TAX // Vergi
+  OTHER
+}
+
+// Ofis giderleri
+model AgencyExpense {
+  id String @id @default(cuid()) @map("_id")
+
+  category      ExpenseCategoryGayrimenkul
+  title         String
+  amount        Float
+  currency      String                     @default("TRY")
+  date          DateTime                   @default(now())
+  paymentMethod String?
+  receiptUrl    String?
+  vendor        String? // Tedarikçi / ödeme yapılan kişi
+  notes         String?
+
+  agentId String? // Maaş/komisyon gideri ise ilgili danışman
+  agent   Agent?  @relation(fields: [agentId], references: [id])
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([category])
+  @@map("agency-expenses")
+}
+
+enum PayrollStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+// Danışman maaş / prim bordrosu (aylık)
+model AgentPayroll {
+  id String @id @default(cuid()) @map("_id")
+
+  agentId String
+  agent   Agent  @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  periodMonth Int // 1-12
+  periodYear  Int
+  baseSalary  Float  @default(0)
+  commission  Float  @default(0) // Döneme ait komisyon toplamı
+  bonus       Float  @default(0)
+  deductions  Float  @default(0)
+  netPay      Float
+  currency    String @default("TRY")
+
+  status PayrollStatus @default(PENDING)
+  paidAt DateTime?
+  notes  String?
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([agentId, periodYear, periodMonth])
+  @@index([agencyId])
+  @@map("agent-payrolls")
+}
+
+// ============================================================
+// ========  GELİŞMİŞ ERP: BAKIM & İLETİŞİM & BİLDİRİM  =======
+// ============================================================
+
+enum MaintenancePriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum MaintenanceStatus {
+  OPEN // Açık
+  IN_PROGRESS // İşlemde
+  RESOLVED // Çözüldü
+  CANCELLED // İptal
+}
+
+// Mülk bakım / arıza talebi (özellikle yönetilen kiralık portföy için)
+model MaintenanceRequest {
+  id        String @id @default(cuid()) @map("_id")
+  requestNo String @unique
+
+  title       String
+  description String?
+  priority    MaintenancePriority @default(MEDIUM)
+  status      MaintenanceStatus   @default(OPEN)
+
+  cost        Float?
+  currency    String    @default("TRY")
+  vendor      String? // Usta / tedarikçi
+  scheduledAt DateTime?
+  resolvedAt  DateTime?
+  resolution  String?
+
+  propertyId String
+  property   PropertyRealEstate @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  contractId String?
+  contract   PropertyContract? @relation(fields: [contractId], references: [id], onDelete: SetNull)
+
+  clientId String? // Talebi açan kiracı
+  client   PropertyClient? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  agentId String? // Atanan/sorumlu danışman
+  agent   Agent?  @relation(fields: [agentId], references: [id], onDelete: SetNull)
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([propertyId])
+  @@index([status])
+  @@map("maintenance-requests")
+}
+
+enum CommunicationChannel {
+  CALL // Telefon görüşmesi
+  EMAIL
+  SMS
+  WHATSAPP
+  MEETING // Yüz yüze görüşme
+  NOTE // İç not
+}
+
+enum CommunicationDirection {
+  INBOUND // Gelen
+  OUTBOUND // Giden
+}
+
+// Müşteri ile yapılan tüm iletişim kayıtları (arama, e-posta, WhatsApp...)
+model CommunicationLog {
+  id String @id @default(cuid()) @map("_id")
+
+  channel     CommunicationChannel
+  direction   CommunicationDirection @default(OUTBOUND)
+  subject     String?
+  content     String?
+  occurredAt  DateTime               @default(now())
+  durationSec Int? // Arama süresi (saniye)
+  outcome     String? // Görüşme sonucu
+
+  clientId String?
+  client   PropertyClient? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  agentId String? // İletişimi yapan danışman
+  agent   Agent?  @relation(fields: [agentId], references: [id], onDelete: SetNull)
+
+  listingId String? // İlgili ilan
+  listing   Listing? @relation(fields: [listingId], references: [id], onDelete: SetNull)
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([agencyId])
+  @@index([clientId])
+  @@index([agentId])
+  @@map("communication-logs")
+}
+
+enum NotificationTypeGayrimenkul {
+  INFO
+  WARNING
+  SUCCESS
+  REMINDER
+  TASK
+}
+
+// Kullanıcıya özel bildirim (okundu/okunmadı takipli)
+model AgencyNotification {
+  id String @id @default(cuid()) @map("_id")
+
+  type    NotificationTypeGayrimenkul @default(INFO)
+  title   String
+  message String
+  link    String?
+  isRead  Boolean                     @default(false)
+  readAt  DateTime?
+
+  recipientUserId String? // Hedef User id (esnek)
+
+  agentId String?
+  agent   Agent?  @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  clientId String?
+  client   PropertyClient? @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([agencyId])
+  @@index([recipientUserId])
+  @@index([isRead])
+  @@map("agency-notifications")
+}
+
+// ============================================================
+// ===============  GELİŞMİŞ ERP: AUDIT TRAIL  ===============
+// ============================================================
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  STATUS_CHANGE
+  OTHER
+}
+
+// Kayıt bazlı değişiklik geçmişi (kim, ne zaman, neyi değiştirdi)
+model AgencyAuditLog {
+  id String @id @default(cuid()) @map("_id")
+
+  action   AuditAction
+  entity   String // Model adı: "PropertyOffer", "AgencyInvoice" vb.
+  entityId String? // Etkilenen kaydın id'si
+  summary  String // İnsan-okur özet
+  changes  Json? // Önce/sonra alan farkları (opsiyonel)
+
+  userId   String? // İşlemi yapan kullanıcı
+  userName String? // Snapshot ad
+  userRole String? // Snapshot rol
+
+  agencyId String
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([agencyId])
+  @@index([entity])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("agency-audit-logs")
+}
 
 //Real Estate ERP
 
@@ -4975,28 +5475,28 @@ model AgencyContactMessage {
 // ============================================================
 
 enum LeadStatus {
-  OPEN        // Açık (hatta aktif)
-  WON         // Kazanıldı
-  LOST        // Kaybedildi
+  OPEN // Açık (hatta aktif)
+  WON // Kazanıldı
+  LOST // Kaybedildi
 }
 
 enum LeadSource {
-  WEBSITE         // Web sitesi
-  PORTAL          // Sahibinden / Hepsiemlak vb.
-  PHONE           // Telefon
-  WALK_IN         // Ofise gelen
-  REFERRAL        // Tavsiye
-  SOCIAL_MEDIA    // Sosyal medya
-  ADVERTISEMENT   // Reklam
-  EMAIL_CAMPAIGN  // E-posta kampanyası
-  PARTNER         // İş ortağı
+  WEBSITE // Web sitesi
+  PORTAL // Sahibinden / Hepsiemlak vb.
+  PHONE // Telefon
+  WALK_IN // Ofise gelen
+  REFERRAL // Tavsiye
+  SOCIAL_MEDIA // Sosyal medya
+  ADVERTISEMENT // Reklam
+  EMAIL_CAMPAIGN // E-posta kampanyası
+  PARTNER // İş ortağı
   OTHER
 }
 
 enum LeadTemperature {
-  HOT    // Sıcak
-  WARM   // Ilık
-  COLD   // Soğuk
+  HOT // Sıcak
+  WARM // Ilık
+  COLD // Soğuk
 }
 
 enum CrmTaskStatus {
@@ -5014,31 +5514,31 @@ enum CrmTaskPriority {
 }
 
 enum CrmActivityType {
-  NOTE          // Not
-  CALL          // Telefon görüşmesi
-  EMAIL         // E-posta
-  WHATSAPP      // WhatsApp
-  MEETING       // Toplantı
-  VISIT         // Mülk gezisi
+  NOTE // Not
+  CALL // Telefon görüşmesi
+  EMAIL // E-posta
+  WHATSAPP // WhatsApp
+  MEETING // Toplantı
+  VISIT // Mülk gezisi
   SMS
-  STAGE_CHANGE  // Aşama değişikliği (otomatik)
-  TASK          // Görev (otomatik)
-  WON           // Kazanıldı (otomatik)
-  LOST          // Kaybedildi (otomatik)
-  CREATED       // Oluşturuldu (otomatik)
-  FILE          // Dosya
+  STAGE_CHANGE // Aşama değişikliği (otomatik)
+  TASK // Görev (otomatik)
+  WON // Kazanıldı (otomatik)
+  LOST // Kaybedildi (otomatik)
+  CREATED // Oluşturuldu (otomatik)
+  FILE // Dosya
 }
 
 // Satış hattı (örn. "Satılık Pipeline", "Kiralık Pipeline")
 model CrmPipeline {
-  id          String  @id @default(cuid()) @map("_id")
+  id          String       @id @default(cuid()) @map("_id")
   name        String
   description String?
   listingType ListingType? // Bu hat hangi ilan türü için (opsiyonel)
-  color       String  @default("#6366f1")
-  isDefault   Boolean @default(false)
-  isActive    Boolean @default(true)
-  order       Int     @default(0)
+  color       String       @default("#6366f1")
+  isDefault   Boolean      @default(false)
+  isActive    Boolean      @default(true)
+  order       Int          @default(0)
 
   agencyId String
   agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
@@ -5062,7 +5562,7 @@ model CrmStage {
   probability Int     @default(0) // Kazanma olasılığı (%)
   isWon       Boolean @default(false)
   isLost      Boolean @default(false)
-  rottenDays  Int?    // Bu kadar gün hareketsiz kalırsa "çürük" sayılır
+  rottenDays  Int? // Bu kadar gün hareketsiz kalırsa "çürük" sayılır
 
   pipelineId String
   pipeline   CrmPipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
@@ -5092,18 +5592,18 @@ model Lead {
   temperature LeadTemperature @default(WARM)
 
   // Finansal
-  value          Float?  // Fırsatın tahmini değeri
-  currency       String  @default("TRY")
-  budgetMin      Float?
-  budgetMax      Float?
+  value     Float? // Fırsatın tahmini değeri
+  currency  String @default("TRY")
+  budgetMin Float?
+  budgetMax Float?
 
   // Talep / eşleştirme kriterleri
-  listingType   ListingType?
-  propertyType  PropertyType?
-  city          String?
-  district      String?
-  roomCount     String?
-  requirements  String? // Serbest metin talep
+  listingType  ListingType?
+  propertyType PropertyType?
+  city         String?
+  district     String?
+  roomCount    String?
+  requirements String? // Serbest metin talep
 
   expectedCloseDate DateTime?
   lostReason        String?
@@ -5111,6 +5611,7 @@ model Lead {
   lostAt            DateTime?
   lastActivityAt    DateTime  @default(now())
   position          Int       @default(0) // Aşama içi sıralama
+  score             Int       @default(0) // Otomatik lead skoru (0-100)
 
   tags String[]
 
@@ -5209,47 +5710,42 @@ model CrmTask {
   @@map("crm-tasks")
 }
 
-
-
-
-
-
 // ============================================================
 // ========  GAYRİMENKUL PROJE YÖNETİMİ (ERP üstü)  ===========
 // ============================================================
 
 enum EstateProjectType {
-  RESIDENTIAL  // Konut
-  COMMERCIAL   // Ticari
-  MIXED_USE    // Karma kullanım
-  INDUSTRIAL   // Sanayi
-  LAND         // Arsa geliştirme
+  RESIDENTIAL // Konut
+  COMMERCIAL // Ticari
+  MIXED_USE // Karma kullanım
+  INDUSTRIAL // Sanayi
+  LAND // Arsa geliştirme
 }
 
 enum EstateProjectStatus {
-  PLANNING            // Planlama
-  PRESALE             // Ön satış
-  UNDER_CONSTRUCTION  // İnşaat halinde
-  COMPLETED           // Tamamlandı
-  DELIVERED           // Teslim edildi
-  ON_HOLD             // Beklemede
-  CANCELLED           // İptal
+  PLANNING // Planlama
+  PRESALE // Ön satış
+  UNDER_CONSTRUCTION // İnşaat halinde
+  COMPLETED // Tamamlandı
+  DELIVERED // Teslim edildi
+  ON_HOLD // Beklemede
+  CANCELLED // İptal
 }
 
 enum ProjectUnitStatus {
-  AVAILABLE  // Müsait
-  RESERVED   // Rezerve
-  SOLD       // Satıldı
-  BLOCKED    // Bloke / satışa kapalı
-  DELIVERED  // Teslim edildi
+  AVAILABLE // Müsait
+  RESERVED // Rezerve
+  SOLD // Satıldı
+  BLOCKED // Bloke / satışa kapalı
+  DELIVERED // Teslim edildi
 }
 
 enum ProjectPhaseStatus {
-  NOT_STARTED  // Başlamadı
-  IN_PROGRESS  // Devam ediyor
-  COMPLETED    // Tamamlandı
-  DELAYED      // Gecikti
-  ON_HOLD      // Durduruldu
+  NOT_STARTED // Başlamadı
+  IN_PROGRESS // Devam ediyor
+  COMPLETED // Tamamlandı
+  DELAYED // Gecikti
+  ON_HOLD // Durduruldu
 }
 
 enum ProjectTaskStatus {
@@ -5273,28 +5769,28 @@ enum ProjectMilestoneStatus {
 }
 
 enum ProjectExpenseCategory {
-  LAND          // Arsa
-  CONSTRUCTION  // İnşaat
-  LABOR         // İşçilik
-  MATERIAL      // Malzeme
-  PERMIT        // Ruhsat / izin
-  MARKETING     // Pazarlama
-  LEGAL         // Hukuk
-  FINANCE       // Finansman
+  LAND // Arsa
+  CONSTRUCTION // İnşaat
+  LABOR // İşçilik
+  MATERIAL // Malzeme
+  PERMIT // Ruhsat / izin
+  MARKETING // Pazarlama
+  LEGAL // Hukuk
+  FINANCE // Finansman
   OTHER
 }
 
 enum ProjectExpenseStatus {
-  PLANNED    // Planlandı
-  COMMITTED  // Taahhüt edildi
-  PAID       // Ödendi
+  PLANNED // Planlandı
+  COMMITTED // Taahhüt edildi
+  PAID // Ödendi
 }
 
 enum UnitSaleStatus {
-  RESERVATION  // Ön rezervasyon / kapora
-  CONTRACT     // Sözleşme imzalandı
-  COMPLETED    // Tamamlandı (tapu devri)
-  CANCELLED    // İptal
+  RESERVATION // Ön rezervasyon / kapora
+  CONTRACT // Sözleşme imzalandı
+  COMPLETED // Tamamlandı (tapu devri)
+  CANCELLED // İptal
 }
 
 // Geliştirme / inşaat projesi (örn. "Marina Residence")
@@ -5317,14 +5813,14 @@ model EstateProject {
   longitude    Float?
 
   // Tarihler
-  startDate         DateTime?
-  estimatedEndDate  DateTime?
-  actualEndDate     DateTime?
-  deliveryDate      DateTime?
+  startDate        DateTime?
+  estimatedEndDate DateTime?
+  actualEndDate    DateTime?
+  deliveryDate     DateTime?
 
   // Finans
   budget   Float?
-  currency String  @default("TRY")
+  currency String @default("TRY")
 
   // Alanlar
   totalLandArea         Float? // Arsa alanı (m²)
@@ -5364,13 +5860,13 @@ model EstateProject {
 
 // Blok / Etap (örn. "A Blok")
 model ProjectBlock {
-  id           String  @id @default(cuid()) @map("_id")
-  name         String
-  code         String?
-  floors       Int?
+  id            String  @id @default(cuid()) @map("_id")
+  name          String
+  code          String?
+  floors        Int?
   unitsPerFloor Int?
-  description  String?
-  progress     Int     @default(0) // İnşaat ilerlemesi (%)
+  description   String?
+  progress      Int     @default(0) // İnşaat ilerlemesi (%)
 
   projectId String
   project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -5392,17 +5888,17 @@ model ProjectUnit {
   type   PropertyType
   status ProjectUnitStatus @default(AVAILABLE)
 
-  floor        Int?
-  roomCount    String? // "3+1"
-  grossArea    Float?
-  netArea      Float?
-  balconyArea  Float?
-  facing       String? // Cephe (Güney, Deniz vb.)
-  listPrice    Float?
-  currency     String  @default("TRY")
-  description  String?
-  features     String[]
-  isFeatured   Boolean @default(false)
+  floor       Int?
+  roomCount   String? // "3+1"
+  grossArea   Float?
+  netArea     Float?
+  balconyArea Float?
+  facing      String? // Cephe (Güney, Deniz vb.)
+  listPrice   Float?
+  currency    String   @default("TRY")
+  description String?
+  features    String[]
+  isFeatured  Boolean  @default(false)
 
   agencyId String // kapsam kolaylığı için denormalize
 
@@ -5429,7 +5925,7 @@ model UnitSale {
   status UnitSaleStatus @default(RESERVATION)
 
   salePrice   Float
-  currency    String  @default("TRY")
+  currency    String    @default("TRY")
   downPayment Float? // Peşinat / kapora
   commission  Float?
   saleDate    DateTime?
@@ -5528,14 +6024,14 @@ model ProjectMilestone {
 
 // Proje görevi
 model ProjectTask {
-  id          String              @id @default(cuid()) @map("_id")
-  title       String
-  description String?
-  status      ProjectTaskStatus   @default(TODO)
-  priority    ProjectTaskPriority @default(MEDIUM)
-  progress    Int                 @default(0)
-  dueDate     DateTime?
-  completedAt DateTime?
+  id           String              @id @default(cuid()) @map("_id")
+  title        String
+  description  String?
+  status       ProjectTaskStatus   @default(TODO)
+  priority     ProjectTaskPriority @default(MEDIUM)
+  progress     Int                 @default(0)
+  dueDate      DateTime?
+  completedAt  DateTime?
   assigneeName String?
 
   projectId String
@@ -5555,15 +6051,15 @@ model ProjectTask {
 
 // Müteahhit / taşeron
 model ProjectContractor {
-  id          String  @id @default(cuid()) @map("_id")
-  name        String
-  contactName String?
-  phone       String?
-  email       String?
-  specialty   String? // "Elektrik", "Kaba inşaat" vb.
-  taxNumber   String?
+  id             String  @id @default(cuid()) @map("_id")
+  name           String
+  contactName    String?
+  phone          String?
+  email          String?
+  specialty      String? // "Elektrik", "Kaba inşaat" vb.
+  taxNumber      String?
   contractAmount Float?
-  notes       String?
+  notes          String?
 
   projectId String
   project   EstateProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -5610,7 +6106,7 @@ model ProjectDocument {
   title      String
   url        String
   size       Int?
-  uploadedAt DateTime @default(now())
+  uploadedAt DateTime                @default(now())
 
   @@index([projectId])
   @@map("estate-project-documents")
@@ -5636,7 +6132,7 @@ model ProjectImage {
 
 // Saha / ilerleme güncellemesi
 model ProjectUpdate {
-  id            String @id @default(cuid()) @map("_id")
+  id            String  @id @default(cuid()) @map("_id")
   title         String
   content       String?
   progress      Int?

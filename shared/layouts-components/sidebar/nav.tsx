@@ -258,6 +258,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
                 title: "Anasayfa",
               },
 
+
               {
                 path: "/estate/contact-us",
                 type: "link",
@@ -459,6 +460,94 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               },
 
               {
+                path: "/estate/dashboard/offers",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Offers",
+              },
+
+              {
+                path: "/estate/dashboard/reservations",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Reservations",
+              },
+
+              {
+                path: "/estate/dashboard/maintenance",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Maintenance",
+              },
+
+              {
+                path: "/estate/dashboard/finance/invoices",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Invoices",
+              },
+
+              {
+                path: "/estate/dashboard/finance/expenses",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Expenses",
+              },
+
+              {
+                path: "/estate/dashboard/finance/payroll",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Payroll",
+              },
+
+              {
+                path: "/estate/dashboard/finance/commission-records",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Commission Records",
+              },
+
+              {
+                path: "/estate/dashboard/insights",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Insights",
+              },
+
+              {
+                path: "/estate/dashboard/notifications",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Notifications",
+              },
+
+              {
+                path: "/estate/dashboard/communication/logs",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Communication Logs",
+              },
+
+              {
+                path: "/estate/dashboard/audit-logs",
+                type: "link",
+                active: false,
+                selected: false,
+                title: "Audit Logs",
+              },
+
+              {
                 path: "/estate/dashboard/logs",
                 type: "link",
                 active: false,
@@ -551,6 +640,22 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
                     active: false,
                     selected: false,
                     title: "Client Visits",
+                  },
+
+                  {
+                    path: "/estate/portal/client/offers",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Client Offers",
+                  },
+
+                  {
+                    path: "/estate/portal/client/reservations",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Client Reservations",
                   },
                 ],
               },
@@ -654,6 +759,27 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
                     selected: false,
                     title: "Portal Agent Attendance",
                   },
+                  {
+                    path: "/estate/portal/agent/offers",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agent Offers",
+                  },
+                  {
+                    path: "/estate/portal/agent/reservations",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agent Reservations",
+                  },
+                  {
+                    path: "/estate/portal/agent/maintenance",
+                    type: "link",
+                    active: false,
+                    selected: false,
+                    title: "Portal Agent Maintenance",
+                  },
                 ],
               },
 
@@ -669,6 +795,10 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               { path: "/estate/portal/accountant/revenue",     type: "link", active: false, selected: false, title: "Gelir Takibi"    },
               { path: "/estate/portal/accountant/payments",    type: "link", active: false, selected: false, title: "Ödeme Planları"  },
               { path: "/estate/portal/accountant/commissions", type: "link", active: false, selected: false, title: "Komisyonlar"     },
+              { path: "/estate/portal/accountant/commission-records", type: "link", active: false, selected: false, title: "Komisyon Kayıtları" },
+              { path: "/estate/portal/accountant/invoices",    type: "link", active: false, selected: false, title: "Faturalar"       },
+              { path: "/estate/portal/accountant/expenses",    type: "link", active: false, selected: false, title: "Giderler"        },
+              { path: "/estate/portal/accountant/payroll",     type: "link", active: false, selected: false, title: "Bordro"          },
               { path: "/estate/portal/accountant/contracts",   type: "link", active: false, selected: false, title: "Sözleşmeler"     },
             ],
           },
@@ -743,6 +873,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/news`,               type: "link", active: false, selected: false, title: "Haberler"          },
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/events`,             type: "link", active: false, selected: false, title: "Etkinlikler"       },
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/gallery`,            type: "link", active: false, selected: false, title: "Galeri"            },
+              { path: `/estate/agency/${user?.agencyId ?? ""}/customize/gallery/categories`, type: "link", active: false, selected: false, title: "Galeri Kategorileri" },
               { path: `/estate/agency/${user?.agencyId ?? ""}/customize/settings`,           type: "link", active: false, selected: false, title: "Ayarlar"          },
             ],
           },
@@ -762,6 +893,7 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
           { path: `/crm/agency/${user?.agencyId ?? ""}/clients`,             type: "link", active: false, selected: false, title: "Müşteriler"        },
           { path: `/crm/agency/${user?.agencyId ?? ""}/tasks`,               type: "link", active: false, selected: false, title: "Görevler"          },
           { path: `/crm/agency/${user?.agencyId ?? ""}/activities`,          type: "link", active: false, selected: false, title: "Ajanda"            },
+          { path: `/crm/agency/${user?.agencyId ?? ""}/attention`,           type: "link", active: false, selected: false, title: "Dikkat Gerektiren"  },
           { path: `/crm/agency/${user?.agencyId ?? ""}/notifications`,       type: "link", active: false, selected: false, title: "Eşleşme Uyarıları" },
           { path: `/crm/agency/${user?.agencyId ?? ""}/agents`,              type: "link", active: false, selected: false, title: "Danışmanlar"       },
           { path: `/crm/agency/${user?.agencyId ?? ""}/reports`,             type: "link", active: false, selected: false, title: "Raporlar"          },

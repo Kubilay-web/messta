@@ -15,6 +15,7 @@ import {
   BarChart3,
   BadgeCheck,
   BellRing,
+  AlertTriangle,
   Menu,
   X,
 } from "lucide-react";
@@ -45,6 +46,7 @@ export function CrmSidebar({
     { href: `${base}/tasks`, label: "Görevler", icon: CheckSquare, show: true },
     { href: `${base}/activities`, label: "Ajanda", icon: CalendarClock, show: true },
     { href: `${base}/notifications`, label: "Eşleşme Uyarıları", icon: BellRing, show: true },
+    { href: `${base}/attention`, label: "Dikkat Gerektirenler", icon: AlertTriangle, show: true },
     { href: `${base}/agents`, label: "Danışmanlar", icon: BadgeCheck, show: canReports },
     { href: `${base}/reports`, label: "Raporlar", icon: BarChart3, show: canReports },
     { href: `${base}/settings/pipelines`, label: "Hat Ayarları", icon: Settings2, show: isAdmin },

@@ -167,3 +167,45 @@ export async function getClientMessages(agencyId: string) {
     },
   });
 }
+
+// ==================== MÜŞTERİ TEKLİFLERİ ====================
+export async function getClientOffers(clientId: string) {
+  const offers = await db.propertyOffer.findMany({
+    where:   { clientId },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true, offerNo: true, offerType: true, status: true,
+      amount: true, counterAmount: true, currency: true,
+      validUntil: true, createdAt: true, listingId: true, propertyId: true,
+    },
+  });
+  if (!offers.length) return [];
+
+  const listingIds = [...new Set(offers.map((o) => o.listingId).filter(Boolean))];
+  const propIds    = [...new Set(offers.map((o) => o.propertyId).filter(Boolean))];
+  const [listings, props] = await Promise.all([
+    listingIds.length ? db.listing.findMany({ where: { id: { in: listingIds } }, select: { id: true, title: true, listingNo: true } }) : [],
+    propIds.length    ? db.propertyRealEstate.findMany({ where: { id: { in: propIds } }, select: { id: true, title: true, city: true } }) : [],
+  ]);
+  const lm = Object.fromEntries(listings.map((l) => [l.id, l]));
+  const pm = Object.fromEntries(props.map((p) => [p.id, p]));
+  return offers.map((o) => ({ ...o, listing: lm[o.listingId] ?? null, property: pm[o.propertyId] ?? null }));
+}
+
+// ==================== MÜŞTERİ REZERVASYONLARI ====================
+export async function getClientReservations(clientId: string) {
+  const reservations = await db.propertyReservation.findMany({
+    where:   { clientId },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true, reservationNo: true, status: true, depositAmount: true,
+      currency: true, reservedUntil: true, propertyId: true,
+    },
+  });
+  if (!reservations.length) return [];
+
+  const propIds = [...new Set(reservations.map((r) => r.propertyId).filter(Boolean))];
+  const props = propIds.length ? await db.propertyRealEstate.findMany({ where: { id: { in: propIds } }, select: { id: true, title: true, city: true } }) : [];
+  const pm = Object.fromEntries(props.map((p) => [p.id, p]));
+  return reservations.map((r) => ({ ...r, property: pm[r.propertyId] ?? null }));
+}

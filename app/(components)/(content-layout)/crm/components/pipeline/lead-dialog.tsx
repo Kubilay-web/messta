@@ -179,7 +179,7 @@ export function LeadDialog({
             />
           </Field>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Kişi Adı *">
               <Input value={form.contactName} onChange={(e) => set("contactName", e.target.value)} />
             </Field>
@@ -194,7 +194,7 @@ export function LeadDialog({
             </Field>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <Field label="Kaynak">
               <Selector
                 value={form.source}
@@ -220,7 +220,7 @@ export function LeadDialog({
             </Field>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <Field label="Değer">
               <Input
                 type="number"
@@ -245,7 +245,7 @@ export function LeadDialog({
             </Field>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <Field label="İlan Türü">
               <Selector
                 value={form.listingType}
@@ -273,7 +273,7 @@ export function LeadDialog({
             </Field>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Şehir">
               <Input value={form.city} onChange={(e) => set("city", e.target.value)} />
             </Field>

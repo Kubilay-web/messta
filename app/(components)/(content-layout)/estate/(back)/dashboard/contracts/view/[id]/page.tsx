@@ -74,11 +74,18 @@ export default async function ContractViewPage({ params }: { params: { id: strin
             <ArrowLeft className="mr-1 h-4 w-4" /> Geri
           </Link>
         </Button>
-        <Button asChild size="sm">
-          <Link href={`/estate/dashboard/contracts/edit/${contract.id}`}>
-            Düzenle
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href={`/estate/dashboard/contracts/print/${contract.id}`}>
+              <FileText className="mr-1 h-4 w-4" /> Sözleşme PDF
+            </Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href={`/estate/dashboard/contracts/edit/${contract.id}`}>
+              Düzenle
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Başlık Kartı */}
