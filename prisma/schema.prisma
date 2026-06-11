@@ -4472,6 +4472,50 @@ model PropertyRealEstate {
 }
 
 // Listing → Exam karşılığı (İlan)
+// İlan kanalı: ofis (AGENCY) mi yoksa bireysel sahibinden (INDIVIDUAL) mı
+enum ListingChannel {
+  AGENCY
+  INDIVIDUAL
+}
+
+// İlan moderasyon durumu (özellikle bireysel ilanlar için onay kuyruğu)
+enum ListingModeration {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Ziyaretçinin favorilediği ilan (pazar yeri hesabı = User)
+model MarketFavorite {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, listingId])
+  @@index([userId])
+  @@map("market-favorites")
+}
+
+// Ziyaretçinin kaydettiği arama kriterleri
+model MarketSavedSearch {
+  id           String   @id @default(cuid()) @map("_id")
+  userId       String
+  name         String
+  listingType  String?
+  propertyType String?
+  city         String?
+  minPrice     Float?
+  maxPrice     Float?
+  rooms        String?
+  q            String?
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@map("market-saved-searches")
+}
+
 model Listing {
   id        String @id @default(cuid()) @map("_id")
   title     String
@@ -4479,6 +4523,14 @@ model Listing {
 
   listingType ListingType
   status      ListingStatus @default(ACTIVE)
+
+  // Pazar yeri: bireysel (sahibinden) ilanlar için kanal + ilan sahibi kullanıcı
+  channel          ListingChannel    @default(AGENCY)
+  ownerUserId      String? // INDIVIDUAL ilanlarda ilanı veren User
+  moderationStatus ListingModeration @default(APPROVED) // bireysel ilanlar PENDING başlar
+  featuredUntil    DateTime? // ücretli öne çıkarma bitiş tarihi
+  videoUrl         String? // tanıtım videosu
+  virtualTourUrl   String? // 360° sanal tur linki
 
   askingPrice  Float
   currency     String  @default("TRY")
@@ -4515,6 +4567,9 @@ model Listing {
   reservations      PropertyReservation[]
   communicationLogs CommunicationLog[]
 
+  // Pazar yeri
+  favorites MarketFavorite[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -4523,6 +4578,7 @@ model Listing {
   @@index([agentId])
   @@index([status])
   @@index([listingType])
+  @@index([ownerUserId])
   @@map("listings")
 }
 

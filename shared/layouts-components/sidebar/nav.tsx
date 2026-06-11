@@ -835,13 +835,13 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
                 selected: false,
                 title: "İletişim Talepleri",
               },
-              {
-                path: "/estate/super-dashboard/agencies-page",
-                type: "link",
-                active: false,
-                selected: false,
-                title: "Ofisler",
-              },
+              // {
+              //   path: "/estate/super-dashboard/agencies-page",
+              //   type: "link",
+              //   active: false,
+              //   selected: false,
+              //   title: "Ofisler",
+              // },
               {
                 path: "/estate/agency-onboarding",
                 type: "link",
@@ -898,6 +898,48 @@ export const getMenuItems = (user?: { agencyId?: string | null }) => [
           { path: `/crm/agency/${user?.agencyId ?? ""}/agents`,              type: "link", active: false, selected: false, title: "Danışmanlar"       },
           { path: `/crm/agency/${user?.agencyId ?? ""}/reports`,             type: "link", active: false, selected: false, title: "Raporlar"          },
           { path: `/crm/agency/${user?.agencyId ?? ""}/settings/pipelines`,  type: "link", active: false, selected: false, title: "Hat Ayarları"      },
+        ],
+      },
+
+      // ===================== Gayrimenkul Pazar Yeri =====================
+      {
+        title: "Gayrimenkul Pazar",
+        icon: Appsicon,
+        type: "sub",
+        active: false,
+        children: [
+          { path: "/realestate",                                  type: "link", active: false, selected: false, title: "Pazar Yeri"        },
+          { path: "/realestate/ilanlar",                          type: "link", active: false, selected: false, title: "Tüm İlanlar"       },
+          { path: "/realestate/favorites",                        type: "link", active: false, selected: false, title: "Favorilerim"       },
+          { path: "/realestate/saved-searches",                   type: "link", active: false, selected: false, title: "Kayıtlı Aramalar"  },
+
+          // Hesabım
+          {
+            title: "Hesabım",
+            icon: Appsicon,
+            type: "sub",
+            active: false,
+            children: [
+              { path: "/realestate/user/properties",                       type: "link", active: false, selected: false, title: "İlanlarım"     },
+              { path: "/realestate/user/properties/create-property",       type: "link", active: false, selected: false, title: "Yeni İlan Ver" },
+              { path: "/realestate/user/queries",                          type: "link", active: false, selected: false, title: "Taleplerim"    },
+              { path: "/realestate/user/account",                          type: "link", active: false, selected: false, title: "Hesap"         },
+              { path: "/realestate/user/subscriptions",                    type: "link", active: false, selected: false, title: "Abonelik"      },
+            ],
+          },
+
+          // Yönetim (admin)
+          {
+            title: "Yönetim",
+            icon: Appsicon,
+            type: "sub",
+            active: false,
+            children: [
+              { path: "/realestate/admin/moderation",  type: "link", active: false, selected: false, title: "İlan Moderasyonu"   },
+              { path: "/realestate/admin/properties",  type: "link", active: false, selected: false, title: "Tüm İlanlar (Admin)" },
+              { path: "/realestate/admin/users",       type: "link", active: false, selected: false, title: "Kullanıcılar"        },
+            ],
+          },
         ],
       },
 
